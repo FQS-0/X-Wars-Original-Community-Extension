@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel watch src/manifest.json --host localhost --config @parcel/config-webextension --no-hmr & web-ext run --devtools -s dist/",
-    "build": "parcel build manifest.json --target webext-prod"
+    "build": "parcel build manifest.json --target webext-prod",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,21 @@
   "homepage": "https://github.com/FQS-0/X-Wars-Original-Community-Extension#readme",
   "devDependencies": {
     "@parcel/config-webextension": "^2.9.3",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
     "parcel": "^2.9.3",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6",
     "web-ext": "^7.6.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": [
+      "eslint --ext .ts,.tsx,.js,.jsx",
+      "prettier --write"
+    ]
   }
 }

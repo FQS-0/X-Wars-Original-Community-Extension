@@ -3,8 +3,52 @@
     "name": "X-Wars Original Community Extension",
     "description": "Enhance the user interface of X-Wars Original",
     "version": "0.0.1",
-    "action": {
-      "default_popup": "hello.html",
-      "default_icon": "../assets/hello_extensions.png"
-    }
-  }
+    "icons": {
+        "16": "../assets/icon/16.png",
+        "32": "../assets/icon/32.png",
+        "48": "../assets/icon/48.png",
+        "128": "../assets/icon/128.png"
+    },
+    "permissions": ["storage"],
+    "content_scripts": [
+        {
+            "js": [
+                "../node_modules/webextension-polyfill/dist/browser-polyfill.js",
+                "scripts/content/status.ts"
+            ],
+            "matches": [
+                "*://original.xwars.net/extern/standard-status.inc.php?*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "../node_modules/webextension-polyfill/dist/browser-polyfill.js",
+                "scripts/content/top.ts"
+            ],
+            "matches": ["*://original.xwars.net/extern/standard-top.inc.php?*"],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "../node_modules/webextension-polyfill/dist/browser-polyfill.js",
+                "scripts/content/inhalt.ts"
+            ],
+            "matches": [
+                "https://original.xwars.net/index.php?*",
+                "https://original.xwars.net/?*"
+            ],
+            "exclude_matches": [
+                "https://original.xwars.net/index.php?*method=bG9naW4=*",
+                "https://original.xwars.net/?*method=bG9naW4=*"
+            ],
+            "all_frames": true
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["scripts/access/resources.js"],
+            "matches": ["*://original.xwars.net/*"]
+        }
+    ]
+}

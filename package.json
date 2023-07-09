@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel watch src/manifest.json --host localhost --config @parcel/config-webextension --no-hmr & web-ext run --devtools -s dist/",
+    "start": "node run-firefox.js",
+    "start-chrome": "node run-chrome.js",
     "build": "parcel build manifest.json --target webext-prod",
+    "check": "npx lint-staged",
     "prepare": "husky install"
   },
   "repository": {

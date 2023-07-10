@@ -9,7 +9,7 @@ export interface Resource {
     5: number
 }
 export interface Resources {
-    date: Date
+    date: string
     amount: Resource
     perSecond: Resource
     max: Resource
@@ -35,7 +35,7 @@ export function isResource(r: object): r is Resource {
 export function isResources(r: object): r is Resources {
     return (
         "date" in r &&
-        r.date instanceof Date &&
+        typeof r.date === "string" &&
         "amount" in r &&
         typeof r.amount === "object" &&
         r.amount !== null &&

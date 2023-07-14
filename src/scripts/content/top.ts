@@ -1,24 +1,27 @@
-import { isResources, setResources } from "~/src/lib/storage.js"
-import Browser from "webextension-polyfill"
+import { unserialize } from "php-serialize"
+import { Depot, Planet } from "~/src/lib/Planet.js"
 
-console.log("Loaded frame top.")
+/** Extract resource stock, production per hour and max capacity from
+ * the search parameter q and store those values in the local extension
+ * storage
+ */
 
-document.addEventListener("xwo_access_resources", function (e) {
-    if (e instanceof CustomEvent) {
-        const { amount, perSecond, max } = e.detail
-        const resources = {
-            date: new Date().toString(),
-            amount: { ...amount },
-            perSecond: { ...perSecond },
-            max: { ...max },
+const qEncoded = new URLSearchParams(window.location.search).get("q")
+
+if (qEncoded) {
+    const qDecoded = atob(qEncoded)
+    const qUnserialized = unserialize(qDecoded)
+    if (qUnserialized.r && qUnserialized.rm && qUnserialized.rp) {
+        const depot: Depot = {
+            date: new Date(),
+            stock: { ...qUnserialized.r },
+            perHour: { ...qUnserialized.rp },
+            max: { ...qUnserialized.rm },
         }
-        if (isResources(resources)) setResources(resources)
+        Planet.setDepot(depot)
+    } else {
+        console.error("no resources in q")
     }
-})
-
-const s = document.createElement("script")
-s.src = Browser.runtime.getURL("scripts/access/resources.js")
-;(document.head || document.documentElement).appendChild(s)
-s.onload = function () {
-    s.remove()
+} else {
+    console.error("q not found")
 }

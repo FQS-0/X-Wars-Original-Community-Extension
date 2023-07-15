@@ -4,33 +4,20 @@ function indentLinebreak(data) {
     return data.toString().replaceAll("\n", "\n  ").trim()
 }
 
-const parcel = spawn(
-    "npx",
-    [
-        "parcel",
-        "watch",
-        "src/manifest.json",
-        "--host",
-        "localhost",
-        "--config",
-        "@parcel/config-webextension",
-        "--no-hmr",
-    ],
-    { stdio: "pipe" }
-)
-const webExt = spawn("npx", ["web-ext", "run", "--devtools", "-s", "dist/"], {
+const build = spawn("node", ["esbuild.js", "--watch"], { stdio: "pipe" })
+const webExt = spawn("npx", ["web-ext", "run", "--devtools", "-s", "build/"], {
     stdio: "pipe",
 })
 
-parcel.stdout.setEncoding("utf8")
-parcel.stdout.on("data", (data) =>
-    console.log(`parcel: ${indentLinebreak(data)}`)
+build.stdout.setEncoding("utf8")
+build.stdout.on("data", (data) =>
+    console.log(`build: ${indentLinebreak(data)}`)
 )
-parcel.stderr.setEncoding("utf8")
-parcel.stderr.on("data", (data) =>
-    console.log(`parcel: ${indentLinebreak(data)}`)
+build.stderr.setEncoding("utf8")
+build.stderr.on("data", (data) =>
+    console.log(`build: ${indentLinebreak(data)}`)
 )
-parcel.on("error", (error) => console.log(`parcel: error: ${error.message}`))
+build.on("error", (error) => console.log(`build: error: ${error.message}`))
 
 webExt.stdout.setEncoding("utf8")
 webExt.stdout.on("data", (data) =>

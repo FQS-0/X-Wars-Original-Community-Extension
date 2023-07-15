@@ -1,0 +1,49 @@
+{
+    "manifest_version": 3,
+    "name": "X-Wars Original Community Extension",
+    "description": "Enhance the user interface of X-Wars Original",
+    "version": "0.0.1",
+    "icons": {
+        "16": "assets/icon/16.png",
+        "32": "assets/icon/32.png",
+        "48": "assets/icon/48.png",
+        "128": "assets/icon/128.png"
+    },
+    "permissions": ["storage"],
+    "content_scripts": [
+        {
+            "js": [
+                "scripts/content/menu.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/extern/standard-menu.inc.php?*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/status.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/extern/standard-status.inc.php?*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/top.js"
+            ],
+            "matches": ["*://original.xwars.net/extern/standard-top.inc.php?*"],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/resources.js"
+            ],
+            "matches": [
+                "https://original.xwars.net/*method=cmVzb3VyY2Vz*"
+            ],
+            "all_frames": true
+        }
+    ]
+}

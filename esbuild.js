@@ -11,6 +11,7 @@ async function build() {
                 "./src/scripts/content/resources.ts",
                 "./src/scripts/content/status.ts",
                 "./src/scripts/content/top.ts",
+                "./src/scripts/content/bank.ts",
             ],
             bundle: true,
             minify: false,

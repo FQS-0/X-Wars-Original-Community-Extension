@@ -54,6 +54,18 @@ export function isDepot(r: object): r is Depot {
     )
 }
 
+export function ResourcesToArray(r: Resources): number[] {
+    return Object.entries(r)
+        .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
+        .map((e) => e[1])
+}
+
+export function ArrayToResources(a: number[]): Resources {
+    const r = { ...a }
+    if (isResources(r)) return r
+    throw "Error: cannot transform Array to Resources!"
+}
+
 /**
  * This class is used to store and retrieve resource stock, production
  * per hour and max capacity from the extension local storage
@@ -84,5 +96,25 @@ export class Planet {
         const value: Record<string, string> = {}
         value[key] = JSON.stringify(depot)
         return Browser.storage.local.set(value)
+    }
+
+    public static async getCurrentResources(planet?: string) {
+        const depot = await Planet.getDepot(planet)
+        if (!depot) throw "Error: no depot set for this planet"
+        const stock = ResourcesToArray(depot.stock)
+        const resPerHour = ResourcesToArray(depot.perHour)
+        const capacity = ResourcesToArray(depot.max)
+        const diffInHours =
+            Math.round((new Date().getTime() - depot.date.getTime()) / 1000) /
+            60 /
+            60
+        const resources = [0, 0, 0, 0, 0, 0]
+        for (let i = 0; i < stock.length; i++) {
+            resources[i] = Math.floor(stock[i] + resPerHour[i] * diffInHours)
+            if (resources[i] > capacity[i]) resources[i] = capacity[i]
+            if (resources[i] < 0) resources[i] = 0
+        }
+
+        return ArrayToResources(resources)
     }
 }

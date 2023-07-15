@@ -41,8 +41,14 @@
                 "scripts/content/resources.js"
             ],
             "matches": [
-                "https://original.xwars.net/*method=cmVzb3VyY2Vz*"
+                "*://original.xwars.net/*method=cmVzb3VyY2Vz*"
             ],
+            "all_frames": true
+        },
+        {
+            "js": ["scripts/content/bank.js"],
+            "matches": ["*://original.xwars.net/*method=YmFuaw==*"],
+            "exclude_matches": ["*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"],
             "all_frames": true
         }
     ]

@@ -19,7 +19,9 @@ if (query) {
         .namedItem("change_planet")
         ?.elements.namedItem("pid")
     if (select && select instanceof HTMLSelectElement) {
-        const planets = Array.from(select.options).map((option) => option.value)
+        const planets = Array.from(select.options).map(
+            (option) => option.innerText
+        )
         Account.setPlanets(planets)
     }
 } else {

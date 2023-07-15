@@ -9,6 +9,7 @@ export interface Resources {
     4: number
     5: number
 }
+
 export interface Depot {
     date: Date
     stock: Resources
@@ -60,7 +61,7 @@ export function isDepot(r: object): r is Depot {
 export class Planet {
     public static async getDepot(
         planet: string | undefined = undefined
-    ): Promise<Depot | undefined> {
+    ): Promise<Depot | null> {
         if (!planet) planet = await Account.getCurrentPlanet()
         if (!planet) throw "currentPlanet not set"
         const key = `${Account.getId()}#${planet}#depot`
@@ -70,7 +71,7 @@ export class Planet {
             if (depot.date) depot.date = new Date(depot.date)
             if (isDepot(depot)) return depot
         }
-        return undefined
+        return null
     }
 
     public static async setDepot(

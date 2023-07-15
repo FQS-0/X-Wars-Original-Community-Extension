@@ -38,10 +38,38 @@
         },
         {
             "js": [
+                "scripts/content/overview.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=dWViZXJzaWNodA==*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
                 "scripts/content/resources.js"
             ],
             "matches": [
                 "*://original.xwars.net/*method=cmVzb3VyY2Vz*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/production_list.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=cHJvZHVrdGlvbi5jb3Jl*art=cHJvZF9saXN0*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/fleet_movement.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl",
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=aW5mb2ZsZWV0*"
             ],
             "all_frames": true
         },

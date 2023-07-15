@@ -23,4 +23,13 @@ export class DOMHelpers {
             throw "Error: element is no HTMLFormElement"
         return element
     }
+
+    static asHTMLTableElement(
+        element: Element | null | undefined
+    ): HTMLTableElement {
+        if (!element) throw "Error: element is null or undefined!"
+        if (!(element instanceof HTMLTableElement))
+            throw "Error: element is no HTMLTableElement"
+        return element
+    }
 }

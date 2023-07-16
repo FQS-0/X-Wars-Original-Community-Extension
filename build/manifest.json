@@ -12,61 +12,43 @@
     "permissions": ["storage"],
     "content_scripts": [
         {
-            "js": [
-                "scripts/content/menu.js"
-            ],
+            "js": ["scripts/content/menu.js"],
             "matches": [
                 "*://original.xwars.net/extern/standard-menu.inc.php?*"
             ],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/status.js"
-            ],
+            "js": ["scripts/content/status.js"],
             "matches": [
                 "*://original.xwars.net/extern/standard-status.inc.php?*"
             ],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/top.js"
-            ],
+            "js": ["scripts/content/top.js"],
             "matches": ["*://original.xwars.net/extern/standard-top.inc.php?*"],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/overview.js"
-            ],
-            "matches": [
-                "*://original.xwars.net/*method=dWViZXJzaWNodA==*"
-            ],
+            "js": ["scripts/content/overview.js"],
+            "matches": ["*://original.xwars.net/*method=dWViZXJzaWNodA==*"],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/resources.js"
-            ],
-            "matches": [
-                "*://original.xwars.net/*method=cmVzb3VyY2Vz*"
-            ],
+            "js": ["scripts/content/resources.js"],
+            "matches": ["*://original.xwars.net/*method=cmVzb3VyY2Vz*"],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/production_list.js"
-            ],
+            "js": ["scripts/content/production_list.js"],
             "matches": [
                 "*://original.xwars.net/*method=cHJvZHVrdGlvbi5jb3Jl*art=cHJvZF9saXN0*"
             ],
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/fleet_movement.js"
-            ],
+            "js": ["scripts/content/fleet_movement.js"],
             "matches": [
                 "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl",
                 "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=aW5mb2ZsZWV0*"
@@ -74,9 +56,21 @@
             "all_frames": true
         },
         {
+            "js": ["scripts/content/trade_create_offer.js"],
+            "matches": [
+                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*"
+            ],
+            "exclude_matches": [
+                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*todo*"
+            ],
+            "all_frames": true
+        },
+        {
             "js": ["scripts/content/bank.js"],
             "matches": ["*://original.xwars.net/*method=YmFuaw==*"],
-            "exclude_matches": ["*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"],
+            "exclude_matches": [
+                "*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"
+            ],
             "all_frames": true
         }
     ]

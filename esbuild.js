@@ -8,7 +8,7 @@ async function build() {
         await esbuild.build({
             entryPoints: [
                 "./src/scripts/content/menu.ts",
-                "./src/scripts/content/resources.ts",
+                "./src/scripts/content/resources.tsx",
                 "./src/scripts/content/status.ts",
                 "./src/scripts/content/top.ts",
                 "./src/scripts/content/bank.ts",

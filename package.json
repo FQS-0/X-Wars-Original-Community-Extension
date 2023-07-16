@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/FQS-0/X-Wars-Original-Community-Extension#readme",
   "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
     "@types/webextension-polyfill": "^0.10.1",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
@@ -31,10 +33,13 @@
     "esbuild-plugin-polyfill-node": "^0.3.0",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react": "^7.32.2",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
     "php-serialize": "^4.1.1",
     "prettier": "^3.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "typescript": "^5.1.6",
     "web-ext": "^7.6.2",
     "webextension-polyfill": "^0.10.0"

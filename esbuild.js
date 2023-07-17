@@ -19,7 +19,7 @@ async function build() {
             ],
             bundle: true,
             minify: false,
-            sourcemap: true,
+            sourcemap: "inline",
             target: ["chrome89", "firefox89"],
             outdir: "./build",
             outbase: "src",

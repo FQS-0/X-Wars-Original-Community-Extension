@@ -1,11 +1,27 @@
+import "dotenv/config"
+import process from "process"
+
 import { spawn } from "child_process"
 
 function indentLinebreak(data) {
     return data.toString().replaceAll("\n", "\n  ").trim()
 }
 
+const webextParameters = ["web-ext", "run", "-s", "build/"]
+
+if (process.env.PATH_TO_FF_PROFILE)
+    webextParameters.push(
+        ...[
+            "--firefox-profile",
+            process.env.PATH_TO_FF_PROFILE,
+            "--keep-profile-changes",
+            "--pref=signon.rememberSignons=true",
+            "--pref=browser.startup.homepage=https://original.xwars.net/login.php?",
+        ]
+    )
+
 const build = spawn("node", ["esbuild.js", "--watch"], { stdio: "pipe" })
-const webExt = spawn("npx", ["web-ext", "run", "--devtools", "-s", "build/"], {
+const webExt = spawn("npx", webextParameters, {
     stdio: "pipe",
 })
 

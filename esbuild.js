@@ -11,7 +11,7 @@ async function build() {
                 "./src/scripts/content/resources.tsx",
                 "./src/scripts/content/status.ts",
                 "./src/scripts/content/top.ts",
-                "./src/scripts/content/bank.ts",
+                "./src/scripts/content/bank.tsx",
                 "./src/scripts/content/overview.ts",
                 "./src/scripts/content/production_list.ts",
                 "./src/scripts/content/fleet_movement.ts",

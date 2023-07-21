@@ -1,4 +1,8 @@
+import React from "react"
+import { createRoot } from "react-dom/client"
 import { replaceUTCWithLocal, getDate } from "~/src/lib/Date.js"
+import { Account } from "~src/lib/Account.js"
+import { Bank } from "~src/lib/Bank.js"
 import { Planet, ResourcesToArray } from "~src/lib/Planet.js"
 
 function asHTMLElement(element: Element | null | undefined): HTMLElement {
@@ -61,7 +65,7 @@ async function main() {
     const interest = [0, 0, 0, 0, 0, 0]
     const delta = [0, 0, 0, 0, 0, 0]
     const max_overbook = [0, 0, 0, 0, 0, 0]
-    const transactions = []
+    const transactions = new Map<Date, number[]>()
 
     const depot = await Planet.getDepot()
     if (!depot) throw "Error: no depot set for this planet!"
@@ -130,12 +134,11 @@ async function main() {
         interest[idx] += Math.floor(
             (amount * interest_rate * timedelta_in_seconds) / (24 * 60 * 60)
         )
-        transactions.push({
-            date: transaction_time,
-            resource: resource,
-            amount: amount,
-            withdraw: withdraw,
-        })
+        const transaction = transactions.get(transaction_time) ?? [
+            0, 0, 0, 0, 0, 0,
+        ]
+        transaction[idx] = withdraw ? -amount : amount
+        transactions.set(transaction_time, transaction)
     })
 
     const interest_partial_factor =
@@ -149,6 +152,13 @@ async function main() {
             delta[resource_idx] +
             assets[resource_idx] / (1 + interest_rate * interest_partial_factor)
     }
+
+    const total = [0, 0, 0, 0, 0, 0]
+    for (let i = 0; i < total.length; i++) total[i] = balance[i] + interest[i]
+
+    Bank.setCapacity(capacity)
+    Bank.setAssets(assets)
+    Bank.setTotal(total)
 
     const check_transaction = async () => {
         const depot_resources = ResourcesToArray(
@@ -324,13 +334,165 @@ async function main() {
         }
     }
 
-    //console.log(interest_rate)
-    //console.log(capacity)
-    //console.log(booking_time)
-    //console.log(balance)
-    //console.log(interest)
-    //console.log(delta)
-    //console.log(max_overbook)
+    const fmtr = new Intl.NumberFormat()
+
+    const newInfoTableBody = (
+        <tbody>
+            <tr>
+                <td className="first" colSpan={7} align="center">
+                    <b>Bankauskunft für {await Account.getCurrentPlanet()}</b>
+                </td>
+            </tr>
+            <tr>
+                <td className="fourth"></td>
+                <td className="fourth" align="center">
+                    Roheisen
+                </td>
+                <td className="fourth" align="center">
+                    Kristalle
+                </td>
+                <td className="fourth" align="center">
+                    Frubin
+                </td>
+                <td className="fourth" align="center">
+                    Orizin
+                </td>
+                <td className="fourth" align="center">
+                    Frurozin
+                </td>
+                <td className="fourth" align="center">
+                    Gold
+                </td>
+            </tr>
+
+            <tr>
+                <td className="second">Verfügbares Vermögen</td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[0])}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[1])}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[2])}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[3])}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[4])}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(assets[5])}
+                </td>
+            </tr>
+            {Array.from(transactions.entries()).map(([date, res], id) => (
+                <tr key={id}>
+                    <td className="second">
+                        {date.toLocaleDateString()} {date.toLocaleTimeString()}
+                    </td>
+                    <td
+                        className={res[0] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[0] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[0])}
+                    </td>
+                    <td
+                        className={res[1] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[1] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[1])}
+                    </td>
+                    <td
+                        className={res[2] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[2] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[2])}
+                    </td>
+                    <td
+                        className={res[3] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[3] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[3])}
+                    </td>
+                    <td
+                        className={res[4] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[4] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[4])}
+                    </td>
+                    <td
+                        className={res[5] < 0 ? "red_second" : "second"}
+                        align="right"
+                        style={res[5] > 0 ? { backgroundColor: "green" } : {}}
+                    >
+                        {fmtr.format(res[5])}
+                    </td>
+                </tr>
+            ))}
+
+            <tr>
+                <td className="second">Voraussichtliche Zinsen</td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[0]))}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[1]))}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[2]))}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[3]))}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[4]))}
+                </td>
+                <td className="second" align="right">
+                    {fmtr.format(Math.floor(interest[5]))}
+                </td>
+            </tr>
+            <tr>
+                <td className="fourth">
+                    <b>Gesamt</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[0]))}</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[1]))}</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[2]))}</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[3]))}</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[4]))}</b>
+                </td>
+                <td className="fourth" align="right">
+                    <b>{fmtr.format(Math.floor(total[5]))}</b>
+                </td>
+            </tr>
+            <tr>
+                <td className="first" colSpan={7} align="center">
+                    Nächste Berechnung {booking_time.toLocaleDateString()}{" "}
+                    {booking_time.toLocaleTimeString()}
+                </td>
+            </tr>
+        </tbody>
+    )
+
+    const root = createRoot(info_table)
+    root.render(newInfoTableBody)
+    info_table.width = "400px"
+    transaction_table.width = "400px"
 }
 
 main()

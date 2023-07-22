@@ -1,9 +1,10 @@
 import Browser from "webextension-polyfill"
-import { DOMHelpers as D } from "~/src/lib/DOMHelpers.js"
+import { as } from "~/src/lib/DOMHelpers.js"
 import { replaceUTCWithLocal } from "~/src/lib/Date.js"
 
-const serverTimeElement = D.asHTMLElement(
-    window.document.querySelector("#servertime")
+const serverTimeElement = as(
+    window.document.querySelector("#servertime"),
+    HTMLElement
 )
 const serverTimeArray = serverTimeElement.innerHTML
     .split(":")

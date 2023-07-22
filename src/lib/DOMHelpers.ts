@@ -1,55 +1,8 @@
-export class DOMHelpers {
-    static asHTMLElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLElement))
-            throw "Error: element is no HTMLElement"
-        return element
-    }
+type Constructor<T> = { new (...args: unknown[]): T }
 
-    static asHTMLSelectElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLSelectElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLSelectElement))
-            throw "Error: element is no HTMLSelectElement"
-        return element
-    }
-
-    static asHTMLFormElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLFormElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLFormElement))
-            throw "Error: element is no HTMLFormElement"
-        return element
-    }
-
-    static asHTMLTableElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLTableElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLTableElement))
-            throw "Error: element is no HTMLTableElement"
-        return element
-    }
-
-    static asHTMLTableRowElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLTableRowElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLTableRowElement))
-            throw "Error: element is no HTMLTableRowElement"
-        return element
-    }
-
-    static asHTMLInputElement(
-        element: Element | RadioNodeList | null | undefined
-    ): HTMLInputElement {
-        if (!element) throw "Error: element is null or undefined!"
-        if (!(element instanceof HTMLInputElement))
-            throw "Error: element is no HTMLInputElement"
-        return element
-    }
+export function as<T>(x: unknown, className: Constructor<T>): T {
+    if (x === null) throw new Error("x is null")
+    if (x === undefined) throw new Error("x is undefined")
+    if (x instanceof className) return x
+    throw new TypeError()
 }

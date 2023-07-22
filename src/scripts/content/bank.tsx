@@ -3,32 +3,8 @@ import { createRoot } from "react-dom/client"
 import { replaceUTCWithLocal, getDate } from "~/src/lib/Date.js"
 import { Account } from "~src/lib/Account.js"
 import { Bank } from "~src/lib/Bank.js"
-import { Planet, ResourcesToArray } from "~src/lib/Planet.js"
-
-function asHTMLElement(element: Element | null | undefined): HTMLElement {
-    if (!element) throw "Error: element is null or undefined!"
-    if (!(element instanceof HTMLElement))
-        throw "Error: element is no HTMLElement"
-    return element
-}
-
-function asHTMLSelectElement(
-    element: Element | RadioNodeList | null | undefined
-): HTMLSelectElement {
-    if (!element) throw "Error: element is null or undefined!"
-    if (!(element instanceof HTMLSelectElement))
-        throw "Error: element is no HTMLSelectElement"
-    return element
-}
-
-function asHTMLFormElement(
-    element: Element | RadioNodeList | null | undefined
-): HTMLFormElement {
-    if (!element) throw "Error: element is null or undefined!"
-    if (!(element instanceof HTMLFormElement))
-        throw "Error: element is no HTMLFormElement"
-    return element
-}
+import { Planet } from "~src/lib/Planet.js"
+import { as } from "~/src/lib/DOMHelpers.js"
 
 async function main() {
     const [transaction_table, info_table] = window.document.querySelectorAll(
@@ -69,7 +45,7 @@ async function main() {
 
     const depot = await Planet.getDepot()
     if (!depot) throw "Error: no depot set for this planet!"
-    const depot_capacity = ResourcesToArray(depot.max)
+    const depot_capacity = depot.max.toArray()
 
     const form_elements: {
         input: HTMLInputElement
@@ -111,12 +87,13 @@ async function main() {
             transaction_time = getDate(row.cells[0].innerText)
         }
         if (!transaction_time) throw "Error: could not parse transaction time"
-        const resource = asHTMLElement(
-            row.lastElementChild?.previousElementSibling
+        const resource = as(
+            row.lastElementChild?.previousElementSibling,
+            HTMLElement
         ).innerText.trim()
         const idx = resources.indexOf(resource)
         const amount = parseInt(
-            asHTMLElement(row.lastElementChild).innerText.replace(".", "")
+            as(row.lastElementChild, HTMLElement).innerText.replace(".", "")
         )
         const withdraw = row.lastElementChild?.className === "red_second"
 
@@ -161,15 +138,15 @@ async function main() {
     Bank.setTotal(total)
 
     const check_transaction = async () => {
-        const depot_resources = ResourcesToArray(
-            await Planet.getCurrentResources()
-        )
+        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+
         for (let j = 0; j < 6; j++) {
             switch (
-                asHTMLFormElement(
+                as(
                     window.document.forms
                         .namedItem("transaction")
-                        ?.elements.namedItem("transaction_type")
+                        ?.elements.namedItem("transaction_type"),
+                    HTMLFormElement
                 ).value
             ) {
                 case "plus":
@@ -190,10 +167,10 @@ async function main() {
                     // Limit withdraw to free depot capacity and available assets
                     if (
                         parseInt(form_elements[j].input.value) >
-                        depot_capacity[j] - depot_resources[j]
+                        depot_capacity[j] - depot_resources.get(j)
                     ) {
                         form_elements[j].input.value = (
-                            depot_capacity[j] - depot_resources[j]
+                            depot_capacity[j] - depot_resources.get(j)
                         ).toString()
                     }
                     if (parseInt(form_elements[j].input.value) > assets[j]) {
@@ -206,25 +183,28 @@ async function main() {
     }
 
     for (let i = 0; i < 6; i++) {
+        form_elements[i].link.onclick = null
         form_elements[i].link.onclick = async () => {
-            const depot_resources = ResourcesToArray(
-                await Planet.getCurrentResources()
-            )
+            const depot_resources = (
+                await Planet.getDepot()
+            ).getCurrentResources()
+
             if (form_elements[i].input.value) {
                 form_elements[i].input.value = ""
                 return false
             }
             switch (
-                asHTMLFormElement(
+                as(
                     window.document.forms
                         .namedItem("transaction")
-                        ?.elements.namedItem("transaction_type")
+                        ?.elements.namedItem("transaction_type"),
+                    HTMLSelectElement
                 ).value
             ) {
                 case "plus":
                     if (delta[i] > 0) {
                         form_elements[i].input.value = Math.floor(
-                            Math.min(delta[i], depot_resources[i])
+                            Math.min(delta[i], depot_resources.get(i))
                         ).toString()
                     } else {
                         form_elements[i].input.value = "0"
@@ -235,7 +215,7 @@ async function main() {
                         form_elements[i].input.value = Math.floor(
                             Math.min(
                                 -delta[i],
-                                depot_capacity[i] - depot_resources[i]
+                                depot_capacity[i] - depot_resources.get(i)
                             )
                         ).toString()
                     } else {
@@ -245,14 +225,16 @@ async function main() {
                 default:
                     break
             }
+            return false
         }
         form_elements[i].input.onchange = check_transaction
     }
 
-    asHTMLSelectElement(
+    as(
         window.document.forms
             .namedItem("transaction")
-            ?.elements.namedItem("transaction_type")
+            ?.elements.namedItem("transaction_type"),
+        HTMLSelectElement
     ).onchange = check_transaction
 
     const button_row = transaction_table.insertRow(
@@ -265,30 +247,32 @@ async function main() {
     button_cell.innerHTML =
         '<button type="button" id="bank__max">Deposit Max</button> <button type="button" id="bank__interest">Withdraw Interest</button> <button type="button" id="bank__overbook">Overbook</button>'
     button_cell.style.padding = "10px"
-    const max_button = asHTMLElement(
-        window.document.querySelector("#bank__max")
+    const max_button = as(
+        window.document.querySelector("#bank__max"),
+        HTMLElement
     )
-    const interest_button = asHTMLElement(
-        window.document.querySelector("#bank__interest")
+    const interest_button = as(
+        window.document.querySelector("#bank__interest"),
+        HTMLElement
     )
-    const overbook_button = asHTMLElement(
-        window.document.querySelector("#bank__overbook")
+    const overbook_button = as(
+        window.document.querySelector("#bank__overbook"),
+        HTMLElement
     )
 
     max_button.style.margin = "5px"
     max_button.onclick = async () => {
-        const depot_resources = ResourcesToArray(
-            await Planet.getCurrentResources()
-        )
-        asHTMLSelectElement(
+        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+        as(
             window.document.forms
                 .namedItem("transaction")
-                ?.elements.namedItem("transaction_type")
+                ?.elements.namedItem("transaction_type"),
+            HTMLSelectElement
         ).value = "plus"
         for (let i = 0; i < 6; i++) {
             if (delta[i] > 0) {
                 form_elements[i].input.value = Math.floor(
-                    Math.min(delta[i], depot_resources[i])
+                    Math.min(delta[i], depot_resources.get(i))
                 ).toString()
             } else {
                 form_elements[i].input.value = ""
@@ -298,18 +282,21 @@ async function main() {
 
     interest_button.style.margin = "5px"
     interest_button.onclick = async () => {
-        const depot_resources = ResourcesToArray(
-            await Planet.getCurrentResources()
-        )
-        asHTMLSelectElement(
+        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+
+        as(
             window.document.forms
                 .namedItem("transaction")
-                ?.elements.namedItem("transaction_type")
+                ?.elements.namedItem("transaction_type"),
+            HTMLSelectElement
         ).value = "minus"
         for (let i = 0; i < 6; i++) {
             if (delta[i] < 0) {
                 form_elements[i].input.value = Math.floor(
-                    Math.min(-delta[i], depot_capacity[i] - depot_resources[i])
+                    Math.min(
+                        -delta[i],
+                        depot_capacity[i] - depot_resources.get(i)
+                    )
                 ).toString()
             } else {
                 form_elements[i].input.value = ""
@@ -319,17 +306,17 @@ async function main() {
 
     overbook_button.style.margin = "5px"
     overbook_button.onclick = async () => {
-        const depot_resources = ResourcesToArray(
-            await Planet.getCurrentResources()
-        )
-        asHTMLSelectElement(
+        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+
+        as(
             window.document.forms
                 .namedItem("transaction")
-                ?.elements.namedItem("transaction_type")
+                ?.elements.namedItem("transaction_type"),
+            HTMLSelectElement
         ).value = "plus"
         for (let i = 0; i < 6; i++) {
             form_elements[i].input.value = Math.floor(
-                Math.min(max_overbook[i], depot_resources[i])
+                Math.min(max_overbook[i], depot_resources.get(i))
             ).toString()
         }
     }

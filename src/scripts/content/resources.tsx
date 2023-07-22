@@ -1,5 +1,5 @@
 import { Account } from "~/src/lib/Account.js"
-import { Planet, ResourcesToArray } from "~/src/lib/Planet.js"
+import { Planet } from "~/src/lib/Planet.js"
 import { createRoot } from "react-dom/client"
 
 import React from "react"
@@ -23,7 +23,7 @@ async function main() {
             const resPerHour = (await Planet.getDepot(planet))?.perHour
             const resourceHTML = resPerHour ? (
                 <>
-                    {ResourcesToArray(resPerHour).map((resource, index) => {
+                    {resPerHour.toArray().map((resource, index) => {
                         total[index] += resource * 24
                         return (
                             <td

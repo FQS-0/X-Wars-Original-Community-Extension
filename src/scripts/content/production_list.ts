@@ -1,8 +1,9 @@
-import { DOMHelpers as D } from "~/src/lib/DOMHelpers.js"
+import { as } from "~/src/lib/DOMHelpers.js"
 import { replaceUTCWithLocal } from "~/src/lib/Date.js"
 
-const table = D.asHTMLTableElement(
-    window.document.querySelector('table[cellspacing="1"][cellpadding="1"]')
+const table = as(
+    window.document.querySelector('table[cellspacing="1"][cellpadding="1"]'),
+    HTMLTableElement
 )
 
 for (let i = 1; i < table.rows.length; i++) {

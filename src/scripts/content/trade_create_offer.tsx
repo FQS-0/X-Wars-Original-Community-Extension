@@ -1,7 +1,6 @@
 import { createRoot } from "react-dom/client"
-import { DOMHelpers as D } from "~/src/lib/DOMHelpers.js"
+import { as } from "~/src/lib/DOMHelpers.js"
 import { Planet } from "~/src/lib/Planet.js"
-import { ResourcesToArray } from "~/src/lib/Planet.js"
 import React from "react"
 
 const kostenMatch = window.document
@@ -16,10 +15,11 @@ function addReturn() {
     for (let i = 0; i < 6; i++) {
         if (
             parseInt(
-                D.asHTMLInputElement(
+                as(
                     window.document.forms
                         .namedItem("formular")
-                        ?.elements.namedItem(`tt_res[${i}]`)
+                        ?.elements.namedItem(`tt_res[${i}]`),
+                    HTMLInputElement
                 ).value
             ) > 0
         ) {
@@ -27,19 +27,21 @@ function addReturn() {
         }
     }
 
-    D.asHTMLInputElement(
+    as(
         window.document.forms
             .namedItem("formular")
-            ?.elements.namedItem(`tt_res[0]`)
+            ?.elements.namedItem(`tt_res[0]`),
+        HTMLInputElement
     ).value = "1"
 }
 
 function addTimeComment() {
     const date = new Date()
-    const input = D.asHTMLInputElement(
+    const input = as(
         window.document.forms
             .namedItem("formular")
-            ?.elements.namedItem("trade_comment")
+            ?.elements.namedItem("trade_comment"),
+        HTMLInputElement
     )
     input.value = input.value.replace(/## \d+:\d+:\d+/, "")
     input.value += "## " + date.toLocaleTimeString("de-DE")
@@ -55,8 +57,8 @@ window.document
     })
 
 async function limitRes(input: HTMLInputElement, idx: number) {
-    const resources = ResourcesToArray(await Planet.getCurrentResources())
-    let max_res = Math.trunc(resources[idx] / (1 + kosten)) - 2
+    const resources = (await Planet.getDepot()).getCurrentResources()
+    let max_res = Math.trunc(resources.get(idx) / (1 + kosten)) - 2
     if (max_res < 0) {
         max_res = 0
     }
@@ -68,45 +70,50 @@ async function limitRes(input: HTMLInputElement, idx: number) {
 }
 
 for (let i = 0; i < 6; i++) {
-    D.asHTMLElement(
+    as(
         window.document.forms
             .namedItem("formular")
-            ?.elements.namedItem(`tf_res[${i}]`)
+            ?.elements.namedItem(`tf_res[${i}]`),
+        HTMLElement
     ).addEventListener("change", function () {
-        limitRes(D.asHTMLInputElement(this), i)
+        limitRes(as(this, HTMLInputElement), i)
     })
 }
 
 async function save() {
-    const resources = ResourcesToArray(await Planet.getCurrentResources())
+    const resources = (await Planet.getDepot()).getCurrentResources()
     for (let i = 0; i < 6; i++) {
-        let max_res = Math.trunc(resources[i] / (1 + kosten)) - 2
+        let max_res = Math.trunc(resources.get(i) / (1 + kosten)) - 2
         if (max_res < 0) {
             max_res = 0
         }
-        D.asHTMLInputElement(
+        as(
             window.document.forms
                 .namedItem("formular")
-                ?.elements.namedItem(`tf_res[${i}]`)
+                ?.elements.namedItem(`tf_res[${i}]`),
+            HTMLInputElement
         ).value = max_res.toString()
     }
 
-    D.asHTMLInputElement(
+    as(
         window.document.forms
             .namedItem("formular")
-            ?.elements.namedItem("tt_res[5]")
+            ?.elements.namedItem("tt_res[5]"),
+        HTMLInputElement
     ).value = "9999999"
-    D.asHTMLInputElement(
+    as(
         window.document.forms
             .namedItem("formular")
-            ?.elements.namedItem("trade_comment")
+            ?.elements.namedItem("trade_comment"),
+        HTMLInputElement
     ).value = "Sicherungshandel"
 }
 
-const tableRow = D.asHTMLTableRowElement(
+const tableRow = as(
     window.document.querySelector(
         'form[name="formular"] > table > tbody > tr:last-child'
-    )
+    ),
+    HTMLTableRowElement
 )
 const cell = tableRow.insertCell(0)
 cell.colSpan = 2

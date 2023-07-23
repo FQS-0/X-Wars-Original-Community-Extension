@@ -6,3 +6,11 @@ export function as<T>(x: unknown, className: Constructor<T>): T {
     if (x instanceof className) return x
     throw new TypeError()
 }
+
+export function isStringArray(array: unknown): array is string[] {
+    if (!Array.isArray(array)) return false
+
+    if (array.some((v) => typeof v !== "string")) return false
+
+    return true
+}

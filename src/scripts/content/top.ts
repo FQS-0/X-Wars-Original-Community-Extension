@@ -1,5 +1,6 @@
 import { unserialize } from "php-serialize"
 import { Planet } from "~/src/lib/Planet.js"
+import { Account } from "~src/lib/Account.js"
 import { Depot, Resources } from "~src/lib/Resource.js"
 
 /** Extract resource stock, production per hour and max capacity from
@@ -25,4 +26,12 @@ if (qEncoded) {
     }
 } else {
     console.error("q not found")
+}
+
+const fontElements = window.document.querySelectorAll("font")
+if (fontElements) {
+    const resourceNames = Array.from(fontElements).map(
+        (e) => e.childNodes[0].textContent ?? "-1"
+    )
+    Account.setResourceNames(resourceNames)
 }

@@ -16,7 +16,6 @@ export class Planet {
         const key = `${await Account.getId()}#${planet}#depot`
         const result = await Browser.storage.local.get(key)
 
-        console.log(result)
         if (result[key]) {
             const depot = deserialize(Depot, result[key])
             if (depot instanceof Depot) return depot

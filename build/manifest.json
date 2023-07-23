@@ -72,6 +72,14 @@
                 "*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"
             ],
             "all_frames": true
+        },
+        {
+            "js": ["scripts/content/trades.js"],
+            "matches": ["*://original.xwars.net/*method=dHJhZGU=*"],
+            "exclude_matches": [
+                "*://original.xwars.net/*method=dHJhZGU=*art=*"
+            ],
+            "all_frames": true
         }
     ]
 }

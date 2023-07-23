@@ -49,6 +49,10 @@ export class Resources {
         return Resources.fromArray(this.res.map((x, i) => x - other.get(i)))
     }
 
+    set(i: number, value: number) {
+        this.res[i] = value
+    }
+
     get(i: number) {
         return this.res[i]
     }

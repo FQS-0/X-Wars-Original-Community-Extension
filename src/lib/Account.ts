@@ -1,4 +1,5 @@
 import Browser from "webextension-polyfill"
+import { isStringArray } from "./DOMHelpers.js"
 
 /**
  * This class is used to store and retrieve the player id, the current
@@ -49,5 +50,22 @@ export class Account {
         const value: Record<string, string> = {}
         value[`${Account.getId}#planets`] = JSON.stringify(planets)
         return Browser.storage.local.set(value)
+    }
+
+    public static async getResourceNames(): Promise<string[]> {
+        const { resourceNames } = await Browser.storage.local.get(
+            "resourceNames"
+        )
+        const names = JSON.parse(resourceNames)
+
+        if (isStringArray(names)) return names
+
+        throw new Error("resource names not set")
+    }
+
+    public static async setResourceNames(names: string[]): Promise<void> {
+        return Browser.storage.local.set({
+            resourceNames: JSON.stringify(names),
+        })
     }
 }

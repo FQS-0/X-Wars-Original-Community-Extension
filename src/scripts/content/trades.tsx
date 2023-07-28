@@ -202,10 +202,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(0) + trade.delivery.get(0) >
-                                depot.max.get(0) &&
-                            !trade.isRunning
+                                depot.max.get(0) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }
@@ -216,10 +214,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(1) + trade.delivery.get(1) >
-                                depot.max.get(1) &&
-                            !trade.isRunning
+                                depot.max.get(1) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }
@@ -230,10 +226,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(2) + trade.delivery.get(2) >
-                                depot.max.get(2) &&
-                            !trade.isRunning
+                                depot.max.get(2) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }
@@ -244,10 +238,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(3) + trade.delivery.get(3) >
-                                depot.max.get(3) &&
-                            !trade.isRunning
+                                depot.max.get(3) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }
@@ -258,10 +250,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(4) + trade.delivery.get(4) >
-                                depot.max.get(4) &&
-                            !trade.isRunning
+                                depot.max.get(4) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }
@@ -272,10 +262,8 @@ import { Planet } from "~src/lib/Planet.js"
                     </td>
                     <td
                         className={
-                            currentPlanet == trade.toPlanet &&
                             resources.get(5) + trade.delivery.get(5) >
-                                depot.max.get(5) &&
-                            !trade.isRunning
+                                depot.max.get(5) && !trade.isRunning
                                 ? "red_second"
                                 : "second"
                         }

@@ -63,8 +63,8 @@ export class Trade {
             this.date = new Date()
             this.date.setHours(hours, minutes, seconds)
             const now = new Date()
-            if (now.getDate() - this.date.getDate() > 0)
-                this.date.setDate(this.date.getDate() - 24 * 60 * 60 * 1000)
+            if (now.getTime() - this.date.getTime() < 0)
+                this.date.setTime(this.date.getTime() - 24 * 60 * 60 * 1000)
         }
     }
 

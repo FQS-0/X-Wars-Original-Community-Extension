@@ -17,6 +17,7 @@ async function build() {
                 "./src/scripts/content/fleet_movement.ts",
                 "./src/scripts/content/trade_create_offer.tsx",
                 "./src/scripts/content/trades.tsx",
+                "./src/scripts/options/options.tsx",
             ],
             bundle: true,
             minify: false,

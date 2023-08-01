@@ -6,11 +6,11 @@ import { isStringArray } from "./DOMHelpers.js"
  * planet and a list of all planets from the extension local storage.
  */
 export class Account {
-    public static async getId(): Promise<string | undefined> {
+    public static async getId(): Promise<string> {
         const { currentId } = await Browser.storage.local.get("currentId")
 
-        if (!currentId || typeof currentId !== "string") return undefined
-
+        if (!currentId || typeof currentId !== "string")
+            throw new Error("no id set")
         return currentId
     }
 
@@ -18,13 +18,13 @@ export class Account {
         return Browser.storage.local.set({ currentId: id })
     }
 
-    public static async getCurrentPlanet(): Promise<string | undefined> {
+    public static async getCurrentPlanet(): Promise<string> {
         const { currentPlanet } = await Browser.storage.local.get(
             "currentPlanet"
         )
 
         if (!currentPlanet || typeof currentPlanet !== "string")
-            return undefined
+            throw new Error("no current planet set")
 
         return currentPlanet
     }
@@ -34,7 +34,7 @@ export class Account {
     }
 
     public static async getPlanets(): Promise<string[]> {
-        const key = `${Account.getId}#planets`
+        const key = `${await Account.getId()}#planets`
         const result = await Browser.storage.local.get(key)
 
         if (!result[key]) return []
@@ -48,7 +48,7 @@ export class Account {
 
     public static async setPlanets(planets: string[]): Promise<void> {
         const value: Record<string, string> = {}
-        value[`${Account.getId}#planets`] = JSON.stringify(planets)
+        value[`${await Account.getId()}#planets`] = JSON.stringify(planets)
         return Browser.storage.local.set(value)
     }
 

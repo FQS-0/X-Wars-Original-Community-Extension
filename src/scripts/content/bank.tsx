@@ -1,4 +1,3 @@
-import React from "react"
 import { createRoot } from "react-dom/client"
 import { replaceUTCWithLocal, getDate } from "~/src/lib/Date.js"
 import { Account } from "~src/lib/Account.js"

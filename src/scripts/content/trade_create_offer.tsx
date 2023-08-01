@@ -1,7 +1,6 @@
 import { createRoot } from "react-dom/client"
 import { as } from "~/src/lib/DOMHelpers.js"
 import { Planet } from "~/src/lib/Planet.js"
-import React from "react"
 
 const kostenMatch = window.document
     .querySelector(

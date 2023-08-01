@@ -2,8 +2,6 @@ import { Account } from "~/src/lib/Account.js"
 import { Planet } from "~/src/lib/Planet.js"
 import { createRoot } from "react-dom/client"
 
-import React from "react"
-
 async function main() {
     const resTable = window.document.querySelector('table[cellspacing="1"')
         ?.parentElement?.parentElement?.parentElement?.parentElement

@@ -1,4 +1,3 @@
-import React from "react"
 import { createRoot } from "react-dom/client"
 import { Account } from "~src/lib/Account.js"
 import { as } from "~/src/lib/DOMHelpers.js"

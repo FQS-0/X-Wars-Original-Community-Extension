@@ -1,11 +1,12 @@
 import { ChangeEvent, useState, useEffect } from "react"
 import { Favourite, FavouriteType } from "~src/lib/Favourite.js"
 import {
-    Container,
+    FormControl,
+    Grid,
+    InputLabel,
     MenuItem,
     Select,
     SelectChangeEvent,
-    Stack,
     TextField,
     Typography,
 } from "@mui/material"
@@ -41,36 +42,46 @@ export const FavouriteRow = ({ favourite, handleBlur }: FavouriteRowProp) => {
         })
 
     return (
-        <Stack direction="row" key={fav.uuid}>
-            <TextField
-                label="Name"
-                value={fav.name}
-                onChange={handleChangeName}
-                onBlur={() => {
-                    handleBlur(fav)
-                }}
-            />
-            <TextField
-                label="Koordinaten"
-                value={fav.coordinates}
-                onChange={handleChangeCoordinates}
-                onBlur={() => {
-                    handleBlur(fav)
-                }}
-            />
-            <Select
-                label="Typ"
-                value={fav.type}
-                onChange={handleChangeType}
-                onBlur={() => {
-                    handleBlur(fav)
-                }}
-            >
-                <MenuItem value={FavouriteType.NONE}></MenuItem>
-                <MenuItem value={FavouriteType.FRIEND}>Freund</MenuItem>
-                <MenuItem value={FavouriteType.FOE}>Feind</MenuItem>
-            </Select>
-        </Stack>
+        <Grid container item key={fav.uuid} spacing={2}>
+            <Grid item xs={4}>
+                <TextField
+                    label="Name"
+                    value={fav.name}
+                    onChange={handleChangeName}
+                    onBlur={() => {
+                        handleBlur(fav)
+                    }}
+                />
+            </Grid>
+            <Grid item xs={4}>
+                <TextField
+                    label="Koordinaten"
+                    value={fav.coordinates}
+                    onChange={handleChangeCoordinates}
+                    onBlur={() => {
+                        handleBlur(fav)
+                    }}
+                />
+            </Grid>
+            <Grid item xs={4}>
+                <FormControl fullWidth>
+                    <InputLabel>Typ</InputLabel>
+                    <Select
+                        autoWidth
+                        label="Typ"
+                        value={fav.type}
+                        onChange={handleChangeType}
+                        onBlur={() => {
+                            handleBlur(fav)
+                        }}
+                    >
+                        <MenuItem value={FavouriteType.NONE}></MenuItem>
+                        <MenuItem value={FavouriteType.FRIEND}>Freund</MenuItem>
+                        <MenuItem value={FavouriteType.FOE}>Feind</MenuItem>
+                    </Select>
+                </FormControl>
+            </Grid>
+        </Grid>
     )
 }
 
@@ -126,7 +137,7 @@ export const FavouriteInputList = () => {
         return <Typography>Loading...</Typography>
     } else {
         return (
-            <Container>
+            <Grid container spacing={3}>
                 {list.map((fl) => (
                     <FavouriteRow
                         key={fl.uuid}
@@ -134,7 +145,7 @@ export const FavouriteInputList = () => {
                         handleBlur={handleBlur}
                     ></FavouriteRow>
                 ))}
-            </Container>
+            </Grid>
         )
     }
 }

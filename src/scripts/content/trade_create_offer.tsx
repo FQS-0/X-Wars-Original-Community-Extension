@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client"
 import { as } from "~/src/lib/DOMHelpers.js"
 import { Planet } from "~/src/lib/Planet.js"
+import { Favourite, FavouriteType } from "~src/lib/Favourite.js"
 
 const kostenMatch = window.document
     .querySelector(
@@ -131,3 +132,24 @@ const newCell = (
 
 const root = createRoot(cell)
 root.render(newCell)
+
+/** Add favourites to select */
+;(async () => {
+    const select = window.document.querySelector(
+        'select[name="changeTarget"]'
+    ) as HTMLSelectElement
+    if (select) {
+        const option = window.document.createElement("option")
+        option.text = "---- Favouriten"
+        select.add(option)
+        const favourites = await Favourite.getList()
+        favourites
+            .filter((fav) => fav.type == FavouriteType.FRIEND)
+            .forEach((fav) => {
+                const option = window.document.createElement("option")
+                option.text = `${fav.name} - ${fav.coordinates}`
+                option.value = fav.coordinates
+                select.add(option)
+            })
+    }
+})()

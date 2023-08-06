@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
+        "target": "ES2022",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
 
         "allowJs": true,
@@ -20,5 +20,8 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "tools/**/*"],
+    "ts-node": {
+        "require": ["tsconfig-paths/register"]
+    }
 }

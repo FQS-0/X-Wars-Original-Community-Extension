@@ -45,6 +45,7 @@ export const FavouriteRow = ({ favourite, handleBlur }: FavouriteRowProp) => {
         <Grid container item key={fav.uuid} spacing={2}>
             <Grid item xs={4}>
                 <TextField
+                    fullWidth
                     label="Name"
                     value={fav.name}
                     onChange={handleChangeName}
@@ -55,6 +56,7 @@ export const FavouriteRow = ({ favourite, handleBlur }: FavouriteRowProp) => {
             </Grid>
             <Grid item xs={4}>
                 <TextField
+                    fullWidth
                     label="Koordinaten"
                     value={fav.coordinates}
                     onChange={handleChangeCoordinates}
@@ -136,26 +138,24 @@ export const FavouriteInputList = () => {
         updateFavouriteList()
         return <Typography>Loading...</Typography>
     } else {
-        return (
-            <Grid container spacing={3}>
-                {list.map((fl) => (
-                    <FavouriteRow
-                        key={fl.uuid}
-                        favourite={fl}
-                        handleBlur={handleBlur}
-                    ></FavouriteRow>
-                ))}
-            </Grid>
-        )
+        return list.map((fl) => (
+            <FavouriteRow
+                key={fl.uuid}
+                favourite={fl}
+                handleBlur={handleBlur}
+            ></FavouriteRow>
+        ))
     }
 }
 
 export const FavouriteOptions = () => {
     return (
         <>
-            <Typography variant="h4" sx={{ my: 2 }}>
-                Favouriten
-            </Typography>
+            <Grid item xs={12}>
+                <Typography variant="h4" sx={{ my: 3 }}>
+                    Favouriten
+                </Typography>
+            </Grid>
             <FavouriteInputList />
         </>
     )

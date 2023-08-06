@@ -10,6 +10,7 @@
         "128": "assets/icon/128.png"
     },
     "permissions": ["storage"],
+    "host_permissions": ["http://*/*", "https://*/*"],
     "options_ui": {
         "page": "assets/html/options.html",
         "open_in_tab": true

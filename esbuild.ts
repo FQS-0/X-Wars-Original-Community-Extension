@@ -1,39 +1,25 @@
+import esbuild from "esbuild"
+import process from "process"
+import { watch } from "chokidar"
+import { polyfillNode } from "esbuild-plugin-polyfill-node"
+
 import fs from "fs"
 import tsj from "ts-json-schema-generator"
 import { JSONSchema7 } from "json-schema"
 import Ajv from "ajv"
 import standaloneCode from "ajv/dist/standalone/index.js"
-import esbuild from "esbuild"
 import { spawn } from "child_process"
 
-/**
- * Runs a command, returns the stdout on a successful exit code(0)
- * @param command The executable name
- * @param args The args as a string
- * @param cwd Current Working Directory
- * @param echoOutputs Pipes the command standard streams directly to this process to get the output as it is happening,
- *                    not waiting for the exit code
- * @param prefixOutputs Useful if running multiple commands in parallel
- * @param extraEnv Extra variables to pass as Environment variables
- * @return {Promise<string>}
- */
 async function execCommand(
     command: string,
-    args: string,
-    cwd = import.meta.url,
+    args: string[],
     echoOutputs = true,
-    prefixOutputs = "",
-    extraEnv = {}
+    prefixOutputs = ""
 ) {
     return new Promise((resolve, reject) => {
         let allData = ""
         let errOutput = ""
-        const call = spawn(command, [args], {
-            shell: true,
-            windowsVerbatimArguments: true,
-            cwd: cwd,
-            env: { ...process.env, ...extraEnv },
-        })
+        const call = spawn(command, args)
 
         call.stdout.on("data", function (data) {
             allData += data.toString()
@@ -122,23 +108,24 @@ function esBuildCommonToEsm(validationFile: URL) {
 
 async function generateTypings(validationFile: URL, validationFileFolder: URL) {
     console.time("* TSC DECLARATIONS")
-    await execCommand(
-        "npx",
-        'tsc -allowJs --declaration --emitDeclarationOnly "' +
-            validationFile.pathname +
-            '" --outDir "' +
-            validationFileFolder.pathname +
-            '"'
-    )
+    await execCommand("npx", [
+        "tsc",
+        "--allowJs",
+        "--declaration",
+        "--emitDeclarationOnly",
+        validationFile.pathname,
+        "--outDir",
+        validationFileFolder.pathname,
+    ])
     console.timeEnd("* TSC DECLARATIONS")
 }
 
 async function buildTypes() {
     const paths = {
-        types: new URL("../src/lib/json/types/", import.meta.url),
-        typesJsonSchema: new URL("../src/lib/json/schemas/", import.meta.url),
+        types: new URL("src/lib/json/types/", import.meta.url),
+        typesJsonSchema: new URL("src/lib/json/schemas/", import.meta.url),
         validationFile: new URL(
-            "../src/lib/json/schemas/validations.js",
+            "src/lib/json/schemas/validations.js",
             import.meta.url
         ),
     }
@@ -159,4 +146,50 @@ async function buildTypes() {
     await generateTypings(paths.validationFile, paths.typesJsonSchema)
 }
 
+async function build() {
+    try {
+        await esbuild.build({
+            entryPoints: [
+                "./src/scripts/content/menu.ts",
+                "./src/scripts/content/resources.tsx",
+                "./src/scripts/content/status.ts",
+                "./src/scripts/content/top.ts",
+                "./src/scripts/content/bank.tsx",
+                "./src/scripts/content/overview.ts",
+                "./src/scripts/content/production_list.ts",
+                "./src/scripts/content/fleet_movement.ts",
+                "./src/scripts/content/trade_create_offer.tsx",
+                "./src/scripts/content/trades.tsx",
+                "./src/scripts/options/options.tsx",
+            ],
+            bundle: true,
+            minify: false,
+            sourcemap: "inline",
+            target: ["chrome89", "firefox89"],
+            outdir: "./build",
+            outbase: "src",
+            define: {
+                "process.env.NODE_ENV": `"${process.env.NODE_ENV}"`,
+                "process.env.NODE_DEBUG": "false",
+            },
+            format: "esm",
+            plugins: [
+                polyfillNode({
+                    globals: { process: false },
+                }),
+            ],
+        })
+        console.log(`${new Date()} Build successful.`)
+    } catch (e) {
+        console.log(`${new Date()} Build error: ${e}`)
+    }
+}
+
 buildTypes()
+build()
+
+if (process.argv.includes("--watch")) {
+    const watcher = watch(["src/**/*"])
+    console.log("Watching files")
+    watcher.on("change", () => build())
+}

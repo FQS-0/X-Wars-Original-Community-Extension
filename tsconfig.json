@@ -20,7 +20,7 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
-    "include": ["src/**/*", "tools/**/*"],
+    "include": ["src/**/*", "tools/**/*", "esbuild.ts"],
     "ts-node": {
         "require": ["tsconfig-paths/register"]
     }

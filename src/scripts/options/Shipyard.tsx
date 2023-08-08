@@ -4,6 +4,7 @@ import { LoadingButton } from "@mui/lab"
 import Shipyard from "~src/lib/Shipyard.js"
 import { Shipyard as SY } from "~src/lib/json/types/Shipyard.js"
 import { StorageArea } from "~src/lib/StorageArea.js"
+import { Shipyards } from "~src/lib/json/types/Shipyards.js"
 
 export const ShipyardAddForm = ({
     addShipyard,
@@ -152,7 +153,8 @@ export const ShipyardOptions = () => {
 
     const addShipyard = async (sy: SY): Promise<boolean> => {
         let rval = false
-        const storedShipyards = await StorageArea.shipyards.get()
+        const storedShipyards =
+            (await StorageArea.shipyards.get()) ?? ([] as Shipyards)
 
         const idx = storedShipyards.findIndex(
             (shipyard) => shipyard.name == sy.name
@@ -169,7 +171,8 @@ export const ShipyardOptions = () => {
     }
 
     const removeShipyard = async (sy: SY) => {
-        const storedShipyards = await StorageArea.shipyards.get()
+        const storedShipyards =
+            (await StorageArea.shipyards.get()) ?? ([] as Shipyards)
 
         const idx = storedShipyards.findIndex(
             (shipyard) => shipyard.name === sy.name
@@ -184,7 +187,7 @@ export const ShipyardOptions = () => {
         updateShipyards()
         StorageArea.shipyards.subscribe(updateShipyards)
         return () => {
-            StorageArea.shipyards.unsubscribe(updateShipyards)
+            StorageArea.shipyards.unsubscribe()
         }
     }, [])
 

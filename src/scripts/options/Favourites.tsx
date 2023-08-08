@@ -1,6 +1,9 @@
 import { ChangeEvent, useState, useEffect } from "react"
-import { Favourite, FavouriteType } from "~src/lib/Favourite.js"
+import { Favourite } from "~src/lib/json/types/Favourite.js"
+import { FavouriteType } from "~src/lib/json/types/FavouriteType.js"
 import {
+    Button,
+    Chip,
     FormControl,
     Grid,
     InputLabel,
@@ -11,17 +14,64 @@ import {
     Typography,
 } from "@mui/material"
 import { useImmer } from "use-immer"
-import { produce } from "immer"
-import Browser from "webextension-polyfill"
-import { Account } from "~src/lib/Account.js"
+import { StorageArea } from "~src/lib/StorageArea.js"
+import { Favourites } from "~src/lib/json/types/Favourites.js"
+import { GppGood, GppBad } from "@mui/icons-material"
 
 type FavouriteRowProp = {
     favourite: Favourite
-    handleBlur: (f: Favourite) => void
 }
 
-export const FavouriteRow = ({ favourite, handleBlur }: FavouriteRowProp) => {
-    const [fav, setFav] = useImmer(favourite)
+export const FavouriteRow = ({ favourite }: FavouriteRowProp) => {
+    const handleRemove = async () => {
+        const favourites =
+            (await StorageArea.favourites.get()) || ([] as Favourites)
+        const idx = favourites.findIndex(
+            (f) => f.coordinates === favourite.coordinates
+        )
+        if (idx > -1) favourites.splice(idx, 1)
+        StorageArea.favourites.set(favourites)
+    }
+    return (
+        <Grid container item key={favourite.coordinates} spacing={2}>
+            <Grid item xs={2}>
+                <Chip
+                    label={favourite.coordinates}
+                    variant="outlined"
+                    icon={
+                        favourite.type == FavouriteType.FRIEND ? (
+                            <GppGood />
+                        ) : favourite.type == FavouriteType.FOE ? (
+                            <GppBad />
+                        ) : undefined
+                    }
+                    color={
+                        favourite.type == FavouriteType.FRIEND
+                            ? "success"
+                            : favourite.type == FavouriteType.FOE
+                            ? "error"
+                            : undefined
+                    }
+                />
+            </Grid>
+            <Grid item xs={4}>
+                <Typography>{favourite.name}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+                <Button variant="outlined" onClick={handleRemove}>
+                    Entfernen
+                </Button>
+            </Grid>
+        </Grid>
+    )
+}
+
+export const FavouriteAddForm = () => {
+    const [fav, setFav] = useImmer({
+        name: "",
+        coordinates: "",
+        type: FavouriteType.NONE,
+    } as Favourite)
 
     const handleChangeName = (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -40,50 +90,66 @@ export const FavouriteRow = ({ favourite, handleBlur }: FavouriteRowProp) => {
             f.type =
                 FavouriteType[event.target.value as keyof typeof FavouriteType]
         })
+    const handleAddFavourite = async () => {
+        console.log("change")
+        const favourites =
+            (await StorageArea.favourites.get()) || ([] as Favourites)
+        const idx = favourites.findIndex(
+            (f) => f.coordinates === fav.coordinates
+        )
+        if (idx > -1) {
+            favourites[idx] = fav
+        } else {
+            favourites.push(fav)
+        }
+
+        await StorageArea.favourites.set(favourites)
+        setFav({ name: "", coordinates: "", type: FavouriteType.NONE })
+    }
 
     return (
-        <Grid container item key={fav.uuid} spacing={2}>
-            <Grid item xs={4}>
-                <TextField
-                    fullWidth
-                    label="Name"
-                    value={fav.name}
-                    onChange={handleChangeName}
-                    onBlur={() => {
-                        handleBlur(fav)
-                    }}
-                />
+        <>
+            <Grid container item spacing={2}>
+                <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        label="Koordinaten"
+                        value={fav.coordinates}
+                        onChange={handleChangeCoordinates}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <TextField
+                        fullWidth
+                        label="Name"
+                        value={fav.name}
+                        onChange={handleChangeName}
+                    />
+                </Grid>
+                <Grid item xs={4}>
+                    <FormControl fullWidth>
+                        <InputLabel>Typ</InputLabel>
+                        <Select
+                            autoWidth
+                            label="Typ"
+                            value={fav.type}
+                            onChange={handleChangeType}
+                        >
+                            <MenuItem value={FavouriteType.NONE}></MenuItem>
+                            <MenuItem value={FavouriteType.FRIEND}>
+                                Freund
+                            </MenuItem>
+                            <MenuItem value={FavouriteType.FOE}>Feind</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
-            <Grid item xs={4}>
-                <TextField
-                    fullWidth
-                    label="Koordinaten"
-                    value={fav.coordinates}
-                    onChange={handleChangeCoordinates}
-                    onBlur={() => {
-                        handleBlur(fav)
-                    }}
-                />
+            <Grid item xs={12} sx={{ mb: 4 }}>
+                <Button variant="outlined" onClick={handleAddFavourite}>
+                    Hinzufügen/Ändern
+                </Button>
             </Grid>
-            <Grid item xs={4}>
-                <FormControl fullWidth>
-                    <InputLabel>Typ</InputLabel>
-                    <Select
-                        autoWidth
-                        label="Typ"
-                        value={fav.type}
-                        onChange={handleChangeType}
-                        onBlur={() => {
-                            handleBlur(fav)
-                        }}
-                    >
-                        <MenuItem value={FavouriteType.NONE}></MenuItem>
-                        <MenuItem value={FavouriteType.FRIEND}>Freund</MenuItem>
-                        <MenuItem value={FavouriteType.FOE}>Feind</MenuItem>
-                    </Select>
-                </FormControl>
-            </Grid>
-        </Grid>
+        </>
     )
 }
 
@@ -91,46 +157,15 @@ export const FavouriteInputList = () => {
     const [list, setList] = useState<Favourite[] | null>(null)
 
     const updateFavouriteList = async () => {
-        const l = await Favourite.getList()
-        if (l !== null) {
-            l.push(new Favourite("", "", FavouriteType.NONE))
-            setList(l)
-        }
-    }
+        const l = (await StorageArea.favourites.get()) || ([] as Favourites)
 
-    const handleBlur = (f: Favourite) => {
-        const newList = produce(list, (draft) => {
-            if (draft !== null) {
-                let idx = draft.findIndex((fav) => fav.uuid == f.uuid)
-                if (idx !== -1) {
-                    draft[idx] = f
-                }
-                while (
-                    (idx = draft.findIndex(
-                        (fav) => fav.name === "" && fav.coordinates === ""
-                    )) != -1
-                ) {
-                    draft.splice(idx, 1)
-                }
-            }
-        })
-        if (newList !== null) Favourite.setList(newList)
+        setList(l)
     }
 
     useEffect(() => {
-        const handleOnChanged = async (
-            changes: Record<string, Browser.Storage.StorageChange>,
-            areaName: string
-        ) => {
-            if (areaName !== "local") return
-            const key = `${await Account.getId()}#favourites`
-            if (Object.keys(changes).includes(key)) {
-                updateFavouriteList()
-            }
-        }
-        Browser.storage.onChanged.addListener(handleOnChanged)
+        StorageArea.favourites.subscribe(updateFavouriteList)
         return () => {
-            Browser.storage.onChanged.removeListener(handleOnChanged)
+            StorageArea.favourites.unsubscribe()
         }
     }, [])
 
@@ -139,11 +174,7 @@ export const FavouriteInputList = () => {
         return <Typography>Loading...</Typography>
     } else {
         return list.map((fl) => (
-            <FavouriteRow
-                key={fl.uuid}
-                favourite={fl}
-                handleBlur={handleBlur}
-            ></FavouriteRow>
+            <FavouriteRow key={fl.coordinates} favourite={fl}></FavouriteRow>
         ))
     }
 }
@@ -156,6 +187,7 @@ export const FavouriteOptions = () => {
                     Favouriten
                 </Typography>
             </Grid>
+            <FavouriteAddForm />
             <FavouriteInputList />
         </>
     )

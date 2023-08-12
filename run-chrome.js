@@ -22,7 +22,9 @@ if (process.env.PATH_TO_CHROME_PROFILE)
         ...["--chromium-profile", process.env.PATH_TO_CHROME_PROFILE]
     )
 
-const build = spawn("node", ["esbuild.js", "--watch"], { stdio: "pipe" })
+const build = spawn("npx", ["ts-node", "--esm", "esbuild.ts", "--watch"], {
+    stdio: "pipe",
+})
 const webExt = spawn("npx", webextParameters, {
     stdio: "pipe",
 })

@@ -7,6 +7,7 @@ import fs from "fs"
 import tsj from "ts-json-schema-generator"
 import { JSONSchema7 } from "json-schema"
 import Ajv from "ajv"
+import addFormats from "ajv-formats"
 import standaloneCode from "ajv/dist/standalone/index.js"
 import { spawn } from "child_process"
 
@@ -84,7 +85,7 @@ function compileAjvStandalone(schemas: JSONSchema7[], validationFile: URL) {
         schemas: schemas,
         code: { source: true, esm: true },
     })
-    //addFormats(ajv);
+    addFormats.default(ajv)
     const moduleCode = standaloneCode.default(ajv)
     console.timeEnd("* AJV COMPILE")
     fs.writeFileSync(validationFile, moduleCode)
@@ -121,6 +122,7 @@ async function generateTypings(validationFile: URL, validationFileFolder: URL) {
 }
 
 async function buildTypes() {
+    console.log("Building types")
     const paths = {
         types: new URL("src/lib/json/types/", import.meta.url),
         typesJsonSchema: new URL("src/lib/json/schemas/", import.meta.url),
@@ -191,5 +193,12 @@ build()
 if (process.argv.includes("--watch")) {
     const watcher = watch(["src/**/*"])
     console.log("Watching files")
-    watcher.on("change", () => build())
+    watcher.on("change", (path) => {
+        if (path.startsWith("src/lib/json/types/")) {
+            buildTypes()
+            build()
+        } else if (!path.startsWith("src/lib/json/")) {
+            build()
+        }
+    })
 }

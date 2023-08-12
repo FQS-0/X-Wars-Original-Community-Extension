@@ -9,6 +9,7 @@ import { ResourceNames } from "./json/types/ResourceNames.js"
 import { Resources } from "./json/types/Resources.js"
 
 interface ChildStorage {
+    needsResolving: boolean
     getKey(): Promise<string>
     getCompleteKey(): Promise<string>
 }
@@ -34,12 +35,13 @@ class StorageBase implements ChildStorage {
 
     constructor(
         private key: string,
-        private parent?: ChildStorage
+        private parent?: ChildStorage,
+        public needsResolving = false
     ) {}
 
     public async getCompleteKey(): Promise<string> {
         const instanceKey =
-            this instanceof CurrentIdStorage || this instanceof PlanetStorage
+            this instanceof SimpleStorage && this.needsResolving
                 ? await (this as SimpleStorage<string>).get()
                 : this.key
         if (!instanceKey) throw new Error("key value not found")
@@ -153,7 +155,7 @@ class SimpleStorage<T> extends StorageBase implements Storage<T> {
 
 class CurrentIdStorage<T> extends SimpleStorage<T> {
     public get currentPlanet(): PlanetStorage<string> {
-        return new PlanetStorage<string>("currentPlanet", this)
+        return new PlanetStorage<string>("currentPlanet", this, true)
     }
     public get planets(): JsonStorage<Planets> {
         return new JsonStorage<Planets>("planets", validations.Planets, this)
@@ -164,6 +166,9 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
             validations.ResourceNames,
             this
         )
+    }
+    public planet(coordinates: string): PlanetStorage<string> {
+        return new PlanetStorage<string>(coordinates, this)
     }
 }
 
@@ -200,6 +205,6 @@ export class StorageArea {
     }
 
     static get currentId(): CurrentIdStorage<string> {
-        return new CurrentIdStorage<string>("currentId")
+        return new CurrentIdStorage<string>("currentId", undefined, true)
     }
 }

@@ -1,6 +1,6 @@
-import { Account } from "~/src/lib/Account.js"
-import { Planet } from "~/src/lib/Planet.js"
 import { createRoot } from "react-dom/client"
+import { StorageArea } from "~src/lib/StorageArea.js"
+import { Depot } from "~src/lib/Resource.js"
 
 async function main() {
     const resTable = window.document.querySelector('table[cellspacing="1"')
@@ -14,11 +14,16 @@ async function main() {
     const total = [0, 0, 0, 0, 0, 0]
     const formatter = new Intl.NumberFormat()
 
-    const planets = await Account.getPlanets()
+    const planets = await StorageArea.currentId.planets.tryGet()
 
     const planetHTML = await Promise.all(
         planets.map(async (planet, index) => {
-            const resPerHour = (await Planet.getDepot(planet))?.perHour
+            const depotData = await StorageArea.currentId
+                .planet(planet)
+                .depot.get()
+            const resPerHour = depotData
+                ? Depot.fromObject(depotData).perHour
+                : null
             const resourceHTML = resPerHour ? (
                 <>
                     {resPerHour.toArray().map((resource, index) => {

@@ -1,4 +1,4 @@
-import { Account } from "~/src/lib/Account.js"
+import { StorageArea } from "~src/lib/StorageArea.js"
 
 /**
  * Extract player id and current planet from search parameter query,
@@ -11,9 +11,8 @@ const query = new URLSearchParams(window.location.search).get("query")
 if (query) {
     const queryString = atob(query)
     const queryArray = queryString.split("#")
-    Account.setCurrentPlanet(queryArray[2])
     if (queryArray.length == 5) {
-        Account.setId(queryArray[3])
+        StorageArea.currentId.set(queryArray[3])
     }
     const select = window.document.forms
         .namedItem("change_planet")
@@ -22,8 +21,9 @@ if (query) {
         const planets = Array.from(select.options).map(
             (option) => option.innerText
         )
-        Account.setPlanets(planets)
+        StorageArea.currentId.planets.set(planets)
     }
+    StorageArea.currentId.currentPlanet.set(queryArray[2])
 } else {
     console.error("menu.ts: query not found")
 }

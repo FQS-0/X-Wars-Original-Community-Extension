@@ -1,14 +1,15 @@
 import { createRoot } from "react-dom/client"
-import { Account } from "~src/lib/Account.js"
 import { as } from "~/src/lib/DOMHelpers.js"
-import { Resources } from "~src/lib/Resource.js"
+import { Depot, Resources } from "~src/lib/Resource.js"
 import { Trade } from "~src/lib/Trade.js"
-import { Planet } from "~src/lib/Planet.js"
+import { StorageArea } from "~src/lib/StorageArea.js"
 ;(async () => {
-    const currentPlanet = await Account.getCurrentPlanet()
-    const ownPlanets = await Account.getPlanets()
-    const resourceNames = await Account.getResourceNames()
-    const depot = await Planet.getDepot()
+    const currentPlanet = await StorageArea.currentId.currentPlanet.tryGet()
+    const ownPlanets = await StorageArea.currentId.planets.tryGet()
+    const resourceNames = await StorageArea.currentId.resourceNames.tryGet()
+    const depot = Depot.fromObject(
+        await StorageArea.currentId.currentPlanet.depot.tryGet()
+    )
 
     const trades = Array.from(window.document.querySelectorAll("tr[trade-id"))
         .map((row) => as(row, HTMLTableRowElement))

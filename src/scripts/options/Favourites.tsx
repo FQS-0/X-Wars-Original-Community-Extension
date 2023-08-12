@@ -91,7 +91,6 @@ export const FavouriteAddForm = () => {
                 FavouriteType[event.target.value as keyof typeof FavouriteType]
         })
     const handleAddFavourite = async () => {
-        console.log("change")
         const favourites =
             (await StorageArea.favourites.get()) || ([] as Favourites)
         const idx = favourites.findIndex(
@@ -163,9 +162,10 @@ export const FavouriteInputList = () => {
     }
 
     useEffect(() => {
-        StorageArea.favourites.subscribe(updateFavouriteList)
+        const unsubscribe =
+            StorageArea.favourites.subscribe(updateFavouriteList)
         return () => {
-            StorageArea.favourites.unsubscribe()
+            unsubscribe()
         }
     }, [])
 

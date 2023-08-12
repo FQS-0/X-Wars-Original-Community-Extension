@@ -185,9 +185,9 @@ export const ShipyardOptions = () => {
 
     useEffect(() => {
         updateShipyards()
-        StorageArea.shipyards.subscribe(updateShipyards)
+        const unsubscribe = StorageArea.shipyards.subscribe(updateShipyards)
         return () => {
-            StorageArea.shipyards.unsubscribe()
+            unsubscribe()
         }
     }, [])
 

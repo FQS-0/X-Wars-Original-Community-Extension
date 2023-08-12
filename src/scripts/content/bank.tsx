@@ -1,9 +1,8 @@
 import { createRoot } from "react-dom/client"
 import { replaceUTCWithLocal, getDate } from "~/src/lib/Date.js"
-import { Account } from "~src/lib/Account.js"
-import { Bank } from "~src/lib/Bank.js"
-import { Planet } from "~src/lib/Planet.js"
 import { as } from "~/src/lib/DOMHelpers.js"
+import { StorageArea } from "~src/lib/StorageArea.js"
+import { Depot, Resources } from "~src/lib/Resource.js"
 
 async function main() {
     const [transaction_table, info_table] = window.document.querySelectorAll(
@@ -42,7 +41,9 @@ async function main() {
     const max_overbook = [0, 0, 0, 0, 0, 0]
     const transactions = new Map<Date, number[]>()
 
-    const depot = await Planet.getDepot()
+    const depot = Depot.fromObject(
+        await StorageArea.currentId.currentPlanet.depot.tryGet()
+    )
     if (!depot) throw "Error: no depot set for this planet!"
     const depot_capacity = depot.max.toArray()
 
@@ -132,12 +133,19 @@ async function main() {
     const total = [0, 0, 0, 0, 0, 0]
     for (let i = 0; i < total.length; i++) total[i] = balance[i] + interest[i]
 
-    Bank.setCapacity(capacity)
-    Bank.setAssets(assets)
-    Bank.setTotal(total)
+    StorageArea.currentId.currentPlanet.bankCapacity.set(capacity)
+    StorageArea.currentId.currentPlanet.bankAssets.set(
+        Resources.fromArray(assets)
+    )
+    StorageArea.currentId.currentPlanet.bankTotal.set(
+        Resources.fromArray(total)
+    )
 
     const check_transaction = async () => {
-        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+        const depot = Depot.fromObject(
+            await StorageArea.currentId.currentPlanet.depot.tryGet()
+        )
+        const depot_resources = depot.getCurrentResources()
 
         for (let j = 0; j < 6; j++) {
             switch (
@@ -184,8 +192,8 @@ async function main() {
     for (let i = 0; i < 6; i++) {
         form_elements[i].link.onclick = null
         form_elements[i].link.onclick = async () => {
-            const depot_resources = (
-                await Planet.getDepot()
+            const depot_resources = Depot.fromObject(
+                await StorageArea.currentId.currentPlanet.depot.tryGet()
             ).getCurrentResources()
 
             if (form_elements[i].input.value) {
@@ -261,7 +269,9 @@ async function main() {
 
     max_button.style.margin = "5px"
     max_button.onclick = async () => {
-        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+        const depot_resources = Depot.fromObject(
+            await StorageArea.currentId.currentPlanet.depot.tryGet()
+        ).getCurrentResources()
         as(
             window.document.forms
                 .namedItem("transaction")
@@ -281,7 +291,9 @@ async function main() {
 
     interest_button.style.margin = "5px"
     interest_button.onclick = async () => {
-        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+        const depot_resources = Depot.fromObject(
+            await StorageArea.currentId.currentPlanet.depot.tryGet()
+        ).getCurrentResources()
 
         as(
             window.document.forms
@@ -305,7 +317,9 @@ async function main() {
 
     overbook_button.style.margin = "5px"
     overbook_button.onclick = async () => {
-        const depot_resources = (await Planet.getDepot()).getCurrentResources()
+        const depot_resources = Depot.fromObject(
+            await StorageArea.currentId.currentPlanet.depot.tryGet()
+        ).getCurrentResources()
 
         as(
             window.document.forms
@@ -326,7 +340,10 @@ async function main() {
         <tbody>
             <tr>
                 <td className="first" colSpan={7} align="center">
-                    <b>Bankauskunft für {await Account.getCurrentPlanet()}</b>
+                    <b>
+                        Bankauskunft für{" "}
+                        {await StorageArea.currentId.currentPlanet.tryGet()}
+                    </b>
                 </td>
             </tr>
             <tr>

@@ -1,4 +1,4 @@
-export type Resources = {
+export interface Resources {
     fe: number
     kr: number
     fr: number

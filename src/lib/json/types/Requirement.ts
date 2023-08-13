@@ -1,4 +1,4 @@
-export type Requirement = {
+export interface IRequirement {
     specialisation: string
     value: number
 }

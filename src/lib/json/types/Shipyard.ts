@@ -1,8 +1,8 @@
-import { Planet } from "./Planet.js"
-import { Ship } from "./Ship.js"
+import { IPlanet } from "./Planet.js"
+import { IShip } from "./Ship.js"
 
-export type Shipyard = {
+export interface IShipyard {
     name: string
-    planets: Planet[]
-    ships: Ship[]
+    planets: IPlanet[]
+    ships: IShip[]
 }

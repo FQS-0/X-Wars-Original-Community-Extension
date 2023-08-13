@@ -1,15 +1,15 @@
 import { Alert, Button, Grid, TextField, Typography } from "@mui/material"
 import { ChangeEvent, useEffect, useState } from "react"
 import { LoadingButton } from "@mui/lab"
-import Shipyard from "~src/lib/Shipyard.js"
-import { Shipyard as SY } from "~src/lib/json/types/Shipyard.js"
+import { IShipyard } from "~src/lib/json/types/Shipyard.js"
 import { StorageArea } from "~src/lib/StorageArea.js"
-import { Shipyards } from "~src/lib/json/types/Shipyards.js"
+import { TShipyards } from "~src/lib/json/types/Shipyards.js"
+import { Shipyard } from "~src/lib/Shipyard.js"
 
 export const ShipyardAddForm = ({
     addShipyard,
 }: {
-    addShipyard: (sy: SY) => Promise<boolean>
+    addShipyard: (sy: IShipyard) => Promise<boolean>
 }) => {
     const [isWorking, setisWorking] = useState(false)
     const [msg, setMsg] = useState("")
@@ -101,8 +101,8 @@ export const ShipyardElement = ({
     shipyard,
     removeShipyard,
 }: {
-    shipyard: SY
-    removeShipyard: (sy: SY) => void
+    shipyard: IShipyard
+    removeShipyard: (sy: IShipyard) => void
 }) => {
     return (
         <>
@@ -144,17 +144,17 @@ export const ShipyardElement = ({
 }
 
 export const ShipyardOptions = () => {
-    const [shipyards, setShipyards] = useState(null as SY[] | null)
+    const [shipyards, setShipyards] = useState(null as IShipyard[] | null)
 
     const updateShipyards = async () => {
         const storesShipyards = await StorageArea.shipyards.get()
         setShipyards(storesShipyards)
     }
 
-    const addShipyard = async (sy: SY): Promise<boolean> => {
+    const addShipyard = async (sy: IShipyard): Promise<boolean> => {
         let rval = false
         const storedShipyards =
-            (await StorageArea.shipyards.get()) ?? ([] as Shipyards)
+            (await StorageArea.shipyards.get()) ?? ([] as TShipyards)
 
         const idx = storedShipyards.findIndex(
             (shipyard) => shipyard.name == sy.name
@@ -170,9 +170,9 @@ export const ShipyardOptions = () => {
         return rval
     }
 
-    const removeShipyard = async (sy: SY) => {
+    const removeShipyard = async (sy: IShipyard) => {
         const storedShipyards =
-            (await StorageArea.shipyards.get()) ?? ([] as Shipyards)
+            (await StorageArea.shipyards.get()) ?? ([] as TShipyards)
 
         const idx = storedShipyards.findIndex(
             (shipyard) => shipyard.name === sy.name

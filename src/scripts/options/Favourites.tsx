@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useEffect } from "react"
-import { Favourite } from "~src/lib/json/types/Favourite.js"
-import { FavouriteType } from "~src/lib/json/types/FavouriteType.js"
+import { IFavourite } from "~src/lib/json/types/Favourite.js"
+import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
 import {
     Button,
     Chip,
@@ -15,17 +15,17 @@ import {
 } from "@mui/material"
 import { useImmer } from "use-immer"
 import { StorageArea } from "~src/lib/StorageArea.js"
-import { Favourites } from "~src/lib/json/types/Favourites.js"
+import { TFavourites } from "~src/lib/json/types/Favourites.js"
 import { GppGood, GppBad } from "@mui/icons-material"
 
 type FavouriteRowProp = {
-    favourite: Favourite
+    favourite: IFavourite
 }
 
 export const FavouriteRow = ({ favourite }: FavouriteRowProp) => {
     const handleRemove = async () => {
         const favourites =
-            (await StorageArea.favourites.get()) || ([] as Favourites)
+            (await StorageArea.favourites.get()) || ([] as TFavourites)
         const idx = favourites.findIndex(
             (f) => f.coordinates === favourite.coordinates
         )
@@ -39,16 +39,16 @@ export const FavouriteRow = ({ favourite }: FavouriteRowProp) => {
                     label={favourite.coordinates}
                     variant="outlined"
                     icon={
-                        favourite.type == FavouriteType.FRIEND ? (
+                        favourite.type == EFavouriteType.FRIEND ? (
                             <GppGood />
-                        ) : favourite.type == FavouriteType.FOE ? (
+                        ) : favourite.type == EFavouriteType.FOE ? (
                             <GppBad />
                         ) : undefined
                     }
                     color={
-                        favourite.type == FavouriteType.FRIEND
+                        favourite.type == EFavouriteType.FRIEND
                             ? "success"
-                            : favourite.type == FavouriteType.FOE
+                            : favourite.type == EFavouriteType.FOE
                             ? "error"
                             : undefined
                     }
@@ -70,8 +70,8 @@ export const FavouriteAddForm = () => {
     const [fav, setFav] = useImmer({
         name: "",
         coordinates: "",
-        type: FavouriteType.NONE,
-    } as Favourite)
+        type: EFavouriteType.NONE,
+    } as IFavourite)
 
     const handleChangeName = (
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -85,14 +85,16 @@ export const FavouriteAddForm = () => {
         setFav((f) => {
             f.coordinates = event.target.value
         })
-    const handleChangeType = (event: SelectChangeEvent<FavouriteType>) =>
+    const handleChangeType = (event: SelectChangeEvent<EFavouriteType>) =>
         setFav((f) => {
             f.type =
-                FavouriteType[event.target.value as keyof typeof FavouriteType]
+                EFavouriteType[
+                    event.target.value as keyof typeof EFavouriteType
+                ]
         })
     const handleAddFavourite = async () => {
         const favourites =
-            (await StorageArea.favourites.get()) || ([] as Favourites)
+            (await StorageArea.favourites.get()) || ([] as TFavourites)
         const idx = favourites.findIndex(
             (f) => f.coordinates === fav.coordinates
         )
@@ -103,7 +105,7 @@ export const FavouriteAddForm = () => {
         }
 
         await StorageArea.favourites.set(favourites)
-        setFav({ name: "", coordinates: "", type: FavouriteType.NONE })
+        setFav({ name: "", coordinates: "", type: EFavouriteType.NONE })
     }
 
     return (
@@ -134,11 +136,13 @@ export const FavouriteAddForm = () => {
                             value={fav.type}
                             onChange={handleChangeType}
                         >
-                            <MenuItem value={FavouriteType.NONE}></MenuItem>
-                            <MenuItem value={FavouriteType.FRIEND}>
+                            <MenuItem value={EFavouriteType.NONE}></MenuItem>
+                            <MenuItem value={EFavouriteType.FRIEND}>
                                 Freund
                             </MenuItem>
-                            <MenuItem value={FavouriteType.FOE}>Feind</MenuItem>
+                            <MenuItem value={EFavouriteType.FOE}>
+                                Feind
+                            </MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -153,10 +157,10 @@ export const FavouriteAddForm = () => {
 }
 
 export const FavouriteInputList = () => {
-    const [list, setList] = useState<Favourite[] | null>(null)
+    const [list, setList] = useState<IFavourite[] | null>(null)
 
     const updateFavouriteList = async () => {
-        const l = (await StorageArea.favourites.get()) || ([] as Favourites)
+        const l = (await StorageArea.favourites.get()) || ([] as TFavourites)
 
         setList(l)
     }

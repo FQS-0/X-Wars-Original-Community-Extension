@@ -1,4 +1,4 @@
-export interface Resources {
+export interface IResources {
     fe: number
     kr: number
     fr: number

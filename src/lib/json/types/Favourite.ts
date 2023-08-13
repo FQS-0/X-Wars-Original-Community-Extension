@@ -1,7 +1,7 @@
-import { FavouriteType } from "./FavouriteType.js"
+import { EFavouriteType } from "./FavouriteType.js"
 
-export type Favourite = {
+export interface IFavourite {
     name: string
     coordinates: string
-    type: FavouriteType
+    type: EFavouriteType
 }

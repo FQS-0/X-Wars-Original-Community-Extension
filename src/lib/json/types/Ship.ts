@@ -1,18 +1,18 @@
-import { Requirement } from "./Requirement.js"
-import { Resources } from "./Resources.js"
+import { IRequirement } from "./Requirement.js"
+import { IResources } from "./Resources.js"
 
-export type Ship = {
+export interface IShip {
     att: number
     def: number
     engine: string
     speed: number
     lkom: boolean
     tt: boolean
-    resources: Resources
+    resources: IResources
     cargo: number
     carrier: number
     troups: number
-    requirements: Requirement[]
+    requirements: IRequirement[]
     name: string
     shipClass: string
 }

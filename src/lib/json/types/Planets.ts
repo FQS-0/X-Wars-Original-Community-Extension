@@ -1,1 +1,1 @@
-export type Planets = string[]
+export type TPlanets = string[]

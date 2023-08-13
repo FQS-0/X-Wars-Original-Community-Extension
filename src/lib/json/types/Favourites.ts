@@ -1,3 +1,3 @@
-import { Favourite } from "./Favourite.js"
+import { IFavourite } from "./Favourite.js"
 
-export type Favourites = Favourite[]
+export type TFavourites = IFavourite[]

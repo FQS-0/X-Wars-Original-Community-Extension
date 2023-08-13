@@ -1,6 +1,6 @@
 import { object, serializable, date } from "serializr"
-import { Depot as DepotInterface } from "./json/types/Depot.js"
-import { Resources as ResourcesInterface } from "./json/types/Resources.js"
+import { IDepot } from "./json/types/Depot.js"
+import { IResources } from "./json/types/Resources.js"
 
 export function formatResource(val: number, ceil: boolean = false): string {
     if (val > 1000000) return `${(val / 10000000).toPrecision(1)}M`
@@ -8,7 +8,7 @@ export function formatResource(val: number, ceil: boolean = false): string {
     return ceil ? Math.ceil(val).toString() : Math.floor(val).toString()
 }
 
-export class Resources implements ResourcesInterface {
+export class Resources implements IResources {
     constructor(
         public fe: number,
         public kr: number,
@@ -18,7 +18,7 @@ export class Resources implements ResourcesInterface {
         public go: number
     ) {}
 
-    static fromObj({ fe, kr, fr, or, fo, go }: ResourcesInterface) {
+    static fromObj({ fe, kr, fr, or, fo, go }: IResources) {
         return new Resources(fe, kr, fr, or, fo, go)
     }
     static fromArray(res: number[]) {
@@ -99,7 +99,7 @@ export class Resources implements ResourcesInterface {
     }
 }
 
-export class Depot implements DepotInterface {
+export class Depot implements IDepot {
     @serializable(date()) public date: Date
     @serializable(object(Resources)) public stock: Resources
     @serializable(object(Resources)) public perHour: Resources
@@ -117,7 +117,7 @@ export class Depot implements DepotInterface {
         this.max = max
     }
 
-    static fromObject({ date, stock, perHour, max }: DepotInterface) {
+    static fromObject({ date, stock, perHour, max }: IDepot) {
         return new Depot(
             new Date(date),
             Resources.fromObj(stock),

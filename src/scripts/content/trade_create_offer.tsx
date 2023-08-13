@@ -23,16 +23,16 @@ import {
     Typography,
 } from "@mui/material"
 import { createRoot } from "react-dom/client"
-import { FavouriteType } from "~src/lib/Favourite.js"
+import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
 import theme from "./theme.js"
 import { ChangeEvent, useEffect, useState } from "react"
-import { Resources } from "~src/lib/json/types/Resources.js"
+import { IResources } from "~src/lib/json/types/Resources.js"
 import { Updater, useImmer } from "use-immer"
 import { Depot, formatResource } from "~src/lib/Resource.js"
 import { StorageArea } from "~src/lib/StorageArea.js"
-import { Favourites } from "~src/lib/json/types/Favourites.js"
-import { Shipyards } from "~src/lib/json/types/Shipyards.js"
-import { Ship } from "~src/lib/json/types/Ship.js"
+import { TFavourites } from "~src/lib/json/types/Favourites.js"
+import { TShipyards } from "~src/lib/json/types/Shipyards.js"
+import { IShip } from "~src/lib/json/types/Ship.js"
 
 const TradePage = ({ links }: { links: { name: string; href: string }[] }) => {
     return (
@@ -77,11 +77,11 @@ const ShipyardsElement = ({
     transportFee,
     depot,
 }: {
-    handleShipSet: (ship: Ship, shipCount: number) => void
+    handleShipSet: (ship: IShip, shipCount: number) => void
     transportFee: number
     depot: Depot | null
 }) => {
-    const [shipyards, setShipyards] = useState([] as Shipyards)
+    const [shipyards, setShipyards] = useState([] as TShipyards)
     const [shipcount, setShipcount] = useState(1)
 
     const updateShipyards = async () => {
@@ -311,7 +311,7 @@ const TradeForm = () => {
         or: 0,
         fo: 0,
         go: 0,
-    } as Resources)
+    } as IResources)
     const [demandResources, setDemandResources] = useImmer({
         fe: 0,
         kr: 0,
@@ -319,9 +319,9 @@ const TradeForm = () => {
         or: 0,
         fo: 0,
         go: 0,
-    } as Resources)
+    } as IResources)
     const [depot, setDepot] = useState(null as Depot | null)
-    const [favourites, setFavourites] = useImmer([] as Favourites)
+    const [favourites, setFavourites] = useImmer([] as TFavourites)
 
     const updateDepot = async () => {
         const d = await StorageArea.currentId.currentPlanet.depot.get()
@@ -329,7 +329,7 @@ const TradeForm = () => {
     }
 
     const updateFavourites = async () => {
-        const favourites: Favourites = []
+        const favourites: TFavourites = []
 
         const planets = await StorageArea.currentId.planets.get()
         const currentPlanet = await StorageArea.currentId.currentPlanet.get()
@@ -340,14 +340,14 @@ const TradeForm = () => {
                     favourites.push({
                         name: "",
                         coordinates: planet,
-                        type: FavouriteType.NONE,
+                        type: EFavouriteType.NONE,
                     })
                 })
         }
 
         favourites.push(
             ...((await StorageArea.favourites.get())?.filter(
-                (fav) => fav.type == FavouriteType.FRIEND
+                (fav) => fav.type == EFavouriteType.FRIEND
             ) ?? [])
         )
 
@@ -358,7 +358,7 @@ const TradeForm = () => {
                     favourites.push({
                         name: shipyard.name,
                         coordinates: planet.coordinates,
-                        type: FavouriteType.NONE,
+                        type: EFavouriteType.NONE,
                     })
                 })
             })
@@ -402,8 +402,8 @@ const TradeForm = () => {
         setComment(e.target.value)
     }
     const handleResChange = (
-        key: keyof Resources,
-        updater: Updater<Resources>,
+        key: keyof IResources,
+        updater: Updater<IResources>,
         e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         updater((res) => {
@@ -502,7 +502,7 @@ const TradeForm = () => {
             })
     }
 
-    const handleSendMaxMin = (key: keyof Resources) => {
+    const handleSendMaxMin = (key: keyof IResources) => {
         setSendResources((res) => {
             if (res[key] == 0 && depot != null)
                 res[key] = Math.floor(
@@ -554,7 +554,7 @@ const TradeForm = () => {
         setComment("Sicherungshandel")
     }
 
-    const handleShipSet = (ship: Ship, shipCount: number) => {
+    const handleShipSet = (ship: IShip, shipCount: number) => {
         setComment(`${ship.name} ${shipCount}x`)
         setSendResources((r) => {
             r.fe = Math.ceil(ship.resources.fe * shipCount)

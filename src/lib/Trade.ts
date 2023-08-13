@@ -1,50 +1,20 @@
-import { date, object, serializable } from "serializr"
-
 import { Resources } from "./Resource.js"
+import { ITrade } from "./json/types/Trade.js"
 
-export class Trade {
-    @serializable
-    id: string
-    @serializable
-    isFromOwnPlanet: boolean
-    @serializable
-    isToOwnPlanet: boolean
-    @serializable(object(Resources))
-    delivery: Resources
-    @serializable(object(Resources))
-    returnDelivery: Resources
-    @serializable(date())
+export class Trade implements ITrade {
     date: Date | undefined
-    @serializable
-    comment: string
-    @serializable
-    fromPlanet: string
-    @serializable
-    toPlanet: string
-    @serializable(date())
-    concludedAt: Date | undefined
 
     constructor(
-        id: string,
-        from: string,
-        to: string,
-        delivery: Resources,
-        returnDelivery: Resources,
-        comment: string,
-        isFromOwnPlanet: boolean,
-        isToOwnPlanet: boolean,
-        concludedAt: Date | undefined
+        public id: string,
+        public fromPlanet: string,
+        public toPlanet: string,
+        public delivery: Resources,
+        public returnDelivery: Resources,
+        public comment: string,
+        public isFromOwnPlanet: boolean,
+        public isToOwnPlanet: boolean,
+        public concludedAt: Date | undefined
     ) {
-        this.id = id
-        this.fromPlanet = from
-        this.toPlanet = to
-        this.delivery = delivery
-        this.returnDelivery = returnDelivery
-        this.comment = comment
-        this.isFromOwnPlanet = isFromOwnPlanet
-        this.isToOwnPlanet = isToOwnPlanet
-        this.concludedAt = concludedAt
-
         const match = comment.match(
             /(?<hours>[0-9]|0[0-9]|1[0-9]|2[0-3]):(?<minutes>[0-5][0-9])(?::(?<seconds>[0-5][0-9]))/
         )

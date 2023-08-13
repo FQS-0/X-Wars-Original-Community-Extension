@@ -1,3 +1,3 @@
-import { Shipyard } from "./Shipyard.js"
+import { IShipyard } from "./Shipyard.js"
 
-export type Shipyards = Shipyard[]
+export type TShipyards = IShipyard[]

@@ -1,8 +1,8 @@
-import { Resources } from "./Resources.js"
+import { IResources } from "./Resources.js"
 
-export interface Depot {
+export interface IDepot {
     date: Date
-    stock: Resources
-    perHour: Resources
-    max: Resources
+    stock: IResources
+    perHour: IResources
+    max: IResources
 }

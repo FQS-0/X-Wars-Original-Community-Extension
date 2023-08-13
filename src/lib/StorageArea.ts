@@ -1,12 +1,12 @@
 import Browser from "webextension-polyfill"
 import * as validations from "./json/schemas/validations.js"
 import { ensureType } from "./JsonValidation.js"
-import { Shipyards } from "./json/types/Shipyards.js"
-import { Favourites } from "./json/types/Favourites.js"
+import { TShipyards } from "./json/types/Shipyards.js"
+import { TFavourites } from "./json/types/Favourites.js"
+import { TPlanets } from "./json/types/Planets.js"
+import { TResourceNames } from "./json/types/ResourceNames.js"
+import { IResources } from "./json/types/Resources.js"
 import { Depot } from "./Resource.js"
-import { Planets } from "./json/types/Planets.js"
-import { ResourceNames } from "./json/types/ResourceNames.js"
-import { Resources } from "./json/types/Resources.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -157,13 +157,13 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
     public get currentPlanet(): PlanetStorage<string> {
         return new PlanetStorage<string>("currentPlanet", this, true)
     }
-    public get planets(): JsonStorage<Planets> {
-        return new JsonStorage<Planets>("planets", validations.Planets, this)
+    public get planets(): JsonStorage<TPlanets> {
+        return new JsonStorage<TPlanets>("planets", validations.TPlanets, this)
     }
-    public get resourceNames(): JsonStorage<ResourceNames> {
-        return new JsonStorage<ResourceNames>(
+    public get resourceNames(): JsonStorage<TResourceNames> {
+        return new JsonStorage<TResourceNames>(
             "resourceNames",
-            validations.ResourceNames,
+            validations.TResourceNames,
             this
         )
     }
@@ -174,34 +174,37 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
 
 class PlanetStorage<T> extends SimpleStorage<T> {
     public get depot(): JsonStorage<Depot> {
-        return new JsonStorage<Depot>("depot", validations.Depot, this)
+        return new JsonStorage<Depot>("depot", validations.IDepot, this)
     }
     public get bankCapacity(): SimpleStorage<number> {
         return new SimpleStorage<number>("bankCapacity", this)
     }
-    public get bankAssets(): JsonStorage<Resources> {
-        return new JsonStorage<Resources>(
+    public get bankAssets(): JsonStorage<IResources> {
+        return new JsonStorage<IResources>(
             "bankAssets",
-            validations.Resources,
+            validations.IResources,
             this
         )
     }
-    public get bankTotal(): JsonStorage<Resources> {
-        return new JsonStorage<Resources>(
+    public get bankTotal(): JsonStorage<IResources> {
+        return new JsonStorage<IResources>(
             "bankTotal",
-            validations.Resources,
+            validations.IResources,
             this
         )
     }
 }
 
 export class StorageArea {
-    static get shipyards(): JsonStorage<Shipyards> {
-        return new JsonStorage<Shipyards>("shipyards", validations.Shipyards)
+    static get shipyards(): JsonStorage<TShipyards> {
+        return new JsonStorage<TShipyards>("shipyards", validations.TShipyards)
     }
 
-    static get favourites(): JsonStorage<Favourites> {
-        return new JsonStorage<Favourites>("favourites", validations.Favourites)
+    static get favourites(): JsonStorage<TFavourites> {
+        return new JsonStorage<TFavourites>(
+            "favourites",
+            validations.TFavourites
+        )
     }
 
     static get currentId(): CurrentIdStorage<string> {

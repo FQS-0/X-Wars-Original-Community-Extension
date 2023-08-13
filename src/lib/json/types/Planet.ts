@@ -1,3 +1,3 @@
-export type Planet = {
+export interface IPlanet {
     coordinates: string
 }

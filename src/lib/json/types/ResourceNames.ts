@@ -1,1 +1,1 @@
-export type ResourceNames = string[]
+export type TResourceNames = string[]

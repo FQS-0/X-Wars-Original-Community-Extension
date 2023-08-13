@@ -148,9 +148,10 @@ async function buildTypes() {
     await generateTypings(paths.validationFile, paths.typesJsonSchema)
 }
 
-async function build() {
+async function build(dev = false) {
     try {
-        await esbuild.build({
+        console.log("Starting build...")
+        const meta = await esbuild.build({
             entryPoints: [
                 "./src/scripts/content/menu.ts",
                 "./src/scripts/content/resources.tsx",
@@ -165,11 +166,13 @@ async function build() {
                 "./src/scripts/options/options.tsx",
             ],
             bundle: true,
-            minify: false,
-            sourcemap: "inline",
+            minify: dev ? false : true,
+            splitting: false,
+            sourcemap: dev ? "inline" : false,
             target: ["chrome89", "firefox89"],
             outdir: "./build",
             outbase: "src",
+            metafile: dev ? false : true,
             define: {
                 "process.env.NODE_ENV": `"${process.env.NODE_ENV}"`,
                 "process.env.NODE_DEBUG": "false",
@@ -181,24 +184,29 @@ async function build() {
                 }),
             ],
         })
+        if (!dev) fs.writeFileSync("meta.json", JSON.stringify(meta.metafile))
         console.log(`${new Date()} Build successful.`)
     } catch (e) {
         console.log(`${new Date()} Build error: ${e}`)
     }
 }
 
-buildTypes()
-build()
+const dev = process.argv.includes("--development")
+
+if (!dev) clearDir(new URL("build/scripts", import.meta.url))
+
+await buildTypes()
+build(dev)
 
 if (process.argv.includes("--watch")) {
     const watcher = watch(["src/**/*"])
     console.log("Watching files")
-    watcher.on("change", (path) => {
+    watcher.on("change", async (path) => {
         if (path.startsWith("src/lib/json/types/")) {
-            buildTypes()
-            build()
+            await buildTypes()
+            build(dev)
         } else if (!path.startsWith("src/lib/json/")) {
-            build()
+            build(dev)
         }
     })
 }

@@ -838,7 +838,7 @@ if (!newFormParent) {
     window.document.body.insertBefore(newFormParent, null)
 }
 
-const firstElement = window.document.body.firstElementChild
+const firstElement = window.document.querySelector("body > table")
 if (firstElement && firstElement instanceof HTMLElement)
     firstElement.style.display = "none"
 

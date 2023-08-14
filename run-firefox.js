@@ -22,7 +22,14 @@ if (process.env.PATH_TO_FF_PROFILE)
 
 const build = spawn(
     "npx",
-    ["ts-node", "--esm", "esbuild.ts", "--watch", "--development"],
+    [
+        "node",
+        "--loader",
+        "ts-node/esm",
+        "esbuild.ts",
+        "--watch",
+        "--development",
+    ],
     {
         stdio: "pipe",
     }

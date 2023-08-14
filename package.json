@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node run-firefox.js",
         "start-chrome": "node run-chrome.js",
-        "build": "npx ts-node --esm esbuild.ts && web-ext build -s build -a dist -o",
+        "build": "node --loader ts-node/esm esbuild.ts && web-ext build -s build -a dist -o",
         "check": "npx lint-staged",
         "prepare": "husky install",
         "generateShipyardJson": "npx ts-node --esm tools/shipyard/txt2json.ts",

@@ -150,6 +150,11 @@ const ShipyardsElement = ({
                             label="20"
                         />
                         <FormControlLabel
+                            value="50"
+                            control={<Radio />}
+                            label="50"
+                        />
+                        <FormControlLabel
                             value="100"
                             control={<Radio />}
                             label="100"

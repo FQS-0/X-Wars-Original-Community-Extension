@@ -76,7 +76,7 @@ async function main() {
         if (!assetElem || !(assetElem instanceof HTMLElement))
             throw "Error: asset element not found"
         balance[idx] = assets[idx] = parseInt(
-            assetElem.innerText.replace(".", "")
+            assetElem.innerText.replaceAll(".", "")
         )
         interest[idx] = balance[idx] * interest_rate
     })
@@ -93,7 +93,7 @@ async function main() {
         ).innerText.trim()
         const idx = resources.indexOf(resource)
         const amount = parseInt(
-            as(row.lastElementChild, HTMLElement).innerText.replace(".", "")
+            as(row.lastElementChild, HTMLElement).innerText.replaceAll(".", "")
         )
         const withdraw = row.lastElementChild?.className === "red_second"
 

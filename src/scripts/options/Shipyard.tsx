@@ -17,7 +17,6 @@ import { TShipyards } from "~src/lib/json/types/Shipyards.js"
 import { Shipyard } from "~src/lib/Shipyard.js"
 import { FavouriteRow } from "./Favourites.js"
 import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
-import { TFavourites } from "~src/lib/json/types/Favourites.js"
 import {
     Delete,
     ExpandLess,
@@ -44,6 +43,7 @@ import {
     removeFavouriteShip,
     useFavouriteShips,
 } from "~src/lib/context/FavouriteShips.js"
+import { FavouriteFavouritesProvider } from "~src/lib/context/FavouriteFavourites.js"
 
 const fmt = new Intl.NumberFormat()
 
@@ -139,11 +139,9 @@ export const ShipyardAddForm = ({
 export const ShipyardElement = ({
     shipyard,
     removeShipyard,
-    planetFavs,
 }: {
     shipyard: IShipyard
     removeShipyard: (sy: IShipyard) => void
-    planetFavs: TFavourites
 }) => {
     const favouriteShips = useFavouriteShips()
 
@@ -171,11 +169,6 @@ export const ShipyardElement = ({
                         coordinates: planet.coordinates,
                         type: EFavouriteType.FRIEND,
                     }}
-                    isfavourite={
-                        planetFavs.findIndex(
-                            (f) => f.coordinates == planet.coordinates
-                        ) > -1
-                    }
                 />
             ))}
             <Grid item xs={12}>
@@ -389,15 +382,10 @@ const ShipElement = ({
 
 export const ShipyardOptions = () => {
     const [shipyards, setShipyards] = useState(null as IShipyard[] | null)
-    const [planetFavs, setPlanetFavs] = useState<TFavourites | null>(null)
 
     const updateShipyards = async () => {
         const storesShipyards = await StorageArea.shipyards.get()
         setShipyards(storesShipyards)
-    }
-
-    const updatePlanetFavs = async () => {
-        setPlanetFavs(await StorageArea.favouriteFavourites.tryGet([]))
     }
 
     const addShipyard = async (sy: IShipyard): Promise<boolean> => {
@@ -434,32 +422,29 @@ export const ShipyardOptions = () => {
 
     useEffect(() => {
         updateShipyards()
-        updatePlanetFavs()
         const unsubscribe = StorageArea.shipyards.subscribe(updateShipyards)
-        const unsubscribePlanetFavs =
-            StorageArea.favouriteFavourites.subscribe(updatePlanetFavs)
         return () => {
             unsubscribe()
-            unsubscribePlanetFavs()
         }
     }, [])
 
     return (
         <FavouriteShipsProvider>
-            <Grid item xs={12}>
-                <Typography variant="h4" sx={{ my: 3 }}>
-                    Werften
-                </Typography>
-            </Grid>
-            <ShipyardAddForm addShipyard={addShipyard} />
-            {shipyards?.map((sy) => (
-                <ShipyardElement
-                    key={sy.name}
-                    shipyard={sy}
-                    removeShipyard={removeShipyard}
-                    planetFavs={planetFavs || []}
-                />
-            ))}
+            <FavouriteFavouritesProvider>
+                <Grid item xs={12}>
+                    <Typography variant="h4" sx={{ my: 3 }}>
+                        Werften
+                    </Typography>
+                </Grid>
+                <ShipyardAddForm addShipyard={addShipyard} />
+                {shipyards?.map((sy) => (
+                    <ShipyardElement
+                        key={sy.name}
+                        shipyard={sy}
+                        removeShipyard={removeShipyard}
+                    />
+                ))}
+            </FavouriteFavouritesProvider>
         </FavouriteShipsProvider>
     )
 }

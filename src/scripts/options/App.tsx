@@ -1,6 +1,7 @@
 import { Container, Typography, AppBar, Toolbar, Grid } from "@mui/material"
 import { FavouriteOptions } from "./Favourites.js"
 import { ShipyardOptions } from "./Shipyard.js"
+import { FavouriteFavouritesProvider } from "~src/lib/context/FavouriteFavourites.js"
 
 export default function App() {
     return (
@@ -14,8 +15,10 @@ export default function App() {
             </AppBar>
             <Container maxWidth="md">
                 <Grid container spacing={2}>
-                    <FavouriteOptions />
-                    <ShipyardOptions />
+                    <FavouriteFavouritesProvider>
+                        <FavouriteOptions />
+                        <ShipyardOptions />
+                    </FavouriteFavouritesProvider>
                 </Grid>
             </Container>
         </>

@@ -31,18 +31,24 @@ import { ensureType } from "~src/lib/JsonValidation.js"
 import { IAllianceFavourites } from "~src/lib/json/types/AllianceFavourites.js"
 import * as validations from "~src/lib/json/schemas/validations.js"
 import { LoadingButton } from "@mui/lab"
+import {
+    addFavouriteFavourite,
+    removeFavouriteFavourite,
+    useFavouriteFavourites,
+} from "~src/lib/context/FavouriteFavourites.js"
 
 type FavouriteRowProp = {
     favourite: IFavourite
     owned: boolean
-    isfavourite?: boolean
 }
 
-export const FavouriteRow = ({
-    favourite,
-    owned,
-    isfavourite = false,
-}: FavouriteRowProp) => {
+export const FavouriteRow = ({ favourite, owned }: FavouriteRowProp) => {
+    const favouriteFavourites = useFavouriteFavourites()
+    const isFavourite =
+        favouriteFavourites.findIndex(
+            (f) => f.coordinates == favourite.coordinates
+        ) > -1
+
     const handleRemove = async () => {
         const favourites =
             (await StorageArea.favourites.get()) || ([] as TFavourites)
@@ -54,14 +60,11 @@ export const FavouriteRow = ({
     }
 
     const handletoggleIsFavourite = async () => {
-        const favs = await StorageArea.favouriteFavourites.tryGet([])
-        const idx = favs.findIndex(
-            (f) => f.coordinates == favourite.coordinates
-        )
-        console.log(favs, idx)
-        if (isfavourite && idx > -1) favs.splice(idx, 1)
-        if (!isfavourite && idx == -1) favs.push(favourite)
-        await StorageArea.favouriteFavourites.set(favs)
+        if (isFavourite) {
+            removeFavouriteFavourite(favourite)
+        } else {
+            addFavouriteFavourite(favourite)
+        }
     }
 
     return (
@@ -84,7 +87,7 @@ export const FavouriteRow = ({
                             </IconButton>
                         ) : (
                             <IconButton onClick={handletoggleIsFavourite}>
-                                {isfavourite ? <Star /> : <StarOutline />}
+                                {isFavourite ? <Star /> : <StarOutline />}
                             </IconButton>
                         )
                     }
@@ -291,7 +294,6 @@ export const FavouriteList = () => {
     const [allyLists, setAllyLists] = useState<IAllianceFavourites[] | null>(
         null
     )
-    const [favFavs, setFavFavs] = useState<TFavourites | null>(null)
 
     const updateFavouriteList = async () => {
         const favList = await StorageArea.favourites.tryGet([])
@@ -302,28 +304,18 @@ export const FavouriteList = () => {
         const allyFavsList = await StorageArea.allianceFavourites.tryGet([])
         setAllyLists(allyFavsList)
     }
-
-    const updateFavouriteFavourites = async () => {
-        setFavFavs(await StorageArea.favouriteFavourites.tryGet([]))
-    }
-
     useEffect(() => {
         updateFavouriteList()
         updateAllianceFavouritesLists()
-        updateFavouriteFavourites()
 
         const unsubscribe =
             StorageArea.favourites.subscribe(updateFavouriteList)
         const unsubscribeAllyFavs = StorageArea.allianceFavourites.subscribe(
             updateAllianceFavouritesLists
         )
-        const unsubscribeFavFavs = StorageArea.favouriteFavourites.subscribe(
-            updateFavouriteFavourites
-        )
         return () => {
             unsubscribe()
             unsubscribeAllyFavs()
-            unsubscribeFavFavs()
         }
     }, [])
 
@@ -347,7 +339,6 @@ export const FavouriteList = () => {
                 {allyLists?.map((allyList) => (
                     <AllyFavouriteList
                         list={allyList}
-                        favFavs={favFavs || []}
                         key={`allyList#${allyList.url}`}
                     />
                 ))}
@@ -356,13 +347,7 @@ export const FavouriteList = () => {
     }
 }
 
-const AllyFavouriteList = ({
-    list,
-    favFavs,
-}: {
-    list: IAllianceFavourites
-    favFavs: TFavourites
-}) => {
+const AllyFavouriteList = ({ list }: { list: IAllianceFavourites }) => {
     const handleRemove = async () => {
         const allyFavsList = await StorageArea.allianceFavourites.tryGet([])
         const idx = allyFavsList.findIndex((afl) => afl.url == list.url)
@@ -386,11 +371,6 @@ const AllyFavouriteList = ({
                     key={`allyListRow#${list.url}#${fav.coordinates}`}
                     favourite={fav}
                     owned={false}
-                    isfavourite={
-                        favFavs.findIndex(
-                            (f) => f.coordinates == fav.coordinates
-                        ) > -1
-                    }
                 />
             ))}
         </>

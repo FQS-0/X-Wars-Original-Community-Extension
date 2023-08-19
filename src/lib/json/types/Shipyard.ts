@@ -5,4 +5,6 @@ export interface IShipyard {
     name: string
     planets: IPlanet[]
     ships: IShip[]
+    url?: string
+    lastUpdate?: Date
 }

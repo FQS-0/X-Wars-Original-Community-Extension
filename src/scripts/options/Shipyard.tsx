@@ -9,11 +9,9 @@ import {
     TextField,
     Typography,
 } from "@mui/material"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { LoadingButton } from "@mui/lab"
 import { IShipyard } from "~src/lib/json/types/Shipyard.js"
-import { StorageArea } from "~src/lib/StorageArea.js"
-import { TShipyards } from "~src/lib/json/types/Shipyards.js"
 import { Shipyard } from "~src/lib/Shipyard.js"
 import { FavouriteRow } from "./Favourites.js"
 import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
@@ -44,14 +42,15 @@ import {
     useFavouriteShips,
 } from "~src/lib/context/FavouriteShips.js"
 import { FavouriteFavouritesProvider } from "~src/lib/context/FavouriteFavourites.js"
+import {
+    addShipyard,
+    removeShipyard,
+    useShipyards,
+} from "~src/lib/state/Shipyards.js"
 
 const fmt = new Intl.NumberFormat()
 
-export const ShipyardAddForm = ({
-    addShipyard,
-}: {
-    addShipyard: (sy: IShipyard) => Promise<boolean>
-}) => {
+export const ShipyardAddForm = () => {
     const [isWorking, setisWorking] = useState(false)
     const [msg, setMsg] = useState("")
     const [error, setError] = useState("")
@@ -94,6 +93,8 @@ export const ShipyardAddForm = ({
         }
 
         const sy = Shipyard.parse(await response.text())
+        sy.url = url
+        sy.lastUpdate = new Date()
         const res = await addShipyard(sy)
         setUrl("")
         if (res) setMsg("Werft hinzugefügt")
@@ -136,13 +137,7 @@ export const ShipyardAddForm = ({
     )
 }
 
-export const ShipyardElement = ({
-    shipyard,
-    removeShipyard,
-}: {
-    shipyard: IShipyard
-    removeShipyard: (sy: IShipyard) => void
-}) => {
+export const ShipyardElement = ({ shipyard }: { shipyard: IShipyard }) => {
     const favouriteShips = useFavouriteShips()
 
     return (
@@ -154,6 +149,7 @@ export const ShipyardElement = ({
                         <Delete />
                     </IconButton>
                 </Typography>
+                <Typography variant="subtitle2">{shipyard.url}</Typography>
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h6" sx={{ my: 1 }}>
@@ -381,52 +377,7 @@ const ShipElement = ({
 }
 
 export const ShipyardOptions = () => {
-    const [shipyards, setShipyards] = useState(null as IShipyard[] | null)
-
-    const updateShipyards = async () => {
-        const storesShipyards = await StorageArea.shipyards.get()
-        setShipyards(storesShipyards)
-    }
-
-    const addShipyard = async (sy: IShipyard): Promise<boolean> => {
-        let rval = false
-        const storedShipyards =
-            (await StorageArea.shipyards.get()) ?? ([] as TShipyards)
-
-        const idx = storedShipyards.findIndex(
-            (shipyard) => shipyard.name == sy.name
-        )
-        if (idx === -1) {
-            rval = true
-            storedShipyards.push(sy)
-        } else {
-            storedShipyards[idx] = sy
-        }
-        await StorageArea.shipyards.set(storedShipyards)
-
-        return rval
-    }
-
-    const removeShipyard = async (sy: IShipyard) => {
-        const storedShipyards =
-            (await StorageArea.shipyards.get()) ?? ([] as TShipyards)
-
-        const idx = storedShipyards.findIndex(
-            (shipyard) => shipyard.name === sy.name
-        )
-        if (idx > -1) {
-            storedShipyards.splice(idx, 1)
-        }
-        await StorageArea.shipyards.set(storedShipyards)
-    }
-
-    useEffect(() => {
-        updateShipyards()
-        const unsubscribe = StorageArea.shipyards.subscribe(updateShipyards)
-        return () => {
-            unsubscribe()
-        }
-    }, [])
+    const shipyards = useShipyards()
 
     return (
         <FavouriteShipsProvider>
@@ -436,13 +387,9 @@ export const ShipyardOptions = () => {
                         Werften
                     </Typography>
                 </Grid>
-                <ShipyardAddForm addShipyard={addShipyard} />
+                <ShipyardAddForm />
                 {shipyards?.map((sy) => (
-                    <ShipyardElement
-                        key={sy.name}
-                        shipyard={sy}
-                        removeShipyard={removeShipyard}
-                    />
+                    <ShipyardElement key={sy.name} shipyard={sy} />
                 ))}
             </FavouriteFavouritesProvider>
         </FavouriteShipsProvider>

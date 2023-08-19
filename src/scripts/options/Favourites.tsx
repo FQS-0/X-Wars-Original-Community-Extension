@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useEffect } from "react"
+import { ChangeEvent, useState } from "react"
 import { IFavourite } from "~src/lib/json/types/Favourite.js"
 import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
 import {
@@ -17,8 +17,6 @@ import {
     Typography,
 } from "@mui/material"
 import { useImmer } from "use-immer"
-import { StorageArea } from "~src/lib/StorageArea.js"
-import { TFavourites } from "~src/lib/json/types/Favourites.js"
 import {
     GppGood,
     GppBad,
@@ -36,6 +34,16 @@ import {
     removeFavouriteFavourite,
     useFavouriteFavourites,
 } from "~src/lib/context/FavouriteFavourites.js"
+import {
+    addFavourite,
+    removeFavourite,
+    useFavourites,
+} from "~src/lib/state/Favourites.js"
+import {
+    addAllianceFavourites,
+    removeAllianceFavourites,
+    useAllianceFavouritesList,
+} from "~src/lib/state/AllianceFavourites.js"
 
 type FavouriteRowProp = {
     favourite: IFavourite
@@ -50,13 +58,7 @@ export const FavouriteRow = ({ favourite, owned }: FavouriteRowProp) => {
         ) > -1
 
     const handleRemove = async () => {
-        const favourites =
-            (await StorageArea.favourites.get()) || ([] as TFavourites)
-        const idx = favourites.findIndex(
-            (f) => f.coordinates === favourite.coordinates
-        )
-        if (idx > -1) favourites.splice(idx, 1)
-        StorageArea.favourites.set(favourites)
+        removeFavourite(favourite)
     }
 
     const handletoggleIsFavourite = async () => {
@@ -126,18 +128,7 @@ export const FavouriteAddForm = () => {
                 ]
         })
     const handleAddFavourite = async () => {
-        const favourites =
-            (await StorageArea.favourites.get()) || ([] as TFavourites)
-        const idx = favourites.findIndex(
-            (f) => f.coordinates === fav.coordinates
-        )
-        if (idx > -1) {
-            favourites[idx] = fav
-        } else {
-            favourites.push(fav)
-        }
-
-        await StorageArea.favourites.set(favourites)
+        addFavourite(fav)
         setFav({ name: "", coordinates: "", type: EFavouriteType.NONE })
     }
 
@@ -238,17 +229,11 @@ export const FavouriteImportForm = () => {
         allyFavs.url = url
         allyFavs.lastUpdate = new Date()
 
-        const favList = await StorageArea.allianceFavourites.tryGet([])
-        const idx = favList.findIndex((fav) => fav.url == allyFavs.url)
-
-        if (idx > -1) {
-            favList[idx] = allyFavs
+        if ((await addAllianceFavourites(allyFavs)) > -1) {
             setMsg("Favouriten aktualisiert")
         } else {
-            favList.push(allyFavs)
             setMsg("Favouriten hinzugefügt")
         }
-        await StorageArea.allianceFavourites.set(favList)
 
         setUrl("")
     }
@@ -290,69 +275,33 @@ export const FavouriteImportForm = () => {
 }
 
 export const FavouriteList = () => {
-    const [list, setList] = useState<IFavourite[] | null>(null)
-    const [allyLists, setAllyLists] = useState<IAllianceFavourites[] | null>(
-        null
+    const favourites = useFavourites()
+    const allianceFavsList = useAllianceFavouritesList()
+
+    return (
+        <>
+            <Grid item xs={12}>
+                <Typography variant="h6" sx={{ mt: 3 }}>
+                    Eigene Favoriten
+                </Typography>
+            </Grid>
+            {favourites.map((fl) => (
+                <FavouriteRow
+                    key={fl.coordinates}
+                    owned={true}
+                    favourite={fl}
+                ></FavouriteRow>
+            ))}
+            {allianceFavsList?.map((list) => (
+                <AllyFavouriteList list={list} key={`allyList#${list.url}`} />
+            ))}
+        </>
     )
-
-    const updateFavouriteList = async () => {
-        const favList = await StorageArea.favourites.tryGet([])
-        setList(favList)
-    }
-
-    const updateAllianceFavouritesLists = async () => {
-        const allyFavsList = await StorageArea.allianceFavourites.tryGet([])
-        setAllyLists(allyFavsList)
-    }
-    useEffect(() => {
-        updateFavouriteList()
-        updateAllianceFavouritesLists()
-
-        const unsubscribe =
-            StorageArea.favourites.subscribe(updateFavouriteList)
-        const unsubscribeAllyFavs = StorageArea.allianceFavourites.subscribe(
-            updateAllianceFavouritesLists
-        )
-        return () => {
-            unsubscribe()
-            unsubscribeAllyFavs()
-        }
-    }, [])
-
-    if (list === null) {
-        return <Typography>Loading...</Typography>
-    } else {
-        return (
-            <>
-                <Grid item xs={12}>
-                    <Typography variant="h6" sx={{ mt: 3 }}>
-                        Eigene Favoriten
-                    </Typography>
-                </Grid>
-                {list.map((fl) => (
-                    <FavouriteRow
-                        key={fl.coordinates}
-                        owned={true}
-                        favourite={fl}
-                    ></FavouriteRow>
-                ))}
-                {allyLists?.map((allyList) => (
-                    <AllyFavouriteList
-                        list={allyList}
-                        key={`allyList#${allyList.url}`}
-                    />
-                ))}
-            </>
-        )
-    }
 }
 
 const AllyFavouriteList = ({ list }: { list: IAllianceFavourites }) => {
     const handleRemove = async () => {
-        const allyFavsList = await StorageArea.allianceFavourites.tryGet([])
-        const idx = allyFavsList.findIndex((afl) => afl.url == list.url)
-        if (idx > -1) allyFavsList.splice(idx, 1)
-        StorageArea.allianceFavourites.set(allyFavsList)
+        removeAllianceFavourites(list)
     }
 
     return (

@@ -25,9 +25,7 @@ import {
     Delete,
     Star,
 } from "@mui/icons-material"
-import { ensureType } from "~src/lib/JsonValidation.js"
 import { IAllianceFavourites } from "~src/lib/json/types/AllianceFavourites.js"
-import * as validations from "~src/lib/json/schemas/validations.js"
 import { LoadingButton } from "@mui/lab"
 import {
     addFavouriteFavourite,
@@ -40,7 +38,7 @@ import {
     useFavourites,
 } from "~src/lib/state/Favourites.js"
 import {
-    addAllianceFavourites,
+    fetchAllianceFavourites,
     removeAllianceFavourites,
     useAllianceFavouritesList,
 } from "~src/lib/state/AllianceFavourites.js"
@@ -190,52 +188,35 @@ export const FavouriteImportForm = () => {
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => setUrl(event.target.value)
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setError("")
         setMsg("")
 
-        if (url === "") {
-            setError("Bitte eine URL angeben.")
-            return
+        try {
+            setisWorking(true)
+            if (url === "") {
+                throw "Bitte eine URL angeben."
+            }
+            const u = new URL(url)
+            if (u.protocol !== "https:" && u.protocol !== "http:") {
+                throw "Bitte eine gültige URL angeben."
+            }
+            const isNewAllianceFavList = await fetchAllianceFavourites(u)
+            if (isNewAllianceFavList) setMsg("Werft hinzugefügt")
+            else setMsg("Werft aktualisiert")
+            setUrl("")
+        } catch (e) {
+            if (typeof e === "string") {
+                setMsg(e)
+            } else if (e instanceof TypeError) {
+                setMsg("Bitte eine gültige URL angeben.")
+                console.error(e)
+            } else if (e instanceof Error) {
+                setMsg(e.message)
+            }
+        } finally {
+            setisWorking(false)
         }
-        if (!(url.startsWith("http://") || url.startsWith("https://"))) {
-            setError("Bitte eine gültige URL angeben.")
-            return
-        }
-
-        setisWorking(true)
-        fetch(url, { cache: "no-store" })
-            .then((response) => handleResponse(response))
-            .catch((reason) => {
-                setError("Die angegebene URL konnte nicht abgerufen werden")
-                console.error(reason)
-            })
-            .finally(() => {
-                setisWorking(false)
-            })
-    }
-
-    const handleResponse = async (response: Response) => {
-        if (!response.ok) {
-            setError("Die angegebene URL konnte nicht abgerufen werden")
-            console.error("HTTP status: ", response.status)
-            return
-        }
-
-        const allyFavs = ensureType<IAllianceFavourites>(
-            validations.IAllianceFavourites,
-            JSON.parse(await response.text())
-        )
-        allyFavs.url = url
-        allyFavs.lastUpdate = new Date()
-
-        if ((await addAllianceFavourites(allyFavs)) > -1) {
-            setMsg("Favouriten aktualisiert")
-        } else {
-            setMsg("Favouriten hinzugefügt")
-        }
-
-        setUrl("")
     }
 
     return (
@@ -313,7 +294,15 @@ const AllyFavouriteList = ({ list }: { list: IAllianceFavourites }) => {
                         <Delete />
                     </IconButton>
                 </Typography>
-                <Typography variant="subtitle2">{list.url}</Typography>
+                <Typography variant="subtitle2">
+                    {list.url}
+                    {list.lastUpdate &&
+                        ` - ${new Date(
+                            list.lastUpdate
+                        ).toLocaleDateString()} ${new Date(
+                            list.lastUpdate
+                        ).toLocaleTimeString()}`}
+                </Typography>
             </Grid>
             {list.favourites.map((fav) => (
                 <FavouriteRow

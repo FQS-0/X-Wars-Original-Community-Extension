@@ -12,7 +12,6 @@ import {
 import { ChangeEvent, useState } from "react"
 import { LoadingButton } from "@mui/lab"
 import { IShipyard } from "~src/lib/json/types/Shipyard.js"
-import { Shipyard } from "~src/lib/Shipyard.js"
 import { FavouriteRow } from "./Favourites.js"
 import { EFavouriteType } from "~src/lib/json/types/FavouriteType.js"
 import {
@@ -43,7 +42,7 @@ import {
 } from "~src/lib/context/FavouriteShips.js"
 import { FavouriteFavouritesProvider } from "~src/lib/context/FavouriteFavourites.js"
 import {
-    addShipyard,
+    fetchShipyard,
     removeShipyard,
     useShipyards,
 } from "~src/lib/state/Shipyards.js"
@@ -60,45 +59,35 @@ export const ShipyardAddForm = () => {
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => setUrl(event.target.value)
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setError("")
         setMsg("")
 
-        if (url === "") {
-            setError("Bitte eine URL angeben.")
-            return
+        try {
+            setisWorking(true)
+            if (url === "") {
+                throw "Bitte eine URL angeben."
+            }
+            const u = new URL(url)
+            if (u.protocol !== "https:" && u.protocol !== "http:") {
+                throw "Bitte eine gültige URL angeben."
+            }
+            const isNewShipyard = await fetchShipyard(u)
+            if (isNewShipyard) setMsg("Werft hinzugefügt")
+            else setMsg("Werft aktualisiert")
+            setUrl("")
+        } catch (e) {
+            if (typeof e === "string") {
+                setMsg(e)
+            } else if (e instanceof TypeError) {
+                setMsg("Bitte eine gültige URL angeben.")
+                console.error(e)
+            } else if (e instanceof Error) {
+                setMsg(e.message)
+            }
+        } finally {
+            setisWorking(false)
         }
-        if (!(url.startsWith("http://") || url.startsWith("https://"))) {
-            setError("Bitte eine gültige URL angeben.")
-            return
-        }
-
-        setisWorking(true)
-        fetch(url, { cache: "no-store" })
-            .then((response) => handleResponse(response))
-            .catch((reason) => {
-                setError("Die angegebene URL konnte nicht abgerufen werden")
-                console.error(reason)
-            })
-            .finally(() => {
-                setisWorking(false)
-            })
-    }
-
-    const handleResponse = async (response: Response) => {
-        if (!response.ok) {
-            setError("Die angegebene URL konnte nicht abgerufen werden")
-            console.error("HTTP status: ", response.status)
-            return
-        }
-
-        const sy = Shipyard.parse(await response.text())
-        sy.url = url
-        sy.lastUpdate = new Date()
-        const res = await addShipyard(sy)
-        setUrl("")
-        if (res) setMsg("Werft hinzugefügt")
-        else setMsg("Werft aktualisiert")
     }
 
     return (
@@ -149,7 +138,15 @@ export const ShipyardElement = ({ shipyard }: { shipyard: IShipyard }) => {
                         <Delete />
                     </IconButton>
                 </Typography>
-                <Typography variant="subtitle2">{shipyard.url}</Typography>
+                <Typography variant="subtitle2">
+                    {shipyard.url}
+                    {shipyard.lastUpdate &&
+                        ` - ${new Date(
+                            shipyard.lastUpdate
+                        ).toLocaleDateString()} ${new Date(
+                            shipyard.lastUpdate
+                        ).toLocaleTimeString()}`}
+                </Typography>
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h6" sx={{ my: 1 }}>

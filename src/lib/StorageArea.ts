@@ -7,6 +7,8 @@ import { TPlanets } from "./json/types/Planets.js"
 import { TResourceNames } from "./json/types/ResourceNames.js"
 import { IResources } from "./json/types/Resources.js"
 import { Depot } from "./Resource.js"
+import { TAllianceFavouritesList } from "./json/types/AllianceFavouritesList.js"
+import { TFavouriteShips } from "./json/types/FavouriteShips.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -204,6 +206,27 @@ export class StorageArea {
         return new JsonStorage<TFavourites>(
             "favourites",
             validations.TFavourites
+        )
+    }
+
+    static get allianceFavourites(): JsonStorage<TAllianceFavouritesList> {
+        return new JsonStorage<TAllianceFavouritesList>(
+            "allianceFavourites",
+            validations.TAllianceFavouritesList
+        )
+    }
+
+    static get favouriteFavourites(): JsonStorage<TFavourites> {
+        return new JsonStorage<TFavourites>(
+            "favouriteFavourites",
+            validations.TFavourites
+        )
+    }
+
+    static get favouriteShips(): JsonStorage<TFavouriteShips> {
+        return new JsonStorage<TFavouriteShips>(
+            "favouriteShips",
+            validations.TFavouriteShips
         )
     }
 

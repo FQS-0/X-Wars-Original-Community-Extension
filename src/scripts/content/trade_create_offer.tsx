@@ -587,10 +587,10 @@ const TradeForm = () => {
                 </Grid>
                 <Grid item xs={4}>
                     <FormControl fullWidth>
-                        <InputLabel>Favouriten</InputLabel>
+                        <InputLabel>Favoriten</InputLabel>
                         <Select
                             autoWidth
-                            label="Favouriten"
+                            label="Favoriten"
                             defaultValue={""}
                             onChange={handleFavChange}
                         >

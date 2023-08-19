@@ -27,7 +27,7 @@ async function main() {
     const interest_rate =
         parseFloat(transaction_table.rows[1].cells[1].innerText) / 100
     const capacity = parseInt(
-        transaction_table.rows[2].cells[1].innerText.replace(".", "")
+        transaction_table.rows[2].cells[1].innerText.replaceAll(".", "")
     )
     const booking_time = getDate(
         info_table.rows[info_table.rows.length - 1].innerText

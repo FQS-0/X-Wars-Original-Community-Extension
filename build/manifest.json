@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "X-Wars Original Community Extension",
     "description": "Enhance the user interface of X-Wars Original",
-    "version": "0.0.2.2",
+    "version": "0.0.2.3",
     "browser_specific_settings": {
         "gecko": {
             "id": "xwo-com-ext@oorgle.de"

@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     Container,
     CssBaseline,
     FormControl,
@@ -8,6 +7,7 @@ import {
     FormLabel,
     Grid,
     IconButton,
+    InputAdornment,
     InputLabel,
     Link,
     MenuItem,
@@ -15,6 +15,7 @@ import {
     RadioGroup,
     Select,
     SelectChangeEvent,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -33,7 +34,15 @@ import { formatResource } from "~src/lib/Resource.js"
 import { StorageArea } from "~src/lib/StorageArea.js"
 import { IShip } from "~src/lib/json/types/Ship.js"
 import { useShipyards } from "~src/lib/state/Shipyards.js"
-import { ArrowCircleUp, ExpandLess, ExpandMore } from "@mui/icons-material"
+import {
+    ArrowCircleUp,
+    ExpandLess,
+    ExpandMore,
+    HealthAndSafety,
+    KeyboardDoubleArrowDown,
+    KeyboardDoubleArrowUp,
+    PostAdd,
+} from "@mui/icons-material"
 import { IShipyard } from "~src/lib/json/types/Shipyard.js"
 import {
     FavouriteShipsProvider,
@@ -661,251 +670,348 @@ const TradeForm = () => {
     }
 
     return (
-        <form name="xwo-ext-trade-form" method="post" action={formAction}>
-            <Grid item xs={12}>
-                <Typography variant="h5">Handelsauftrag</Typography>
-            </Grid>
-            <Grid container item spacing={1}>
-                <Grid item xs={3}>
-                    <TextField
-                        label="Ziel"
-                        name="target"
-                        onChange={handleChangeDestination}
-                        value={destination}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={4}>
-                    <FormControl fullWidth>
-                        <InputLabel>Favoriten</InputLabel>
-                        <Select
-                            autoWidth
-                            label="Favoriten"
-                            defaultValue={""}
-                            onChange={handleFavChange}
-                        >
-                            {destOptions.map((option) => (
-                                <MenuItem
-                                    key={option.name}
-                                    value={option.value}
-                                >
-                                    {option.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid
-                    item
-                    justifyContent="center"
-                    xs={5}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-                >
-                    <Typography>
+        <form
+            name="xwo-ext-trade-form"
+            method="post"
+            action={formAction}
+            style={{ margin: "auto" }}
+        >
+            <Container maxWidth="xs">
+                <Grid item xs={12}>
+                    <Typography variant="h5">Handelsauftrag</Typography>
+                    <Typography variant="subtitle2">
                         Transportkosten {transportFee * 100}%
                     </Typography>
                 </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <TextField
-                    label="Kommentar"
-                    fullWidth
-                    name="comment"
-                    onChange={handleChangeComment}
-                    value={comment}
-                ></TextField>
-                <input
-                    type="hidden"
-                    name="trade_comment"
-                    value={commentWithTime}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <Typography>Versenden</Typography>
-            </Grid>
-            <Grid container item xs={12} spacing={1}>
-                <Grid item xs={2}>
+                <Grid container item spacing={1}>
+                    <Grid item xs={6} md={3}>
+                        <TextField
+                            fullWidth
+                            label="Ziel"
+                            name="target"
+                            onChange={handleChangeDestination}
+                            value={destination}
+                        ></TextField>
+                    </Grid>
+                    <Grid item xs={6} md={4}>
+                        <FormControl fullWidth>
+                            <InputLabel>Favoriten</InputLabel>
+                            <Select
+                                autoWidth
+                                label="Favoriten"
+                                defaultValue={""}
+                                onChange={handleFavChange}
+                            >
+                                {destOptions.map((option) => (
+                                    <MenuItem
+                                        key={option.name}
+                                        value={option.value}
+                                    >
+                                        {option.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12}>
                     <TextField
-                        label="Roheisen"
-                        name="tf_res[0]"
-                        onChange={handleSendFeChange}
-                        value={sendResources.fe === 0 ? "" : sendResources.fe}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Kristalle"
-                        name="tf_res[1]"
-                        onChange={handleSendKrChange}
-                        value={sendResources.kr === 0 ? "" : sendResources.kr}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Frubin"
-                        name="tf_res[2]"
-                        onChange={handleSendFrChange}
-                        value={sendResources.fr === 0 ? "" : sendResources.fr}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Orizin"
-                        name="tf_res[3]"
-                        onChange={handleSendOrChange}
-                        value={sendResources.or === 0 ? "" : sendResources.or}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Frurozin"
-                        name="tf_res[4]"
-                        onChange={handleSendFoChange}
-                        value={sendResources.fo === 0 ? "" : sendResources.fo}
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Gold"
-                        name="tf_res[5]"
-                        onChange={handleSendGoChange}
-                        value={sendResources.go === 0 ? "" : sendResources.go}
-                    ></TextField>
-                </Grid>
-            </Grid>
-            <Grid container item xs={12} spacing={1}>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendFeMaxMin}>
-                        {sendResources.fe > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendKrMaxMin}>
-                        {sendResources.kr > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendFrMaxMin}>
-                        {sendResources.fr > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendOrMaxMin}>
-                        {sendResources.or > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendFoMaxMin}>
-                        {sendResources.fo > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}>
-                    <Button size="small" fullWidth onClick={handleSendGoMaxMin}>
-                        {sendResources.go > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography>Forderung</Typography>
-            </Grid>
-            <Grid container item xs={12} spacing={1}>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Roheisen"
-                        name="tt_res[0]"
-                        onChange={handleDemandFeChange}
-                        value={
-                            demandResources.fe === 0 ? "" : demandResources.fe
-                        }
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Kristalle"
-                        name="tt_res[1]"
-                        onChange={handleDemandKrChange}
-                        value={
-                            demandResources.kr === 0 ? "" : demandResources.kr
-                        }
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Frubin"
-                        name="tt_res[2]"
-                        onChange={handleDemandFrChange}
-                        value={
-                            demandResources.fr === 0 ? "" : demandResources.fr
-                        }
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Orizin"
-                        name="tt_res[3]"
-                        onChange={handleDemandOrChange}
-                        value={
-                            demandResources.or === 0 ? "" : demandResources.or
-                        }
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Frurozin"
-                        name="tt_res[4]"
-                        onChange={handleDemandFoChange}
-                        value={
-                            demandResources.fo === 0 ? "" : demandResources.fo
-                        }
-                    ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                    <TextField
-                        label="Gold"
-                        name="tt_res[5]"
-                        onChange={handleDemandGoChange}
-                        value={
-                            demandResources.go === 0 ? "" : demandResources.go
-                        }
-                    ></TextField>
-                </Grid>
-            </Grid>
-            <Grid container item xs={12} spacing={1}>
-                <Grid item xs={10}></Grid>
-                <Grid item xs={2}>
-                    <Button
-                        size="small"
+                        label="Kommentar"
                         fullWidth
-                        onClick={handleDemandGoMaxMin}
+                        name="comment"
+                        onChange={handleChangeComment}
+                        value={comment}
+                    ></TextField>
+                    <input
+                        type="hidden"
+                        name="trade_comment"
+                        value={commentWithTime}
+                    />
+                </Grid>
+                <Grid container item spacing={1}>
+                    <Grid container item xs={6}>
+                        <Stack>
+                            <Typography mt={1}>Versenden</Typography>
+                            <TextField
+                                label="Roheisen"
+                                name="tf_res[0]"
+                                onChange={handleSendFeChange}
+                                value={
+                                    sendResources.fe === 0
+                                        ? ""
+                                        : sendResources.fe
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendFeMaxMin}
+                                            >
+                                                {sendResources.fe > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                            <TextField
+                                label="Kristall"
+                                name="tf_res[1]"
+                                onChange={handleSendKrChange}
+                                value={
+                                    sendResources.kr === 0
+                                        ? ""
+                                        : sendResources.kr
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendKrMaxMin}
+                                            >
+                                                {sendResources.kr > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                            <TextField
+                                label="Frubin"
+                                name="tf_res[2]"
+                                onChange={handleSendFrChange}
+                                value={
+                                    sendResources.fr === 0
+                                        ? ""
+                                        : sendResources.fr
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendFrMaxMin}
+                                            >
+                                                {sendResources.fr > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                            <TextField
+                                label="Orizin"
+                                name="tf_res[3]"
+                                onChange={handleSendOrChange}
+                                value={
+                                    sendResources.or === 0
+                                        ? ""
+                                        : sendResources.or
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendOrMaxMin}
+                                            >
+                                                {sendResources.or > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                            <TextField
+                                label="Frurozin"
+                                name="tf_res[4]"
+                                onChange={handleSendFoChange}
+                                value={
+                                    sendResources.fo === 0
+                                        ? ""
+                                        : sendResources.fo
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendFoMaxMin}
+                                            >
+                                                {sendResources.fo > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                            <TextField
+                                label="Gold"
+                                name="tf_res[5]"
+                                onChange={handleSendGoChange}
+                                value={
+                                    sendResources.go === 0
+                                        ? ""
+                                        : sendResources.go
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleSendGoMaxMin}
+                                            >
+                                                {sendResources.go > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                        </Stack>
+                    </Grid>
+                    <Grid container item xs={6}>
+                        <Stack>
+                            <Typography mt={1}>Forderung</Typography>
+                            <TextField
+                                label="Roheisen"
+                                name="tt_res[0]"
+                                onChange={handleDemandFeChange}
+                                value={
+                                    demandResources.fe === 0
+                                        ? ""
+                                        : demandResources.fe
+                                }
+                            ></TextField>
+                            <TextField
+                                label="Kristall"
+                                name="tt_res[1]"
+                                onChange={handleDemandKrChange}
+                                value={
+                                    demandResources.kr === 0
+                                        ? ""
+                                        : demandResources.kr
+                                }
+                            ></TextField>
+                            <TextField
+                                label="Frubin"
+                                name="tt_res[2]"
+                                onChange={handleDemandFrChange}
+                                value={
+                                    demandResources.fr === 0
+                                        ? ""
+                                        : demandResources.fr
+                                }
+                            ></TextField>
+                            <TextField
+                                label="Orizin"
+                                name="tt_res[3]"
+                                onChange={handleDemandOrChange}
+                                value={
+                                    demandResources.or === 0
+                                        ? ""
+                                        : demandResources.or
+                                }
+                            ></TextField>
+                            <TextField
+                                label="Frurozin"
+                                name="tt_res[4]"
+                                onChange={handleDemandFoChange}
+                                value={
+                                    demandResources.fo === 0
+                                        ? ""
+                                        : demandResources.fo
+                                }
+                            ></TextField>
+                            <TextField
+                                label="Gold"
+                                name="tt_res[5]"
+                                onChange={handleDemandGoChange}
+                                value={
+                                    demandResources.go === 0
+                                        ? ""
+                                        : demandResources.go
+                                }
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                size="small"
+                                                onClick={handleDemandGoMaxMin}
+                                            >
+                                                {demandResources.go > 0 ? (
+                                                    <KeyboardDoubleArrowDown />
+                                                ) : (
+                                                    <KeyboardDoubleArrowUp />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            ></TextField>
+                        </Stack>
+                    </Grid>
+                </Grid>
+                <Grid container item spacing={1}>
+                    <Grid
+                        item
+                        xs={4}
+                        justifyContent="center"
+                        alignItems="center"
+                        display="flex"
                     >
-                        {demandResources.go > 0 ? "0" : "MAX"}
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid container item spacing={1}>
-                <Grid item xs={4}>
-                    <Button fullWidth onClick={handleAllResources}>
-                        Alle Resourcen
-                    </Button>
-                </Grid>
-                <Grid item xs={4}>
-                    <Button fullWidth onClick={handleSaveTrade}>
-                        Sicherungshandel
-                    </Button>
-                </Grid>
-                <Grid item xs={4}>
-                    <Button
-                        variant="outlined"
-                        fullWidth
-                        type="submit"
-                        onClick={handlePreSubmit}
+                        <IconButton onClick={handleAllResources} size="large">
+                            <KeyboardDoubleArrowUp fontSize="inherit" />
+                        </IconButton>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={4}
+                        justifyContent="center"
+                        alignItems="center"
+                        display="flex"
                     >
-                        Überprüfen
-                    </Button>
+                        <IconButton onClick={handleSaveTrade} size="large">
+                            <HealthAndSafety fontSize="inherit" />
+                        </IconButton>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={4}
+                        justifyContent="center"
+                        alignItems="center"
+                        display="flex"
+                    >
+                        <IconButton
+                            size="large"
+                            type="submit"
+                            onClick={handlePreSubmit}
+                        >
+                            <PostAdd fontSize="inherit" />
+                        </IconButton>
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Container>
             <ShipyardsElement
                 handleShipSet={handleShipSet}
                 transportFee={transportFee}

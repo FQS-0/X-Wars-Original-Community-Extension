@@ -13,10 +13,6 @@ import { IFavouriteShip } from "../json/types/FavouriteShip.js"
 
 const FavouriteShipsContext = createContext<TFavouriteShips>([])
 
-const SetFavouriteShipsContext = createContext<
-    Dispatch<SetStateAction<TFavouriteShips>>
->(() => {})
-
 export const FavouriteShipsProvider = ({ children }: PropsWithChildren) => {
     const [favouriteShips, setFavouriteShips] = useState<TFavouriteShips>([])
 
@@ -24,19 +20,13 @@ export const FavouriteShipsProvider = ({ children }: PropsWithChildren) => {
 
     return (
         <FavouriteShipsContext.Provider value={favouriteShips}>
-            <SetFavouriteShipsContext.Provider value={setFavouriteShips}>
-                {children}
-            </SetFavouriteShipsContext.Provider>
+            {children}
         </FavouriteShipsContext.Provider>
     )
 }
 
 export const useFavouriteShips = () => {
     return useContext(FavouriteShipsContext)
-}
-
-export const useSetFavouriteShips = () => {
-    return useContext(SetFavouriteShipsContext)
 }
 
 const useFavouriteShipsFromStorage = (

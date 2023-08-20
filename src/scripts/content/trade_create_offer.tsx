@@ -7,6 +7,7 @@ import {
     FormControlLabel,
     FormLabel,
     Grid,
+    IconButton,
     InputLabel,
     Link,
     MenuItem,
@@ -28,11 +29,23 @@ import theme from "./theme.js"
 import { ChangeEvent, useEffect, useState } from "react"
 import { IResources } from "~src/lib/json/types/Resources.js"
 import { Updater, useImmer } from "use-immer"
-import { Depot, formatResource } from "~src/lib/Resource.js"
+import { formatResource } from "~src/lib/Resource.js"
 import { StorageArea } from "~src/lib/StorageArea.js"
-import { TFavourites } from "~src/lib/json/types/Favourites.js"
-import { TShipyards } from "~src/lib/json/types/Shipyards.js"
 import { IShip } from "~src/lib/json/types/Ship.js"
+import { useShipyards } from "~src/lib/state/Shipyards.js"
+import { ArrowCircleUp, ExpandLess, ExpandMore } from "@mui/icons-material"
+import { IShipyard } from "~src/lib/json/types/Shipyard.js"
+import {
+    FavouriteShipsProvider,
+    useFavouriteShips,
+} from "~src/lib/context/FavouriteShips.js"
+import { DepotProvider, useDepot } from "~src/lib/context/Depot.js"
+import { useFavourites } from "~src/lib/state/Favourites.js"
+import { useAllianceFavouritesList } from "~src/lib/state/AllianceFavourites.js"
+import {
+    FavouriteFavouritesProvider,
+    useFavouriteFavourites,
+} from "~src/lib/context/FavouriteFavourites.js"
 
 const TradePage = ({ links }: { links: { name: string; href: string }[] }) => {
     return (
@@ -66,36 +79,196 @@ const TradePage = ({ links }: { links: { name: string; href: string }[] }) => {
                         ))}
                     </Box>
                 </Grid>
-                <TradeForm />
+                <DepotProvider>
+                    <FavouriteFavouritesProvider>
+                        <TradeForm />
+                    </FavouriteFavouritesProvider>
+                </DepotProvider>
             </Grid>
         </Container>
+    )
+}
+
+const ShipyardElement = ({
+    shipyard,
+    shipcount,
+    handleShipSet,
+    transportFee,
+}: {
+    shipyard: IShipyard
+    shipcount: number
+    handleShipSet: (ship: IShip, shipCount: number) => void
+    transportFee: number
+}) => {
+    const depot = useDepot()
+    const [isExpanded, setExpanded] = useState(false)
+    const favouriteShips = useFavouriteShips()
+
+    const handleToggleIsExpanded = () => {
+        setExpanded(!isExpanded)
+    }
+
+    return (
+        <Grid item xs={12} key={shipyard.name}>
+            <Typography variant="h6" style={{ marginTop: 20 }}>
+                {shipyard.name}{" "}
+                <IconButton onClick={handleToggleIsExpanded}>
+                    {isExpanded ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+            </Typography>
+            <Table size="small">
+                <TableBody>
+                    {shipyard.ships
+                        .filter(
+                            (ship) =>
+                                isExpanded ||
+                                favouriteShips.findIndex(
+                                    (fav) =>
+                                        fav.shipyardName == shipyard.name &&
+                                        fav.shipName == ship.name
+                                ) > -1
+                        )
+                        .map((ship) => (
+                            <TableRow key={ship.name}>
+                                <TableCell>
+                                    <Typography>{ship.name}</Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.fe *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().fe ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.fe * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.kr *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().kr ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.kr * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.fr *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().fr ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.fr * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.or *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().or ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.or * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.fo *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().fo ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.fo * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"} align="right">
+                                    <Typography
+                                        variant="body2"
+                                        color={
+                                            ship.resources.go *
+                                                shipcount *
+                                                (1 + transportFee) >
+                                            (depot?.getCurrentResources().go ??
+                                                0)
+                                                ? "error"
+                                                : ""
+                                        }
+                                    >
+                                        {formatResource(
+                                            ship.resources.go * shipcount
+                                        )}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell width={"10%"}>
+                                    <IconButton
+                                        onClick={handleShipSet.bind(
+                                            null,
+                                            ship,
+                                            shipcount
+                                        )}
+                                    >
+                                        <ArrowCircleUp />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+        </Grid>
     )
 }
 
 const ShipyardsElement = ({
     handleShipSet,
     transportFee,
-    depot,
 }: {
     handleShipSet: (ship: IShip, shipCount: number) => void
     transportFee: number
-    depot: Depot | null
 }) => {
-    const [shipyards, setShipyards] = useState([] as TShipyards)
+    const shipyards = useShipyards()
     const [shipcount, setShipcount] = useState(1)
-
-    const updateShipyards = async () => {
-        setShipyards(await StorageArea.shipyards.tryGet([]))
-    }
-
-    useEffect(() => {
-        updateShipyards()
-        const unsubscribeShipyards =
-            StorageArea.shipyards.subscribe(updateShipyards)
-        return () => {
-            unsubscribeShipyards()
-        }
-    }, [])
 
     const handleShipCountChange = (event: ChangeEvent<HTMLInputElement>) => {
         setShipcount(parseFloat(event.target.value))
@@ -162,147 +335,24 @@ const ShipyardsElement = ({
                     </RadioGroup>
                 </FormControl>
             </Grid>
-            {shipyards.map((shipyard) => (
-                <Grid item xs={12} key={shipyard.name}>
-                    <Typography variant="h6" style={{ marginTop: 20 }}>
-                        {shipyard.name}
-                    </Typography>
-                    <Table>
-                        <TableBody>
-                            {shipyard.ships.map((ship) => (
-                                <TableRow key={ship.name}>
-                                    <TableCell>
-                                        <Button
-                                            size="small"
-                                            onClick={handleShipSet.bind(
-                                                null,
-                                                ship,
-                                                shipcount
-                                            )}
-                                        >
-                                            {ship.name}
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell
-                                        width={"12%"}
-                                        align="right"
-                                        color="error"
-                                    >
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.fe *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .fe ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.fe * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell width={"12%"} align="right">
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.kr *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .kr ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.kr * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell width={"12%"} align="right">
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.fr *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .fr ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.fr * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell width={"12%"} align="right">
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.or *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .or ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.or * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell width={"12%"} align="right">
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.fo *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .fo ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.fo * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell width={"12%"} align="right">
-                                        <Typography
-                                            variant="body2"
-                                            color={
-                                                ship.resources.go *
-                                                    shipcount *
-                                                    (1 + transportFee) >
-                                                (depot?.getCurrentResources()
-                                                    .go ?? 0)
-                                                    ? "error"
-                                                    : ""
-                                            }
-                                        >
-                                            {formatResource(
-                                                ship.resources.go * shipcount
-                                            )}
-                                        </Typography>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Grid>
-            ))}
+            <FavouriteShipsProvider>
+                {shipyards.map((shipyard) => (
+                    <ShipyardElement
+                        key={shipyard.name}
+                        shipyard={shipyard}
+                        shipcount={shipcount}
+                        handleShipSet={handleShipSet}
+                        transportFee={transportFee}
+                    />
+                ))}
+            </FavouriteShipsProvider>
         </>
     )
+}
+
+type DestinationOption = {
+    name: string
+    value: string
 }
 
 const TradeForm = () => {
@@ -325,64 +375,90 @@ const TradeForm = () => {
         fo: 0,
         go: 0,
     } as IResources)
-    const [depot, setDepot] = useState(null as Depot | null)
-    const [favourites, setFavourites] = useImmer([] as TFavourites)
+    const depot = useDepot()
+    const favourites = useFavourites()
+    const allianceFavourites = useAllianceFavouritesList()
+    const favouriteFavourites = useFavouriteFavourites()
+    const shipyards = useShipyards()
+    const [destOptions, setDestOptions] = useState<DestinationOption[]>([])
 
-    const updateDepot = async () => {
-        const d = await StorageArea.currentId.currentPlanet.depot.get()
-        if (d !== null) setDepot(Depot.fromObject(d))
-    }
+    const populateOptions = async () => {
+        const options: DestinationOption[] = []
 
-    const updateFavourites = async () => {
-        const favourites: TFavourites = []
-
+        options.push({ name: "--- Eigene Planeten", value: "" })
         const planets = await StorageArea.currentId.planets.get()
         const currentPlanet = await StorageArea.currentId.currentPlanet.get()
-        if (planets) {
-            planets
-                .filter((p) => p != currentPlanet)
-                .forEach((planet) => {
-                    favourites.push({
-                        name: "",
-                        coordinates: planet,
-                        type: EFavouriteType.NONE,
-                    })
-                })
-        }
+        planets
+            ?.filter((planet) => planet != currentPlanet)
+            .map((planet) => {
+                return { name: planet, value: planet }
+            })
+            .sort((a, b) => parseInt(a.value) - parseInt(b.value))
+            .forEach((option) => {
+                options.push(option)
+            })
 
-        favourites.push(
-            ...((await StorageArea.favourites.get())?.filter(
-                (fav) => fav.type == EFavouriteType.FRIEND
-            ) ?? [])
+        const all: DestinationOption[] = []
+        allianceFavourites.forEach((list) => {
+            all.push(
+                ...list.favourites.map((fav) => {
+                    return {
+                        name: `${fav.coordinates} - ${fav.name}`,
+                        value: fav.coordinates,
+                    }
+                })
+            )
+        })
+        shipyards.forEach((shipyard) => {
+            all.push(
+                ...shipyard.planets.map((planet) => {
+                    return {
+                        name: `${planet.coordinates} - ${shipyard.name}`,
+                        value: planet.coordinates,
+                    }
+                })
+            )
+        })
+
+        options.push({ name: "--- Favoriten", value: "" })
+
+        options.push(
+            ...all
+                .filter(
+                    (option) =>
+                        favouriteFavourites.findIndex(
+                            (fav) => fav.coordinates == option.value
+                        ) > -1
+                )
+                .concat(
+                    favourites
+                        .filter((fav) => fav.type == EFavouriteType.FRIEND)
+                        .map((fav) => {
+                            return {
+                                name: `${fav.coordinates} - ${fav.name}`,
+                                value: fav.coordinates,
+                            }
+                        })
+                )
+                .sort((a, b) => parseInt(a.value) - parseInt(b.value))
         )
 
-        const shipyards = await StorageArea.shipyards.get()
-        if (shipyards) {
-            shipyards.forEach((shipyard) => {
-                shipyard.planets.forEach((planet) => {
-                    favourites.push({
-                        name: shipyard.name,
-                        coordinates: planet.coordinates,
-                        type: EFavouriteType.NONE,
-                    })
-                })
-            })
-        }
-        setFavourites(favourites)
-    }
+        options.push({ name: "--- Sonstige", value: "" })
 
+        options.push(
+            ...all
+                .filter(
+                    (option) =>
+                        options.findIndex((o) => o.value == option.value) == -1
+                )
+                .sort((a, b) => parseInt(a.value) - parseInt(b.value))
+        )
+
+        setDestOptions(options)
+    }
     useEffect(() => {
-        updateDepot()
-        updateFavourites()
-        const unsubscribeDepot =
-            StorageArea.currentId.currentPlanet.depot.subscribe(updateDepot)
-        const unsubscribeFavourites =
-            StorageArea.favourites.subscribe(updateFavourites)
-        return () => {
-            unsubscribeDepot()
-            unsubscribeFavourites()
-        }
-    }, [])
+        populateOptions()
+    }, [favourites, allianceFavourites, shipyards, favouriteFavourites])
 
     const transportFeeMatch = window.document
         .querySelector(
@@ -496,6 +572,19 @@ const TradeForm = () => {
         setCommentWithTime(`${comment} ## ${new Date().toLocaleTimeString()}`)
     }
 
+    // const handleCheck = async () => {
+    //     const result = await fetchTradeTradeCheck({
+    //         url: formAction,
+    //         data: {
+    //             target: destination,
+    //             trade_comment: commentWithTime,
+    //             tf_res: sendResources,
+    //             tt_res: demandResources,
+    //         },
+    //     })
+    //     console.log(result)
+    // }
+
     const handleDemandGoMaxMin = () => {
         if (demandResources.go == 0)
             setDemandResources((res) => {
@@ -594,15 +683,14 @@ const TradeForm = () => {
                             defaultValue={""}
                             onChange={handleFavChange}
                         >
-                            {favourites &&
-                                favourites.map((fav) => (
-                                    <MenuItem
-                                        key={fav.coordinates}
-                                        value={fav.coordinates}
-                                    >
-                                        {fav.coordinates} {fav.name}
-                                    </MenuItem>
-                                ))}
+                            {destOptions.map((option) => (
+                                <MenuItem
+                                    key={option.name}
+                                    value={option.value}
+                                >
+                                    {option.name}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
                 </Grid>
@@ -821,7 +909,6 @@ const TradeForm = () => {
             <ShipyardsElement
                 handleShipSet={handleShipSet}
                 transportFee={transportFee}
-                depot={depot}
             />
         </form>
     )

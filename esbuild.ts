@@ -163,6 +163,7 @@ async function build(dev = false) {
                 "./src/scripts/content/fleet_movement.ts",
                 "./src/scripts/content/trade_create_offer.tsx",
                 "./src/scripts/content/trades.tsx",
+                "./src/scripts/content/messages_events.js",
                 "./src/scripts/options/options.tsx",
             ],
             bundle: true,

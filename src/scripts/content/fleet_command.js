@@ -14,8 +14,10 @@ function flotten__giveorder__repeatAttack() {
     let targetText = targetElement.innerText
     let numbers = flotten__extract_koordinates(targetText)
 
-    let targetInput = document.formular.elements["orderdata[targetvis]"]
-    let attackOption = document.formular.elements["orderdata[order]"]
+    let targetInput = document.querySelector(
+        'input[name="orderdata[targetvis]"'
+    )
+    let attackOption = document.querySelector('input[name="orderdata[order]"')
 
     if (numbers && targetInput && attackOption) {
         targetInput.value = numbers

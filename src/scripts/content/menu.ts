@@ -22,6 +22,12 @@ if (query) {
             (option) => option.innerText
         )
         StorageArea.currentId.planets.set(planets)
+    } else {
+        const select = window.document.querySelector("font[size] > b")
+        if (select && select instanceof HTMLElement) {
+            const planet = select.innerText
+            StorageArea.currentId.planets.set([planet])
+        }
     }
     StorageArea.currentId.currentPlanet.set(queryArray[2])
 } else {

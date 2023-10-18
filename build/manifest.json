@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "X-Wars Original Community Extension",
     "description": "Enhance the user interface of X-Wars Original",
-    "version": "0.0.2.7",
+    "version": "0.0.2.8",
     "browser_specific_settings": {
         "gecko": {
             "id": "xwo-com-ext@oorgle.de"
@@ -96,7 +96,7 @@
                 "scripts/content/messages_events.js"
             ],
             "matches": [
-                "*://original.xwars.net/index.php?*method=bWVzc2FnZXM=*folder=events*"
+                "*://original.xwars.net/*method=bWVzc2FnZXM=*folder=events*"
             ],
             "all_frames": true
         },
@@ -105,7 +105,7 @@
                 "scripts/content/fleet_command.js"
             ],
             "matches": [
-                "*://original.xwars.net/index.php?*&method=ZmxvdHRlbi5jb3Jl&art=Z2l2ZW9yZGVy*"
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*"
             ],
             "all_frames": true
         }

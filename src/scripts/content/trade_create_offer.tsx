@@ -578,7 +578,7 @@ const TradeForm = () => {
             setDemandResources((res) => {
                 res.fe = 1
             })
-        setCommentWithTime(`${comment} ## ${new Date().toLocaleTimeString()}`)
+        setCommentWithTime(comment)
     }
 
     // const handleCheck = async () => {

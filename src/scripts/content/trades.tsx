@@ -1,4 +1,45 @@
 import { createRoot } from "react-dom/client"
+import { getContentDiv } from "~src/lib/DOMHelpers.js"
+import { Trades } from "~src/lib/components/Trades.js"
+import { scrapeTrades } from "~src/lib/scrape/trades.js"
+import theme from "./theme.js"
+import { ThemeProvider } from "@mui/material/styles"
+import { CssBaseline } from "@mui/material"
+import { OwnPlanetsProvider } from "~src/lib/context/OwnPlanets.js"
+import { CurrentPlanetProvider } from "~src/lib/context/CurrentPlanet.js"
+import { SessionIdProvider } from "~src/lib/context/SessionId.js"
+import scrapeSubmenu from "~src/lib/scrape/submenu.js"
+import { ResourceBalanceProvider } from "~src/lib/context/ResourceBalance.js"
+import { DepotProvider } from "~src/lib/context/Depot.js"
+
+scrapeSubmenu()
+scrapeTrades()
+
+const content = window.document.querySelector("body > table") as HTMLElement
+if (content) content.style.display = "none"
+
+const contentDiv = getContentDiv()
+
+const root = createRoot(contentDiv)
+
+root.render(
+    <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <OwnPlanetsProvider>
+            <CurrentPlanetProvider>
+                <SessionIdProvider>
+                    <ResourceBalanceProvider>
+                        <DepotProvider>
+                            <Trades />
+                        </DepotProvider>
+                    </ResourceBalanceProvider>
+                </SessionIdProvider>
+            </CurrentPlanetProvider>
+        </OwnPlanetsProvider>
+    </ThemeProvider>
+)
+
+/* import { createRoot } from "react-dom/client"
 import { as } from "~/src/lib/DOMHelpers.js"
 import { Depot, Resources } from "~src/lib/Resource.js"
 import { Trade } from "~src/lib/Trade.js"
@@ -440,3 +481,4 @@ import { StorageArea } from "~src/lib/StorageArea.js"
     renderTable()
     window.setInterval(renderTable, 1000)
 })()
+ */

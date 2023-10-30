@@ -3,7 +3,7 @@ import { IDepot } from "./json/types/Depot.js"
 import { IResources } from "./json/types/Resources.js"
 
 export function formatResource(val: number, ceil: boolean = false): string {
-    if (val > 1000000) return `${(val / 10000000).toPrecision(1)}M`
+    if (val > 1000000) return `${Math.round(val / 100000) / 10}M`
     if (val > 1000) return `${Math.round(val / 100) / 10}k`
     return ceil ? Math.ceil(val).toString() : Math.floor(val).toString()
 }
@@ -26,6 +26,15 @@ export class Resources implements IResources {
     }
     toArray(): number[] {
         return [this.fe, this.kr, this.fr, this.or, this.fo, this.go]
+    }
+
+    addi(o: Resources) {
+        this.fe += o.fe
+        this.kr += o.kr
+        this.fr += o.fr
+        this.or += o.or
+        this.fo += o.fo
+        this.go += o.go
     }
 
     add(o: Resources) {
@@ -124,6 +133,21 @@ export class Depot implements IDepot {
             Resources.fromObj(perHour),
             Resources.fromObj(max)
         )
+    }
+
+    getResources(date: Date): Resources {
+        const diffInHours =
+            Math.round((date.getTime() - this.date.getTime()) / 1000) / 60 / 60
+
+        if (diffInHours < 0) {
+            throw new Error("date difference is negative")
+        }
+
+        return this.stock
+            .add(this.perHour.map((x) => x * diffInHours))
+            .map((x) => Math.floor(x))
+            .map((x, i) => (x > this.max.get(i) ? this.max.get(i) : x))
+            .map((x) => (x < 0 ? 0 : x))
     }
 
     getCurrentResources(): Resources {

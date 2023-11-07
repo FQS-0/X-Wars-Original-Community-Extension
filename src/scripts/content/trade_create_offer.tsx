@@ -469,6 +469,17 @@ const TradeForm = () => {
         populateOptions()
     }, [favourites, allianceFavourites, shipyards, favouriteFavourites])
 
+    useEffect(() => {
+        const query = new URLSearchParams(window.document.location.search)
+        if (query.get("galaxy") && query.get("system") && query.get("planet")) {
+            setDestination(
+                `${query.get("galaxy")}x${query.get("system")}x${query.get(
+                    "planet"
+                )}`
+            )
+        }
+    }, [])
+
     const transportFeeMatch = window.document
         .querySelector(
             'form[name="formular"] > table > tbody > tr:nth-child(2) > td:nth-child(3)'

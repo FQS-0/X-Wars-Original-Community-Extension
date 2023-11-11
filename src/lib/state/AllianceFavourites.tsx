@@ -69,13 +69,16 @@ export const fetchAllianceFavourites = async (url: URL) => {
     return addAllianceFavourites(allianceFavs)
 }
 
-export const fetchAllianceFavouritesUpdates = async () => {
+export const fetchAllianceFavouritesUpdates = async (force = false) => {
     const allianceFavs = await StorageArea.allianceFavourites.tryGet([])
     const today = new Date()
     allianceFavs.forEach((fav) => {
         if (fav.url && fav.lastUpdate) {
             const lastUpdate = new Date(fav.lastUpdate)
-            if (today.getTime() - lastUpdate.getTime() > 60 * 60 * 1000) {
+            if (
+                force ||
+                today.getTime() - lastUpdate.getTime() > 60 * 60 * 1000
+            ) {
                 console.log(`updating alliance favourites ${fav.url}`)
                 fetchAllianceFavourites(new URL(fav.url))
             }

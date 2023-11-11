@@ -166,6 +166,7 @@ async function build(dev = false) {
                 "./src/scripts/content/trades.tsx",
                 "./src/scripts/content/messages_events.js",
                 "./src/scripts/options/options.tsx",
+                "./src/scripts/popup/popup.tsx",
             ],
             bundle: true,
             minify: dev ? false : true,

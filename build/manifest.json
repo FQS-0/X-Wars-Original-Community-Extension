@@ -20,6 +20,9 @@
         "page": "assets/html/options.html",
         "open_in_tab": true
     },
+    "action": {
+        "default_popup": "assets/html/popup.html"
+    },
     "content_scripts": [
         {
             "js": ["scripts/content/menu.js"],

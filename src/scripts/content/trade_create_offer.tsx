@@ -691,7 +691,11 @@ const TradeForm = () => {
                 <Grid item xs={12}>
                     <Typography variant="h5">Handelsauftrag</Typography>
                     <Typography variant="subtitle2">
-                        Transportkosten {transportFee * 100}%
+                        Transportkosten{" "}
+                        {new Intl.NumberFormat("de-DE").format(
+                            transportFee * 100
+                        )}
+                        %
                     </Typography>
                 </Grid>
                 <Grid container item spacing={1}>

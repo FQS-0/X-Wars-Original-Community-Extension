@@ -70,32 +70,56 @@ export const Trades = () => {
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.fe)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .fe
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.kr)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .kr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.fr)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .fr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.or)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .or
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.fo)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .fo
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell width={"10%"} align="right">
                                 <Typography>
-                                    {formatResource(balance.runningTrades.go)}
+                                    {formatResource(
+                                        balance
+                                            .receivedResourcesFromRunningTrades
+                                            .go
+                                    )}
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -105,67 +129,85 @@ export const Trades = () => {
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.fe > depot.max.fe
+                                        balance.resourcesIn3Hours.fe >
+                                        depot.max.fe
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.fe)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.fe
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.kr > depot.max.kr
+                                        balance.resourcesIn3Hours.kr >
+                                        depot.max.kr
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.kr)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.kr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.fr > depot.max.fr
+                                        balance.resourcesIn3Hours.fr >
+                                        depot.max.fr
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.fr)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.fr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.or > depot.max.or
+                                        balance.resourcesIn3Hours.or >
+                                        depot.max.or
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.or)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.or
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.fo > depot.max.fo
+                                        balance.resourcesIn3Hours.fo >
+                                        depot.max.fo
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.fo)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.fo
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={
-                                        balance.depot3h.go > depot.max.go
+                                        balance.resourcesIn3Hours.go >
+                                        depot.max.go
                                             ? "error.main"
                                             : undefined
                                     }
                                 >
-                                    {formatResource(balance.depot3h.go)}
+                                    {formatResource(
+                                        balance.resourcesIn3Hours.go
+                                    )}
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -176,32 +218,44 @@ export const Trades = () => {
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.fe)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.fe
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.kr)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.kr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.fr)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.fr
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.or)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.or
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.fo)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.fo
+                                    )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
-                                    {formatResource(balance.saveTrades.go)}
+                                    {formatResource(
+                                        balance.sentResourcesFromSaveTrades.go
+                                    )}
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -213,42 +267,54 @@ export const Trades = () => {
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.fe
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .fe
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.kr
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .kr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.fr
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .fr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.or
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .or
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.fo
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .fo
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.receive.go
+                                        balance
+                                            .receivedResourcesFromOutgoingTrades
+                                            .go
                                     )}
                                 </Typography>
                             </TableCell>
@@ -260,42 +326,48 @@ export const Trades = () => {
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.fe
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .fe
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.kr
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .kr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.fr
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .fr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.or
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .or
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.fo
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .fo
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.outgoingTrades.send.go
+                                        balance.sentResourcesFromOutgoingTrades
+                                            .go
                                     )}
                                 </Typography>
                             </TableCell>
@@ -308,42 +380,54 @@ export const Trades = () => {
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.fe
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .fe
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.kr
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .kr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.fr
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .fr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.or
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .or
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.fo
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .fo
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.receive.go
+                                        balance
+                                            .receivedResourcesFromIncomingTrades
+                                            .go
                                     )}
                                 </Typography>
                             </TableCell>
@@ -355,42 +439,48 @@ export const Trades = () => {
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.fe
+                                        balance.sentResourcesFromIncomingTrades
+                                            .fe
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.kr
+                                        balance.sentResourcesFromIncomingTrades
+                                            .kr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.fr
+                                        balance.sentResourcesFromIncomingTrades
+                                            .fr
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.or
+                                        balance.sentResourcesFromIncomingTrades
+                                            .or
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.fo
+                                        balance.sentResourcesFromIncomingTrades
+                                            .fo
                                     )}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right">
                                 <Typography>
                                     {formatResource(
-                                        balance.incomingTrades.send.go
+                                        balance.sentResourcesFromIncomingTrades
+                                            .go
                                     )}
                                 </Typography>
                             </TableCell>

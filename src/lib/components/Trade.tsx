@@ -27,10 +27,9 @@ import { useOwnPlanets } from "../context/OwnPlanets.js"
 import { useCurrentPlanet } from "../context/CurrentPlanet.js"
 import { useServertime } from "../context/Servertime.js"
 import { formatSeconds } from "../Date.js"
-import { formatResource } from "../Resource.js"
+import { formatResource, Resources } from "../Resource.js"
 import { useSessionId } from "../context/SessionId.js"
 import { useResourceBalance } from "../context/ResourceBalance.js"
-import { useDepot } from "../context/Depot.js"
 
 export const Trade = ({ trade }: { trade: ITrade }) => {
     const ownPlanets = useOwnPlanets()
@@ -39,7 +38,6 @@ export const Trade = ({ trade }: { trade: ITrade }) => {
     const now = new Date()
     const id = useSessionId()
     const balance = useResourceBalance()
-    const depot = useDepot()
 
     const dateString = `${trade.date.toLocaleDateString()} ${trade.date.toLocaleTimeString()}`
     const timeleft =
@@ -50,7 +48,8 @@ export const Trade = ({ trade }: { trade: ITrade }) => {
         returnDelivery: { fe: "", kr: "", fr: "", or: "", fo: "", go: "" },
     }
 
-    const res = depot.getCurrentResources()
+    const res = balance.currentResources
+    const resIn3H = balance.resourcesIn3Hours
     const canAccept =
         res.fe >= trade.returnDelivery.fe &&
         res.kr >= trade.returnDelivery.kr &&
@@ -61,44 +60,34 @@ export const Trade = ({ trade }: { trade: ITrade }) => {
 
     if (!trade.concludedAt) {
         if (trade.fromPlanet == currentPlanet) {
-            if (balance.depotNow.fe + trade.delivery.fe > depot.max.fe)
-                colors.delivery.fe = "error.main"
-            if (balance.depotNow.kr + trade.delivery.kr > depot.max.kr)
-                colors.delivery.kr = "error.main"
-            if (balance.depotNow.fr + trade.delivery.fr > depot.max.fr)
-                colors.delivery.fr = "error.main"
-            if (balance.depotNow.or + trade.delivery.or > depot.max.or)
-                colors.delivery.or = "error.main"
-            if (balance.depotNow.fo + trade.delivery.fo > depot.max.fo)
-                colors.delivery.fo = "error.main"
-            if (balance.depotNow.go + trade.delivery.go > depot.max.go)
-                colors.delivery.go = "error.main"
+            colors.delivery = balance.depot.max.compare(
+                res.add(Resources.fromObj(trade.delivery)),
+                (value) => (value < 0 ? "error.main" : "")
+            )
         } else if (trade.toPlanet == currentPlanet) {
-            if (balance.depot3h.fe + trade.delivery.fe > depot.max.fe)
-                colors.delivery.fe = "warning.main"
-            if (balance.depot3h.kr + trade.delivery.kr > depot.max.kr)
-                colors.delivery.kr = "warning.main"
-            if (balance.depot3h.fr + trade.delivery.fr > depot.max.fr)
-                colors.delivery.fr = "warning.main"
-            if (balance.depot3h.or + trade.delivery.or > depot.max.or)
-                colors.delivery.or = "warning.main"
-            if (balance.depot3h.fo + trade.delivery.fo > depot.max.fo)
-                colors.delivery.fo = "warning.main"
-            if (balance.depot3h.go + trade.delivery.go > depot.max.go)
-                colors.delivery.go = "warning.main"
+            colors.delivery = balance.depot.max.compare(
+                resIn3H.add(Resources.fromObj(trade.delivery)),
+                (value) => (value < 0 ? "warning.main" : "")
+            )
 
-            if (balance.depotNow.fe + trade.delivery.fe > depot.max.fe)
-                colors.delivery.fe = "error.main"
-            if (balance.depotNow.kr + trade.delivery.kr > depot.max.kr)
-                colors.delivery.kr = "error.main"
-            if (balance.depotNow.fr + trade.delivery.fr > depot.max.fr)
-                colors.delivery.fr = "error.main"
-            if (balance.depotNow.or + trade.delivery.or > depot.max.or)
-                colors.delivery.or = "error.main"
-            if (balance.depotNow.fo + trade.delivery.fo > depot.max.fo)
-                colors.delivery.fo = "error.main"
-            if (balance.depotNow.go + trade.delivery.go > depot.max.go)
-                colors.delivery.go = "error.main"
+            colors.delivery = balance.depot.max.compare(
+                Resources.fromObj(trade.delivery),
+                (value, key) =>
+                    value < 0 ? "error.main" : colors.delivery[key]
+            )
+        }
+    } else {
+        const resAtConclusion = balance.getResources(trade.concludedAt)
+        if (trade.fromPlanet == currentPlanet) {
+            colors.returnDelivery = balance.depot.max.compare(
+                resAtConclusion,
+                (value) => (value < 0 ? "error.main" : "")
+            )
+        } else if (trade.toPlanet == currentPlanet) {
+            colors.delivery = balance.depot.max.compare(
+                resAtConclusion,
+                (value) => (value < 0 ? "error.main" : "")
+            )
         }
     }
 

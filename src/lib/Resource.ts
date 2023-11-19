@@ -10,12 +10,12 @@ export function formatResource(val: number, ceil: boolean = false): string {
 
 export class Resources implements IResources {
     constructor(
-        public fe: number,
-        public kr: number,
-        public fr: number,
-        public or: number,
-        public fo: number,
-        public go: number
+        public fe: number = 0,
+        public kr: number = 0,
+        public fr: number = 0,
+        public or: number = 0,
+        public fo: number = 0,
+        public go: number = 0
     ) {}
 
     static fromObj({ fe, kr, fr, or, fo, go }: IResources) {
@@ -84,6 +84,20 @@ export class Resources implements IResources {
         }
     }
 
+    compare<T>(
+        other: Resources,
+        func: (value: number, key: keyof IResources) => T
+    ) {
+        return {
+            fe: func(this.fe - other.fe, "fe"),
+            kr: func(this.kr - other.kr, "kr"),
+            fr: func(this.fr - other.fr, "fr"),
+            or: func(this.or - other.or, "or"),
+            fo: func(this.fo - other.fo, "fo"),
+            go: func(this.go - other.go, "go"),
+        }
+    }
+
     get(i: number) {
         switch (i) {
             case 0:
@@ -115,10 +129,10 @@ export class Depot implements IDepot {
     @serializable(object(Resources)) public max: Resources
 
     constructor(
-        date: Date,
-        stock: Resources,
-        perHour: Resources,
-        max: Resources
+        date: Date = new Date(),
+        stock: Resources = new Resources(),
+        perHour: Resources = new Resources(),
+        max: Resources = new Resources()
     ) {
         this.date = date
         this.stock = stock
@@ -138,10 +152,6 @@ export class Depot implements IDepot {
     getResources(date: Date): Resources {
         const diffInHours =
             Math.round((date.getTime() - this.date.getTime()) / 1000) / 60 / 60
-
-        if (diffInHours < 0) {
-            throw new Error("date difference is negative")
-        }
 
         return this.stock
             .add(this.perHour.map((x) => x * diffInHours))

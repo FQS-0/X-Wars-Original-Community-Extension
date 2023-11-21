@@ -6,3 +6,4 @@ build/scripts/
 src/lib/json/schemas
 .vscode
 meta.json
+bun.lockb

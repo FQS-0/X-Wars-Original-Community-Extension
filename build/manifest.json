@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "X-Wars Original Community Extension",
     "description": "Enhance the user interface of X-Wars Original",
-    "version": "0.0.2.11",
+    "version": "0.0.2.12",
     "browser_specific_settings": {
         "gecko": {
             "id": "xwo-com-ext@oorgle.de"
@@ -27,36 +27,48 @@
         {
             "js": ["scripts/content/menu.js"],
             "matches": [
-                "*://original.xwars.net/extern/standard-menu.inc.php?*"
+                "*://original.xwars.net/extern/standard-menu.inc.php?*",
+                "*://proxy.xwio.de/extern/standard-menu.inc.php?*"
             ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/status.js"],
             "matches": [
-                "*://original.xwars.net/extern/standard-status.inc.php?*"
+                "*://original.xwars.net/extern/standard-status.inc.php?*",
+                "*://proxy.xwio.de/extern/standard-status.inc.php?*"
             ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/top.js"],
-            "matches": ["*://original.xwars.net/extern/standard-top.inc.php?*"],
+            "matches": [
+                "*://original.xwars.net/extern/standard-top.inc.php?*",
+                "*://proxy.xwio.de/extern/standard-top.inc.php?*"
+            ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/overview.js"],
-            "matches": ["*://original.xwars.net/*method=dWViZXJzaWNodA==*"],
+            "matches": [
+                "*://original.xwars.net/*method=dWViZXJzaWNodA==*",
+                "*://proxy.xwio.de/*method=dWViZXJzaWNodA==*"
+            ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/resources.js"],
-            "matches": ["*://original.xwars.net/*method=cmVzb3VyY2Vz*"],
+            "matches": [
+                "*://original.xwars.net/*method=cmVzb3VyY2Vz*",
+                "*://proxy.xwio.de/*method=cmVzb3VyY2Vz*"
+            ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/production_list.js"],
             "matches": [
-                "*://original.xwars.net/*method=cHJvZHVrdGlvbi5jb3Jl*art=cHJvZF9saXN0*"
+                "*://original.xwars.net/*method=cHJvZHVrdGlvbi5jb3Jl*art=cHJvZF9saXN0*",
+                "*://proxy.xwio.de/*method=cHJvZHVrdGlvbi5jb3Jl*art=cHJvZF9saXN0*"
             ],
             "all_frames": true
         },
@@ -64,33 +76,45 @@
             "js": ["scripts/content/fleet_movement.js"],
             "matches": [
                 "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl",
-                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=aW5mb2ZsZWV0*"
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=aW5mb2ZsZWV0*",
+                "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl",
+                "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=aW5mb2ZsZWV0*"
             ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/trade_create_offer.js"],
             "matches": [
-                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*"
+                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*",
+                "*://proxy.xwio.de/*method=dHJhZGU=*art=dHJhZGU=*"
             ],
             "exclude_matches": [
-                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*todo*"
+                "*://original.xwars.net/*method=dHJhZGU=*art=dHJhZGU=*todo*",
+                "*://proxy.xwio.de/*method=dHJhZGU=*art=dHJhZGU=*todo*"
             ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/bank.js"],
-            "matches": ["*://original.xwars.net/*method=YmFuaw==*"],
+            "matches": [
+                "*://original.xwars.net/*method=YmFuaw==*",
+                "*://proxy.xwio.de/*method=YmFuaw==*"
+            ],
             "exclude_matches": [
-                "*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"
+                "*://original.xwars.net/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*",
+                "*://proxy.xwio.de/*method=YmFuaw==*art=dHJhbnNhY3Rpb24=*"
             ],
             "all_frames": true
         },
         {
             "js": ["scripts/content/trades.js"],
-            "matches": ["*://original.xwars.net/*method=dHJhZGU=*"],
+            "matches": [
+                "*://original.xwars.net/*method=dHJhZGU=*",
+                "*://proxy.xwio.de/*method=dHJhZGU=*"
+            ],
             "exclude_matches": [
-                "*://original.xwars.net/*method=dHJhZGU=*art=*"
+                "*://original.xwars.net/*method=dHJhZGU=*art=*",
+                "*://proxy.xwio.de/*method=dHJhZGU=*art=*"
             ],
             "all_frames": true
         },
@@ -99,7 +123,8 @@
                 "scripts/content/messages_events.js"
             ],
             "matches": [
-                "*://original.xwars.net/*method=bWVzc2FnZXM=*folder=events*"
+                "*://original.xwars.net/*method=bWVzc2FnZXM=*folder=events*",
+                "*://proxy.xwio.de/*method=bWVzc2FnZXM=*folder=events*"
             ],
             "all_frames": true
         },
@@ -108,7 +133,8 @@
                 "scripts/content/fleet_command.js"
             ],
             "matches": [
-                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*"
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*",
+                "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*"
             ],
             "all_frames": true
         }

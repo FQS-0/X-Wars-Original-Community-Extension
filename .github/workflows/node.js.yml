@@ -5,7 +5,7 @@ name: Node.js build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "foscoj-feature-nodejs-workflow" ]
   pull_request:
     branches: [ "main" ]
 
@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.x, 21.x]
+        node-version: [20.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -31,7 +31,7 @@ jobs:
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: dist-without-markdown
+        name: dist
         path: |
           dist
           !dist/**/*.md

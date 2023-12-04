@@ -119,6 +119,14 @@
             "all_frames": true
         },
         {
+            "js": ["scripts/content/construction.js"],
+            "matches": [
+                "*://original.xwars.net/*method=Y29uc3RydWN0aW9ucw==*",
+                "*://proxy.xwio.de/*method=Y29uc3RydWN0aW9ucw==*"
+            ],
+            "all_frames": true
+        },
+        {
             "js": [
                 "scripts/content/messages_events.js"
             ],

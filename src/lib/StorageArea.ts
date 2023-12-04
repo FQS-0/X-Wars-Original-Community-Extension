@@ -11,6 +11,8 @@ import { TFavouriteShips } from "./json/types/FavouriteShips.js"
 import { TTrades } from "./json/types/Trades.js"
 import { TSubMenuList } from "./json/types/SubMenuList.js"
 import { IDepot } from "./json/types/Depot.js"
+import { IConstruction } from "./json/types/Construction.js"
+import { IResearch } from "./json/types/Research.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -190,6 +192,13 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
             this
         )
     }
+    public get research(): JsonStorage<IResearch> {
+        return new JsonStorage<IResearch>(
+            "research",
+            validations.IResearch,
+            this
+        )
+    }
 }
 
 class PlanetStorage<T> extends SimpleStorage<T> {
@@ -210,6 +219,13 @@ class PlanetStorage<T> extends SimpleStorage<T> {
         return new JsonStorage<IResources>(
             "bankTotal",
             validations.IResources,
+            this
+        )
+    }
+    public get construction(): JsonStorage<IConstruction> {
+        return new JsonStorage<IConstruction>(
+            "construction",
+            validations.IConstruction,
             this
         )
     }

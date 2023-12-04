@@ -165,6 +165,7 @@ async function build(dev = false) {
                 "./src/scripts/content/trade_create_offer.tsx",
                 "./src/scripts/content/trades.tsx",
                 "./src/scripts/content/messages_events.js",
+                "./src/scripts/content/construction.js",
                 "./src/scripts/options/options.tsx",
                 "./src/scripts/popup/popup.tsx",
             ],

@@ -1,17 +1,3 @@
-// ==UserScript==
-// @name         Favoriten Koords
-// @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Flottenmenü Koord DropDown
-// @author       zero
-// @match        https://original.xwars.net/index.php*
-// @icon         none
-// @grant        none
-// ==/UserScript==
-
-(function() {
-    'use strict';
-
     // Funktion zum Einfügen des Texts
     function insertText(text) {
         var inputField = document.querySelector('body > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(9) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > form:nth-child(11) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(3) > input:nth-child(2)');

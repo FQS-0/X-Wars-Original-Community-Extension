@@ -1,0 +1,64 @@
+// ==UserScript==
+// @name         Favoriten Koords
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Flottenmenü Koord DropDown
+// @author       zero
+// @match        https://original.xwars.net/index.php*
+// @icon         none
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Funktion zum Einfügen des Texts
+    function insertText(text) {
+        var inputField = document.querySelector('body > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(9) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > form:nth-child(11) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(3) > input:nth-child(2)');
+        if (inputField) {
+            inputField.value = text;
+        }
+    }
+
+    // Funktion zum Erstellen des Dropdown-Menüs
+    function createDropdownMenu(items) {
+        var dropdown = document.createElement('select');
+        dropdown.style.marginRight = '10px';
+
+        for (var i = 0; i < items.length; i++) {
+            var option = document.createElement('option');
+            option.value = items[i].coord;
+            option.text = items[i].name;
+            dropdown.add(option);
+        }
+
+        dropdown.addEventListener('change', function() {
+            insertText(this.value);
+        });
+
+        return dropdown;
+    }
+
+    // Lade die Koordinaten von der externen JSON-Datei
+    async function loadCoordinates() {
+        try {
+            const response = await fetch('https://deine-domain.de/coordinates.json');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Fehler beim Laden der Koordinaten:', error);
+            return [];
+        }
+    }
+
+    // Texte erstellen und einfügen, erste Zeile erstellt Koords im Feld, 2. Zeile ist die Beschriftung
+    var parentElement = document.querySelector('body > table:nth-child(3) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2) > table:nth-child(9) > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(1) > form:nth-child(11) > table:nth-child(4) > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(3)');
+    if (parentElement) {
+        // Lade Koordinaten von externer JSON-Datei
+        loadCoordinates().then(function(coords) {
+            // Dropdown-Menü erstellen und hinzufügen
+            var dropdownMenu = createDropdownMenu(coords);
+            parentElement.appendChild(dropdownMenu);
+        });
+    }
+})();

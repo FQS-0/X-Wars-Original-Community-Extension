@@ -75,6 +75,9 @@ async function insertButtonAndSelects() {
             )
 
         const friendSelect = document.createElement("select")
+        friendSelect.onchange = () => {
+            coordsInput.value = friendSelect.value
+        }
         ;[
             { coordinates: "", name: "Freunde", type: "FRIEND" },
             { coordinates: "", name: "- Favouriten", type: "FRIEND" },
@@ -96,6 +99,9 @@ async function insertButtonAndSelects() {
         coordsInput.parentNode.appendChild(friendSelect)
 
         const foeSelect = document.createElement("select")
+        foeSelect.onchange = () => {
+            coordsInput.value = foeSelect.value
+        }
         ;[
             { coordinates: "", name: "Feinde", type: "FOE" },
             { coordinates: "", name: "- Favouriten", type: "FOE" },

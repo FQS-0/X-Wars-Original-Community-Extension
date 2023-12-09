@@ -145,6 +145,16 @@
                 "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*"
             ],
             "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/fleet_command_give_order.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*fid=*",
+                "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*fid=*"
+            ],
+            "all_frames": true
         }
     ]
 }

@@ -13,6 +13,7 @@ import { TSubMenuList } from "./json/types/SubMenuList.js"
 import { IDepot } from "./json/types/Depot.js"
 import { IConstruction } from "./json/types/Construction.js"
 import { IResearch } from "./json/types/Research.js"
+import { TAllianceMemberList } from "./json/types/AllianceMemberList.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -274,5 +275,12 @@ export class StorageArea {
 
     static get sessionId(): SimpleStorage<string> {
         return new SimpleStorage<string>("sessionId")
+    }
+
+    static get allianceMemberlist(): JsonStorage<TAllianceMemberList> {
+        return new JsonStorage<TAllianceMemberList>(
+            "allianceMemberList",
+            validations.TAllianceMemberList
+        )
     }
 }

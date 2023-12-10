@@ -155,6 +155,26 @@
                 "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*fid=*"
             ],
             "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/alliance_memberlist.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=YWxsaWFueg==*art=bWVtYmVybGlzdA==*",
+                "*://proxy.xwio.de/*method=YWxsaWFueg==*art=bWVtYmVybGlzdA==*"
+            ],
+            "all_frames": true
+        },
+        {
+            "js": [
+                "scripts/content/alliance_showinfo.js"
+            ],
+            "matches": [
+                "*://original.xwars.net/*method=YWxsaWFueg==*art=c2hvd19pbmZv*",
+                "*://proxy.xwio.de/*method=YWxsaWFueg==*art=c2hvd19pbmZv*"
+            ],
+            "all_frames": true
         }
     ]
 }

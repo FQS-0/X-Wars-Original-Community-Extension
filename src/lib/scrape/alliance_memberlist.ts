@@ -1,6 +1,7 @@
 import { StorageArea } from "../StorageArea.js"
 import { IAllianceMember } from "../json/types/AllianceMember.js"
 import { TAllianceMemberList } from "../json/types/AllianceMemberList.js"
+import { TPlanets } from "../json/types/Planets.js"
 
 export async function scrapeAllianceMemberlist() {
     const oldList = await StorageArea.allianceMemberlist.tryGet([])
@@ -33,8 +34,8 @@ export async function scrapeAllianceMemberlist() {
             console.error("could not extract data for " + name + " / " + id)
             return
         }
-        const planets =
-            oldList.find((member) => (member.id = parseInt(id)))?.planets || []
+        const planets: TPlanets =
+            oldList.find((member) => member.id == parseInt(id))?.planets || []
         const member: IAllianceMember = {
             name: name,
             race: race,
@@ -47,6 +48,4 @@ export async function scrapeAllianceMemberlist() {
     })
 
     StorageArea.allianceMemberlist.set(newList)
-    console.log("old list: ", oldList)
-    console.log("new list: ", newList)
 }

@@ -3,9 +3,9 @@ import { TPlanets } from "../json/types/Planets.js"
 
 export async function scrapeAllianceShowInfo() {
     const id = parseInt(
-        new URLSearchParams(window.location.search).get("uid") || "0"
+        new URLSearchParams(window.location.search).get("uid") || "-1"
     )
-    if (!id) throw new Error("id not found")
+    if (id === -1) throw new Error("id not found")
 
     const coordinates = Array.from(
         window.document.body.innerText.matchAll(/\d+x\d+x\d+/g)
@@ -13,8 +13,8 @@ export async function scrapeAllianceShowInfo() {
     const planets: TPlanets = coordinates.map((coordinate) => coordinate[0])
 
     const list = await StorageArea.allianceMemberlist.tryGet([])
-    const idx = list.findIndex((m) => (m.id = id))
-    if (idx !== -1) list[idx].planets = planets
+    const member = list.find((m) => m.id == id)
+    if (member) member.planets = planets
 
     StorageArea.allianceMemberlist.set(list)
 }

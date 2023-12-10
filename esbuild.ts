@@ -171,6 +171,7 @@ async function build(dev = false) {
                 "./src/scripts/content/alliance_showinfo.js",
                 "./src/scripts/options/options.tsx",
                 "./src/scripts/popup/popup.tsx",
+                "./src/scripts/sidebar/sidebar.tsx",
             ],
             bundle: true,
             minify: dev ? false : true,

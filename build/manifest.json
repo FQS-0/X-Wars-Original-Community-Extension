@@ -23,6 +23,11 @@
     "action": {
         "default_popup": "assets/html/popup.html"
     },
+    "sidebar_action": {
+        "default_title": "X-Wars Community Extension",
+        "default_panel": "assets/html/sidebar.html",
+        "default_icon": "assets/icon/32.png"
+    },
     "content_scripts": [
         {
             "js": ["scripts/content/menu.js"],
@@ -127,9 +132,7 @@
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/messages_events.js"
-            ],
+            "js": ["scripts/content/messages_events.js"],
             "matches": [
                 "*://original.xwars.net/*method=bWVzc2FnZXM=*folder=events*",
                 "*://proxy.xwio.de/*method=bWVzc2FnZXM=*folder=events*"
@@ -137,9 +140,7 @@
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/fleet_command.js"
-            ],
+            "js": ["scripts/content/fleet_command.js"],
             "matches": [
                 "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*",
                 "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*"
@@ -147,9 +148,7 @@
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/fleet_command_give_order.js"
-            ],
+            "js": ["scripts/content/fleet_command_give_order.js"],
             "matches": [
                 "*://original.xwars.net/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*fid=*",
                 "*://proxy.xwio.de/*method=ZmxvdHRlbi5jb3Jl*art=Z2l2ZW9yZGVy*fid=*"
@@ -157,9 +156,7 @@
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/alliance_memberlist.js"
-            ],
+            "js": ["scripts/content/alliance_memberlist.js"],
             "matches": [
                 "*://original.xwars.net/*method=YWxsaWFueg==*art=bWVtYmVybGlzdA==*",
                 "*://proxy.xwio.de/*method=YWxsaWFueg==*art=bWVtYmVybGlzdA==*"
@@ -167,9 +164,7 @@
             "all_frames": true
         },
         {
-            "js": [
-                "scripts/content/alliance_showinfo.js"
-            ],
+            "js": ["scripts/content/alliance_showinfo.js"],
             "matches": [
                 "*://original.xwars.net/*method=YWxsaWFueg==*art=c2hvd19pbmZv*",
                 "*://proxy.xwio.de/*method=YWxsaWFueg==*art=c2hvd19pbmZv*"

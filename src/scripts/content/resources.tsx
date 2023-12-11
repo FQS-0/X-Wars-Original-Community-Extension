@@ -12,6 +12,7 @@ async function main() {
         throw "resources.ts: table is no table"
 
     const total = [0, 0, 0, 0, 0, 0]
+    var totalBZ = 0;
     const formatter = new Intl.NumberFormat()
 
     const planets = await StorageArea.currentId.planets.tryGet()
@@ -21,13 +22,19 @@ async function main() {
             const depotData = await StorageArea.currentId
                 .planet(planet)
                 .depot.get()
+            const constructionData = await StorageArea.currentId
+                .planet(planet)
+                .construction.get()
             const resPerHour = depotData
                 ? Depot.fromObject(depotData).perHour
                 : null
+            var resPerDayPerPlanet = 0;
+            totalBZ += constructionData?.bz ?? 0
             const resourceHTML = resPerHour ? (
                 <>
                     {resPerHour.toArray().map((resource, index) => {
                         total[index] += resource * 24
+                        resPerDayPerPlanet += resource * 24
                         return (
                             <td
                                 key={index}
@@ -38,6 +45,9 @@ async function main() {
                             </td>
                         )
                     })}
+                    <td className="second" align="right">
+                        <b>{formatter.format(resPerDayPerPlanet)}</b>
+                    </td>
                 </>
             ) : (
                 <>
@@ -63,17 +73,23 @@ async function main() {
             )
             return (
                 <tr key={index}>
-                    <td className="first">{planet}</td>
+                    <td className="second">{planet}</td>
+                    <td className="first" align="right">{constructionData?.bz}</td>
                     {resourceHTML}
                 </tr>
             )
         })
     )
 
+    const sumTotal = total.reduce((sumTotal, current) => sumTotal + current,0)
+
     const totalHTML = (
         <tr>
-            <td className="first">
+            <td className="second">
                 <b>Total</b>
+            </td>
+            <td className="first">
+                <b>{totalBZ}</b>
             </td>
             {total.map((resource, index) => {
                 return (
@@ -86,16 +102,48 @@ async function main() {
                     </td>
                 )
             })}
+            <td className="first" align="right">
+                <b>{formatter.format(sumTotal)}</b>
+            </td>
         </tr>
     )
 
     const tableHTML = (
-        <td colSpan={8}>
+        <td colSpan={9}>
             <table width="100%" cellPadding={1} cellSpacing={1} border={0}>
                 <tbody>
                     <tr>
-                        <td colSpan={7} className="second" align="center">
+                        <td colSpan={9} className="second" align="center">
                             <b>Resources per day</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="second">
+                            Planet
+                        </td>
+                        <td className="first">
+                            BZ
+                        </td>
+                        <td className="second">
+                            Fe
+                        </td>
+                        <td className="first">
+                            Kris
+                        </td>
+                        <td className="second">
+                            Frub
+                        </td>
+                        <td className="first">
+                            Ori
+                        </td>
+                        <td className="second">
+                            Fruz
+                        </td>
+                        <td className="first">
+                            Gold
+                        </td>
+                        <td className="first">
+                            <b>Summe</b>
                         </td>
                     </tr>
                     {planetHTML}

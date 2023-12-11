@@ -124,28 +124,28 @@ async function main() {
                         <td className="second">
                             Planet
                         </td>
-                        <td className="first">
+                        <td className="first" align="right">
                             BZ
                         </td>
-                        <td className="second">
+                        <td className="second" align="right">
                             Fe
                         </td>
-                        <td className="first">
+                        <td className="first" align="right">
                             Kris
                         </td>
-                        <td className="second">
+                        <td className="second" align="right">
                             Frub
                         </td>
-                        <td className="first">
+                        <td className="first" align="right">
                             Ori
                         </td>
-                        <td className="second">
+                        <td className="second" align="right">
                             Fruz
                         </td>
-                        <td className="first">
+                        <td className="first" align="right">
                             Gold
                         </td>
-                        <td className="first">
+                        <td className="first" align="right">
                             <b>Summe</b>
                         </td>
                     </tr>

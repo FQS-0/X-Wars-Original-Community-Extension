@@ -69,6 +69,9 @@ async function main() {
                     <td className="first" align="right">
                         ?
                     </td>
+                    <td className="second" align="right">
+                        ?
+                    </td>
                 </>
             )
             return (

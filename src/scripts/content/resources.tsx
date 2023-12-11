@@ -12,7 +12,7 @@ async function main() {
         throw "resources.ts: table is no table"
 
     const total = [0, 0, 0, 0, 0, 0]
-    var totalBZ = 0;
+    let totalBZ = 0;
     const formatter = new Intl.NumberFormat()
 
     const planets = await StorageArea.currentId.planets.tryGet()
@@ -28,7 +28,7 @@ async function main() {
             const resPerHour = depotData
                 ? Depot.fromObject(depotData).perHour
                 : null
-            var resPerDayPerPlanet = 0;
+            let resPerDayPerPlanet = 0;
             totalBZ += constructionData?.bz ?? 0
             const resourceHTML = resPerHour ? (
                 <>

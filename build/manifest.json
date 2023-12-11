@@ -170,6 +170,14 @@
                 "*://proxy.xwio.de/*method=YWxsaWFueg==*art=c2hvd19pbmZv*"
             ],
             "all_frames": true
+        },
+        {
+            "js": ["scripts/content/production.js"],
+            "matches": [
+                "*://original.xwars.net/*method=cHJvZHVrdGlvbi5jb3Jl*",
+                "*://proxy.xwio.de/*method=cHJvZHVrdGlvbi5jb3Jl*"
+            ],
+            "all_frames": true
         }
     ]
 }

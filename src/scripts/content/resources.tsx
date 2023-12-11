@@ -91,7 +91,7 @@ async function main() {
             <td className="second">
                 <b>Total</b>
             </td>
-            <td className="first">
+            <td className="first" align="right">
                 <b>{totalBZ}</b>
             </td>
             {total.map((resource, index) => {

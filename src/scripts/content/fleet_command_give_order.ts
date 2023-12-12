@@ -44,10 +44,10 @@ async function insertButtonAndSelects() {
 
         const button = document.createElement("input")
         button.type = "button"
-        button.value = "Wiederholungsangriff"
+        button.value = "Letzte Koords"
         button.style.fontSize = "smaller"
         button.style.backgroundColor = "darkorange"
-        button.addEventListener("click", flotten__giveorder__repeatAttack)
+        //button.addEventListener("click", flotten__giveorder__repeatAttack)
         coordsInput.parentNode.appendChild(button)
 
         const favourites = await StorageArea.favourites.tryGet([])

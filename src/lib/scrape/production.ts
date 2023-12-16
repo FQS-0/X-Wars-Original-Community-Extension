@@ -1,10 +1,10 @@
+import { StorageArea } from "../StorageArea.js"
+import { IShip } from "../json/types/Ship.js"
+
 export async function scrapeProduction() {
     const forms = Array.from(window.document.querySelectorAll("form"))
-    const ships = forms.map((form) => {
-        const [, id] = (form.name.match(/formular(\d+)/) || ["", "-1"]).map(
-            (m) => parseInt(m)
-        )
-
+    const ships: IShip[] = []
+    forms.map((form) => {
         const row = form.nextElementSibling
         if (!(row instanceof HTMLTableRowElement)) {
             console.error("expected table row")
@@ -50,22 +50,19 @@ export async function scrapeProduction() {
                 )[1]
         )
 
-        console.log(components)
-
-        return {
+        ships.push({
+            shipClass: "unknown",
+            requirements: [],
+            carrier: -1,
+            troups: -1,
             name: name,
-            id: id,
             engine: engine,
             speed: parseInt(speed),
             att: att,
             def: def,
-            freight: freight,
+            cargo: freight,
             tt: components.includes(90),
             lkom: components.includes(93),
-            colonization: components.includes(91),
-            explorer: components.includes(87),
-            scanner: components.includes(88),
-            observer: components.includes(89),
             resources: {
                 fe: fe,
                 kr: kr,
@@ -74,8 +71,8 @@ export async function scrapeProduction() {
                 fo: fo,
                 go: go,
             },
-        }
+        })
     })
 
-    console.log(ships)
+    StorageArea.shipList.set(ships)
 }

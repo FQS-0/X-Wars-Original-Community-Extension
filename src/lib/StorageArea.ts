@@ -14,6 +14,7 @@ import { IDepot } from "./json/types/Depot.js"
 import { IConstruction } from "./json/types/Construction.js"
 import { IResearch } from "./json/types/Research.js"
 import { TAllianceMemberList } from "./json/types/AllianceMemberList.js"
+import { TShips } from "./json/types/Ships.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -282,5 +283,9 @@ export class StorageArea {
             "allianceMemberList",
             validations.TAllianceMemberList
         )
+    }
+
+    static get shipList(): JsonStorage<TShips> {
+        return new JsonStorage<TShips>("shipList", validations.TShips)
     }
 }

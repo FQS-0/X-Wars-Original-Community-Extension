@@ -14,7 +14,7 @@ import { IDepot } from "./json/types/Depot.js"
 import { IConstruction } from "./json/types/Construction.js"
 import { IResearch } from "./json/types/Research.js"
 import { TAllianceMemberList } from "./json/types/AllianceMemberList.js"
-import { TShips } from "./json/types/Ships.js"
+import { IShipyard } from "./json/types/Shipyard.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -201,6 +201,9 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
             this
         )
     }
+    public get playerName(): SimpleStorage<string> {
+        return new SimpleStorage<string>("playerName")
+    }
 }
 
 class PlanetStorage<T> extends SimpleStorage<T> {
@@ -285,7 +288,7 @@ export class StorageArea {
         )
     }
 
-    static get shipList(): JsonStorage<TShips> {
-        return new JsonStorage<TShips>("shipList", validations.TShips)
+    static get shipyard(): JsonStorage<IShipyard> {
+        return new JsonStorage<IShipyard>("shipyard", validations.IShipyard)
     }
 }

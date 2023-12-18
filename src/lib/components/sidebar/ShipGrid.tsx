@@ -35,22 +35,41 @@ import { Updater, useImmer } from "use-immer"
 const fmt = new Intl.NumberFormat()
 
 export default function ShipGrid() {
-    const ships = useShipList()
+    const shipyard = useShipList()
     const [selectedShips, setSelectedShips] = useImmer<string[]>([])
 
     const handleInvertSelection = () => {
         setSelectedShips(
-            ships
+            shipyard.ships
                 .map((ship) => ship.name)
                 .filter((ship) => !selectedShips.includes(ship))
         )
     }
 
+    const downloadJson = () => {
+        const shipyardToJson = structuredClone(shipyard)
+
+        shipyardToJson.ships = shipyardToJson.ships.filter((ship) =>
+            selectedShips.includes(ship.name)
+        )
+
+        const a = window.document.createElement("a")
+        const file = new Blob([JSON.stringify(shipyard, undefined, 2)], {
+            type: "application/json",
+        })
+
+        a.href = URL.createObjectURL(file)
+        a.download = "shipyard.json"
+        a.click()
+        URL.revokeObjectURL(a.href)
+    }
+
     return (
         <Container maxWidth="md">
             <Button onClick={handleInvertSelection}>Auswahl umkehren</Button>
+            <Button onClick={downloadJson}>Download JSON</Button>
             <Grid container spacing={2}>
-                {ships.map((ship) => (
+                {shipyard.ships.map((ship) => (
                     <Ship
                         key={ship.name}
                         ship={ship}

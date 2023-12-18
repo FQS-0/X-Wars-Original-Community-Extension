@@ -20,6 +20,7 @@ if (query) {
     const queryString = atob(query)
     const queryArray = queryString.split("#")
     if (queryArray.length == 5) {
+        StorageArea.currentId.playerName.set(queryArray[2])
         StorageArea.currentId.set(queryArray[3])
     }
     const select = window.document.forms

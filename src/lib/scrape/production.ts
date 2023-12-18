@@ -1,5 +1,6 @@
 import { StorageArea } from "../StorageArea.js"
 import { IShip } from "../json/types/Ship.js"
+import { IShipyard } from "../json/types/Shipyard.js"
 
 export async function scrapeProduction() {
     const forms = Array.from(window.document.querySelectorAll("form"))
@@ -73,6 +74,13 @@ export async function scrapeProduction() {
             },
         })
     })
+    const name = await StorageArea.currentId.playerName.tryGet()
+    const planets = (await StorageArea.currentId.planets.tryGet()).map(
+        (planet) => {
+            return { coordinates: planet }
+        }
+    )
+    const shipyard: IShipyard = { name: name, planets: planets, ships: ships }
 
-    StorageArea.shipList.set(ships)
+    StorageArea.shipyard.set(shipyard)
 }

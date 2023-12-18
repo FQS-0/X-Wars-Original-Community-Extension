@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react"
-import { TShips } from "../json/types/Ships.js"
 import { StorageArea } from "../StorageArea.js"
+import { IShipyard } from "../json/types/Shipyard.js"
 
 export const useShipList = () => {
-    const [list, setList] = useState<TShips>([])
+    const [list, setList] = useState<IShipyard>({
+        name: "",
+        planets: [],
+        ships: [],
+    })
 
     const updateShipList = async () => {
-        setList(await StorageArea.shipList.tryGet([]))
+        setList(
+            await StorageArea.shipyard.tryGet({
+                name: "",
+                planets: [],
+                ships: [],
+            })
+        )
     }
 
     useEffect(() => {
         updateShipList()
-        const unsubscribe = StorageArea.shipList.subscribe(updateShipList)
+        const unsubscribe = StorageArea.shipyard.subscribe(updateShipList)
         return () => {
             unsubscribe()
         }

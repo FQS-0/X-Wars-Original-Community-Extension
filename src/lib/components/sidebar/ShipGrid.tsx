@@ -3,10 +3,14 @@ import {
     Card,
     CardContent,
     CardHeader,
+    Checkbox,
     Container,
+    FormControlLabel,
+    FormGroup,
     Grid,
     IconButton,
     Stack,
+    TextField,
     Typography,
 } from "@mui/material"
 import {
@@ -29,14 +33,30 @@ import {
 } from "~src/lib/Icons.js"
 import { useShipList } from "~src/lib/state/ShipList.js"
 import { IShip } from "~src/lib/json/types/Ship.js"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Updater, useImmer } from "use-immer"
+import { IShipyard } from "~src/lib/json/types/Shipyard.js"
 
 const fmt = new Intl.NumberFormat()
 
 export default function ShipGrid() {
     const shipyard = useShipList()
     const [selectedShips, setSelectedShips] = useImmer<string[]>([])
+    const [name, setName] = useState<string>("")
+    const [filename, setFilename] = useState<string>("")
+    const [planetList, setPlanetList] = useImmer<
+        { coordinates: string; selected: boolean }[]
+    >([])
+
+    useEffect(() => {
+        setName(shipyard.name)
+        setFilename(shipyard.name + ".json")
+        setPlanetList(
+            shipyard.planets.map((planet) => {
+                return { coordinates: planet.coordinates, selected: true }
+            })
+        )
+    }, [shipyard])
 
     const handleInvertSelection = () => {
         setSelectedShips(
@@ -47,27 +67,78 @@ export default function ShipGrid() {
     }
 
     const downloadJson = () => {
-        const shipyardToJson = structuredClone(shipyard)
-
-        shipyardToJson.ships = shipyardToJson.ships.filter((ship) =>
-            selectedShips.includes(ship.name)
-        )
+        const shipyardToJson: IShipyard = {
+            name: name,
+            planets: planetList
+                .filter((planet) => planet.selected)
+                .map((planet) => {
+                    return { coordinates: planet.coordinates }
+                }),
+            ships: shipyard.ships.filter((ship) =>
+                selectedShips.includes(ship.name)
+            ),
+        }
 
         const a = window.document.createElement("a")
-        const file = new Blob([JSON.stringify(shipyard, undefined, 2)], {
+        const file = new Blob([JSON.stringify(shipyardToJson, undefined, 2)], {
             type: "application/json",
         })
 
         a.href = URL.createObjectURL(file)
-        a.download = "shipyard.json"
+        a.download = filename
         a.click()
         URL.revokeObjectURL(a.href)
     }
 
+    const handlePlanetToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPlanetList((list) => {
+            const planet = list.find(
+                (planet) => event.target.id == planet.coordinates
+            )
+            if (planet) planet.selected = !planet.selected
+        })
+    }
     return (
         <Container maxWidth="md">
-            <Button onClick={handleInvertSelection}>Auswahl umkehren</Button>
-            <Button onClick={downloadJson}>Download JSON</Button>
+            <FormGroup>
+                <TextField
+                    value={name}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        setName(event.target.value)
+                    }}
+                    id="name"
+                    label="Name"
+                    variant="outlined"
+                    margin="normal"
+                />
+                <TextField
+                    value={filename}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        setFilename(event.target.value)
+                    }}
+                    id="filename"
+                    label="Dateiname"
+                    variant="outlined"
+                    margin="normal"
+                />
+                {planetList.map((planet) => (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={planet.selected}
+                                onChange={handlePlanetToggle}
+                                id={planet.coordinates}
+                            />
+                        }
+                        label={planet.coordinates}
+                        key={planet.coordinates}
+                    />
+                ))}
+                <Button onClick={downloadJson}>Download JSON</Button>
+                <Button onClick={handleInvertSelection}>
+                    Auswahl umkehren
+                </Button>
+            </FormGroup>
             <Grid container spacing={2}>
                 {shipyard.ships.map((ship) => (
                     <Ship

@@ -1,7 +1,39 @@
 import { StorageArea } from "../StorageArea.js"
+import { IRequirement } from "../json/types/Requirement.js"
 import { IShip } from "../json/types/Ship.js"
 import { IShipyard } from "../json/types/Shipyard.js"
 import { decode } from "he"
+
+const usageRequirements = [
+    { moduleId: 23, requirements: [{ specialisation: "Metall", value: 80 }] },
+    { moduleId: 26, requirements: [{ specialisation: "Carbon", value: 20 }] },
+    { moduleId: 27, requirements: [{ specialisation: "Carbon", value: 60 }] },
+    { moduleId: 31, requirements: [{ specialisation: "Schild", value: 40 }] },
+    { moduleId: 32, requirements: [{ specialisation: "Schild", value: 80 }] },
+    { moduleId: 35, requirements: [{ specialisation: "Teleport", value: 5 }] },
+    { moduleId: 36, requirements: [{ specialisation: "Teleport", value: 20 }] },
+    { moduleId: 37, requirements: [{ specialisation: "Teleport", value: 40 }] },
+    { moduleId: 43, requirements: [{ specialisation: "Strahlen", value: 40 }] },
+    { moduleId: 51, requirements: [{ specialisation: "Plasma", value: 40 }] },
+    {
+        moduleId: 46,
+        requirements: [{ specialisation: "Biologisch", value: 10 }],
+    },
+    {
+        moduleId: 47,
+        requirements: [{ specialisation: "Hochexplosiv", value: 30 }],
+    },
+    {
+        moduleId: 48,
+        requirements: [{ specialisation: "Biologisch", value: 40 }],
+    },
+    { moduleId: 49, requirements: [{ specialisation: "Strahlen", value: 80 }] },
+    { moduleId: 52, requirements: [{ specialisation: "Plasma", value: 70 }] },
+    { moduleId: 50, requirements: [{ specialisation: "Raketen", value: 80 }] },
+    { moduleId: 74, requirements: [{ specialisation: "Raketen", value: 80 }] },
+    { moduleId: 83, requirements: [{ specialisation: "Fracht", value: 20 }] },
+    { moduleId: 84, requirements: [{ specialisation: "Fracht", value: 30 }] },
+]
 
 export async function scrapeProduction() {
     const forms = Array.from(window.document.querySelectorAll("form"))
@@ -53,6 +85,24 @@ export async function scrapeProduction() {
             ? "Schwer"
             : "Unbekannt"
 
+        const requirements: IRequirement[] = []
+        components.forEach((component) => {
+            const componentReq = usageRequirements.find(
+                (req) => req.moduleId == component
+            )
+            if (!componentReq) return
+            componentReq.requirements.forEach((requirment) => {
+                const idx = requirements.findIndex(
+                    (req) => req.specialisation == requirment.specialisation
+                )
+                if (idx < 0) requirements.push(requirment)
+                else
+                    requirements[idx].value = Math.max(
+                        requirements[idx].value,
+                        requirment.value
+                    )
+            })
+        })
         const [, engine, speed] = row.cells[1].innerText.match(
             /(\S{3})\s*(\d+)\s*%/
         ) || [undefined, "UNK", "-1"]
@@ -82,8 +132,18 @@ export async function scrapeProduction() {
         ships.push({
             shipClass: shipClass,
             requirements: [],
-            carrier: -1,
-            troups: -1,
+            carrier:
+                (
+                    componentsWithCount.find(
+                        (component) => component.id == 85
+                    ) || { id: 85, count: 0 }
+                ).count * 30000,
+            troups:
+                (
+                    componentsWithCount.find(
+                        (component) => component.id == 85
+                    ) || { id: 85, count: 0 }
+                ).count * 50,
             name: name,
             engine: engine,
             speed: parseInt(speed),

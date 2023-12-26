@@ -24,7 +24,7 @@ function flotten__giveorder__repeatAttack() {
         targetInput.value = flotten__extract_koordinates(
             targetElement.innerText
         )
-        attackOption.checked = true
+//        attackOption.checked = true
     } else {
         console.error("could not set repeat attack")
     }
@@ -47,7 +47,7 @@ async function insertButtonAndSelects() {
         button.value = "Letzte Koords"
         button.style.fontSize = "smaller"
         button.style.backgroundColor = "darkorange"
-        //button.addEventListener("click", flotten__giveorder__repeatAttack)
+        button.addEventListener("click", flotten__giveorder__repeatAttack)
         coordsInput.parentNode.appendChild(button)
 
         const favourites = await StorageArea.favourites.tryGet([])

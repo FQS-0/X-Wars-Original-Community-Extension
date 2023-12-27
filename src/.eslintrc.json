@@ -1,4 +1,4 @@
-module.exports = {
+{
     "env": {
         "browser": true,
         "es2021": true,
@@ -16,12 +16,8 @@ module.exports = {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint",
-        "react"
-    ],
-    "rules": {
-    },
+    "plugins": ["@typescript-eslint", "react"],
+    "rules": {},
     "settings": {
         "react": {
             "version": "18.2"

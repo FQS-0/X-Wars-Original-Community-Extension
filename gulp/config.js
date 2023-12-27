@@ -21,4 +21,9 @@ export const paths = {
         "../src/lib/json/schemas/validations.js",
         import.meta.url
     ),
+    buildDir: new URL("../build/", import.meta.url),
+    assetsDir: new URL("../assets/", import.meta.url),
+    firefoxPackDir: new URL("../pack/firefox/", import.meta.url),
+    chromePackDir: new URL("../pack/chrome/", import.meta.url),
+    distDir: new URL("../dist/", import.meta.url),
 }

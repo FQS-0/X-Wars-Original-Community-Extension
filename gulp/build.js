@@ -5,7 +5,14 @@ import { promises as fs } from "fs"
 
 import { entryPoints } from "./config.js"
 
-export async function build(dev = false) {
+export async function transpileProduction() {
+    await build()
+}
+export async function transpileDebug() {
+    await build(true)
+}
+
+async function build(dev = false) {
     const meta = await esbuild.build({
         entryPoints: entryPoints,
         bundle: true,

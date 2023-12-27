@@ -6,9 +6,15 @@ import { TFavourites } from "./json/types/Favourites.js"
 import { TPlanets } from "./json/types/Planets.js"
 import { TResourceNames } from "./json/types/ResourceNames.js"
 import { IResources } from "./json/types/Resources.js"
-import { Depot } from "./Resource.js"
 import { TAllianceFavouritesList } from "./json/types/AllianceFavouritesList.js"
 import { TFavouriteShips } from "./json/types/FavouriteShips.js"
+import { TTrades } from "./json/types/Trades.js"
+import { TSubMenuList } from "./json/types/SubMenuList.js"
+import { IDepot } from "./json/types/Depot.js"
+import { IConstruction } from "./json/types/Construction.js"
+import { IResearch } from "./json/types/Research.js"
+import { TAllianceMemberList } from "./json/types/AllianceMemberList.js"
+import { IShipyard } from "./json/types/Shipyard.js"
 
 interface ChildStorage {
     needsResolving: boolean
@@ -119,7 +125,10 @@ class JsonStorage<T> extends StorageBase implements Storage<T> {
         const val = await this.get()
         if (val !== null) return val
         if (def) return def
-        throw new Error("get returned null and default was not set")
+        throw new Error(
+            "get returned null and default was not set - key=" +
+                (await this.getKey())
+        )
     }
 
     public async set(val: T) {
@@ -142,8 +151,11 @@ class SimpleStorage<T> extends StorageBase implements Storage<T> {
     public async tryGet(def?: T): Promise<T> {
         const val = await this.get()
         if (val !== null) return val
-        if (def) return def
-        throw new Error("get returned null and default was not set")
+        if (def !== undefined) return def
+        throw new Error(
+            "get returned null and default was not set - key=" +
+                (await this.getKey())
+        )
     }
 
     public async set(val: T) {
@@ -172,11 +184,31 @@ class CurrentIdStorage<T> extends SimpleStorage<T> {
     public planet(coordinates: string): PlanetStorage<string> {
         return new PlanetStorage<string>(coordinates, this)
     }
+    public get trades(): JsonStorage<TTrades> {
+        return new JsonStorage<TTrades>("trades", validations.TTrades, this)
+    }
+    public get subMenuList(): JsonStorage<TSubMenuList> {
+        return new JsonStorage<TSubMenuList>(
+            "subMenuList",
+            validations.TSubMenuList,
+            this
+        )
+    }
+    public get research(): JsonStorage<IResearch> {
+        return new JsonStorage<IResearch>(
+            "research",
+            validations.IResearch,
+            this
+        )
+    }
+    public get playerName(): SimpleStorage<string> {
+        return new SimpleStorage<string>("playerName")
+    }
 }
 
 class PlanetStorage<T> extends SimpleStorage<T> {
-    public get depot(): JsonStorage<Depot> {
-        return new JsonStorage<Depot>("depot", validations.IDepot, this)
+    public get depot(): JsonStorage<IDepot> {
+        return new JsonStorage<IDepot>("depot", validations.IDepot, this)
     }
     public get bankCapacity(): SimpleStorage<number> {
         return new SimpleStorage<number>("bankCapacity", this)
@@ -192,6 +224,13 @@ class PlanetStorage<T> extends SimpleStorage<T> {
         return new JsonStorage<IResources>(
             "bankTotal",
             validations.IResources,
+            this
+        )
+    }
+    public get construction(): JsonStorage<IConstruction> {
+        return new JsonStorage<IConstruction>(
+            "construction",
+            validations.IConstruction,
             this
         )
     }
@@ -232,5 +271,24 @@ export class StorageArea {
 
     static get currentId(): CurrentIdStorage<string> {
         return new CurrentIdStorage<string>("currentId", undefined, true)
+    }
+
+    static get servertimeOffset(): SimpleStorage<number> {
+        return new SimpleStorage<number>("servertimeOffset")
+    }
+
+    static get sessionId(): SimpleStorage<string> {
+        return new SimpleStorage<string>("sessionId")
+    }
+
+    static get allianceMemberlist(): JsonStorage<TAllianceMemberList> {
+        return new JsonStorage<TAllianceMemberList>(
+            "allianceMemberList",
+            validations.TAllianceMemberList
+        )
+    }
+
+    static get shipyard(): JsonStorage<IShipyard> {
+        return new JsonStorage<IShipyard>("shipyard", validations.IShipyard)
     }
 }

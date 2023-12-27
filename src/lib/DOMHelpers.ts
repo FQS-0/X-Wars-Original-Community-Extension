@@ -14,3 +14,17 @@ export function isStringArray(array: unknown): array is string[] {
 
     return true
 }
+
+export function getContentDiv(): HTMLElement {
+    let div = window.document.querySelector(
+        "div#xwo-ext-content"
+    ) as HTMLElement | null
+
+    if (!div) {
+        div = window.document.createElement("DIV")
+        div.id = "xwo-ext-content"
+        window.document.body.insertBefore(div, window.document.body.firstChild)
+    }
+
+    return div
+}

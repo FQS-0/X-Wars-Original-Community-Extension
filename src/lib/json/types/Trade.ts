@@ -6,7 +6,7 @@ export interface ITrade {
     isToOwnPlanet: boolean
     delivery: IResources
     returnDelivery: IResources
-    date: Date | undefined
+    date: Date
     comment: string
     fromPlanet: string
     toPlanet: string

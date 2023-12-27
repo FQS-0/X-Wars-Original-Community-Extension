@@ -59,13 +59,16 @@ export const fetchShipyard = async (url: URL) => {
     return addShipyard(shipyard)
 }
 
-export const fetchShipyardsUpdates = async () => {
+export const fetchShipyardsUpdates = async (force = false) => {
     const shipyards = await StorageArea.shipyards.tryGet([])
     const today = new Date()
     shipyards.forEach((shipyard) => {
         if (shipyard.url && shipyard.lastUpdate) {
             const lastUpdate = new Date(shipyard.lastUpdate)
-            if (today.getTime() - lastUpdate.getTime() > 24 * 60 * 60 * 1000) {
+            if (
+                force ||
+                today.getTime() - lastUpdate.getTime() > 60 * 60 * 1000
+            ) {
                 console.log(`updating shipyard ${shipyard.url}`)
                 fetchShipyard(new URL(shipyard.url))
             }

@@ -3,19 +3,19 @@ import { IDepot } from "./json/types/Depot.js"
 import { IResources } from "./json/types/Resources.js"
 
 export function formatResource(val: number, ceil: boolean = false): string {
-    if (val > 1000000) return `${(val / 10000000).toPrecision(1)}M`
+    if (val > 1000000) return `${Math.round(val / 100000) / 10}M`
     if (val > 1000) return `${Math.round(val / 100) / 10}k`
     return ceil ? Math.ceil(val).toString() : Math.floor(val).toString()
 }
 
 export class Resources implements IResources {
     constructor(
-        public fe: number,
-        public kr: number,
-        public fr: number,
-        public or: number,
-        public fo: number,
-        public go: number
+        public fe: number = 0,
+        public kr: number = 0,
+        public fr: number = 0,
+        public or: number = 0,
+        public fo: number = 0,
+        public go: number = 0
     ) {}
 
     static fromObj({ fe, kr, fr, or, fo, go }: IResources) {
@@ -26,6 +26,15 @@ export class Resources implements IResources {
     }
     toArray(): number[] {
         return [this.fe, this.kr, this.fr, this.or, this.fo, this.go]
+    }
+
+    addi(o: Resources) {
+        this.fe += o.fe
+        this.kr += o.kr
+        this.fr += o.fr
+        this.or += o.or
+        this.fo += o.fo
+        this.go += o.go
     }
 
     add(o: Resources) {
@@ -75,6 +84,20 @@ export class Resources implements IResources {
         }
     }
 
+    compare<T>(
+        other: Resources,
+        func: (value: number, key: keyof IResources) => T
+    ) {
+        return {
+            fe: func(this.fe - other.fe, "fe"),
+            kr: func(this.kr - other.kr, "kr"),
+            fr: func(this.fr - other.fr, "fr"),
+            or: func(this.or - other.or, "or"),
+            fo: func(this.fo - other.fo, "fo"),
+            go: func(this.go - other.go, "go"),
+        }
+    }
+
     get(i: number) {
         switch (i) {
             case 0:
@@ -106,10 +129,10 @@ export class Depot implements IDepot {
     @serializable(object(Resources)) public max: Resources
 
     constructor(
-        date: Date,
-        stock: Resources,
-        perHour: Resources,
-        max: Resources
+        date: Date = new Date(),
+        stock: Resources = new Resources(),
+        perHour: Resources = new Resources(),
+        max: Resources = new Resources()
     ) {
         this.date = date
         this.stock = stock
@@ -124,6 +147,17 @@ export class Depot implements IDepot {
             Resources.fromObj(perHour),
             Resources.fromObj(max)
         )
+    }
+
+    getResources(date: Date): Resources {
+        const diffInHours =
+            Math.round((date.getTime() - this.date.getTime()) / 1000) / 60 / 60
+
+        return this.stock
+            .add(this.perHour.map((x) => x * diffInHours))
+            .map((x) => Math.floor(x))
+            .map((x, i) => (x > this.max.get(i) ? this.max.get(i) : x))
+            .map((x) => (x < 0 ? 0 : x))
     }
 
     getCurrentResources(): Resources {

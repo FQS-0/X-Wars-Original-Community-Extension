@@ -52,7 +52,7 @@ async function main() {
         link: HTMLAnchorElement
     }[] = []
     const resources: string[] = []
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
         const input_elem = window.document.forms
             .namedItem("transaction")
             ?.elements.namedItem(`res[${i}]`)
@@ -67,7 +67,7 @@ async function main() {
         resources.push(resource_name)
     }
 
-    rows.slice(1, 7).forEach((row) => {
+    rows.slice(1, 6).forEach((row) => {
         const textElem = row.lastElementChild?.previousElementSibling
         if (!textElem || !(textElem instanceof HTMLElement))
             throw "Error: resource text element not found!"
@@ -82,7 +82,7 @@ async function main() {
     })
 
     let transaction_time: Date | null = null
-    rows.slice(8, rows.length - 1).forEach((row) => {
+    rows.slice(7, rows.length - 1).forEach((row) => {
         if (row.cells.length === 3) {
             transaction_time = getDate(row.cells[0].innerText)
         }
@@ -147,7 +147,7 @@ async function main() {
         )
         const depot_resources = depot.getCurrentResources()
 
-        for (let j = 0; j < 6; j++) {
+        for (let j = 0; j < 5; j++) {
             switch (
                 as(
                     window.document.forms
@@ -189,7 +189,7 @@ async function main() {
         }
     }
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
         form_elements[i].link.onclick = null
         form_elements[i].link.onclick = async () => {
             const depot_resources = Depot.fromObject(
@@ -278,7 +278,7 @@ async function main() {
                 ?.elements.namedItem("transaction_type"),
             HTMLSelectElement
         ).value = "plus"
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             if (delta[i] > 0) {
                 form_elements[i].input.value = Math.floor(
                     Math.min(delta[i], depot_resources.get(i))
@@ -301,7 +301,7 @@ async function main() {
                 ?.elements.namedItem("transaction_type"),
             HTMLSelectElement
         ).value = "minus"
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             if (delta[i] < 0) {
                 form_elements[i].input.value = Math.floor(
                     Math.min(
@@ -327,7 +327,7 @@ async function main() {
                 ?.elements.namedItem("transaction_type"),
             HTMLSelectElement
         ).value = "plus"
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             form_elements[i].input.value = Math.floor(
                 Math.min(max_overbook[i], depot_resources.get(i))
             ).toString()
@@ -339,7 +339,7 @@ async function main() {
     const newInfoTableBody = (
         <tbody>
             <tr>
-                <td className="first" colSpan={7} align="center">
+                <td className="first" colSpan={6} align="center">
                     <b>
                         Bankauskunft für{" "}
                         {await StorageArea.currentId.currentPlanet.tryGet()}
@@ -363,9 +363,6 @@ async function main() {
                 <td className="fourth" align="center">
                     Frurozin
                 </td>
-                <td className="fourth" align="center">
-                    Gold
-                </td>
             </tr>
 
             <tr>
@@ -384,9 +381,6 @@ async function main() {
                 </td>
                 <td className="second" align="right">
                     {fmtr.format(assets[4])}
-                </td>
-                <td className="second" align="right">
-                    {fmtr.format(assets[5])}
                 </td>
             </tr>
             {Array.from(transactions.entries()).map(([date, res], id) => (
@@ -429,13 +423,6 @@ async function main() {
                     >
                         {fmtr.format(res[4])}
                     </td>
-                    <td
-                        className={res[5] < 0 ? "red_second" : "second"}
-                        align="right"
-                        style={res[5] > 0 ? { backgroundColor: "green" } : {}}
-                    >
-                        {fmtr.format(res[5])}
-                    </td>
                 </tr>
             ))}
 
@@ -455,9 +442,6 @@ async function main() {
                 </td>
                 <td className="second" align="right">
                     {fmtr.format(Math.floor(interest[4]))}
-                </td>
-                <td className="second" align="right">
-                    {fmtr.format(Math.floor(interest[5]))}
                 </td>
             </tr>
             <tr>
@@ -479,12 +463,9 @@ async function main() {
                 <td className="fourth" align="right">
                     <b>{fmtr.format(Math.floor(total[4]))}</b>
                 </td>
-                <td className="fourth" align="right">
-                    <b>{fmtr.format(Math.floor(total[5]))}</b>
-                </td>
             </tr>
             <tr>
-                <td className="first" colSpan={7} align="center">
+                <td className="first" colSpan={6} align="center">
                     Nächste Berechnung {booking_time.toLocaleDateString()}{" "}
                     {booking_time.toLocaleTimeString()}
                 </td>

@@ -469,6 +469,17 @@ const TradeForm = () => {
         populateOptions()
     }, [favourites, allianceFavourites, shipyards, favouriteFavourites])
 
+    useEffect(() => {
+        const query = new URLSearchParams(window.document.location.search)
+        if (query.get("galaxy") && query.get("system") && query.get("planet")) {
+            setDestination(
+                `${query.get("galaxy")}x${query.get("system")}x${query.get(
+                    "planet"
+                )}`
+            )
+        }
+    }, [])
+
     const transportFeeMatch = window.document
         .querySelector(
             'form[name="formular"] > table > tbody > tr:nth-child(2) > td:nth-child(3)'
@@ -578,7 +589,7 @@ const TradeForm = () => {
             setDemandResources((res) => {
                 res.fe = 1
             })
-        setCommentWithTime(`${comment} ## ${new Date().toLocaleTimeString()}`)
+        setCommentWithTime(comment)
     }
 
     // const handleCheck = async () => {
@@ -680,7 +691,11 @@ const TradeForm = () => {
                 <Grid item xs={12}>
                     <Typography variant="h5">Handelsauftrag</Typography>
                     <Typography variant="subtitle2">
-                        Transportkosten {transportFee * 100}%
+                        Transportkosten{" "}
+                        {new Intl.NumberFormat("de-DE").format(
+                            transportFee * 100
+                        )}
+                        %
                     </Typography>
                 </Grid>
                 <Grid container item spacing={1}>

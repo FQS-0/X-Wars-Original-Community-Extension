@@ -22,12 +22,12 @@ function constructDate(groups: { [key: string]: string }, utc?: boolean) {
     }
 }
 
-export function getDate(s: string) {
+export function getDate(s: string, utc?: boolean) {
     const groups = matchDate(s)
 
     if (!groups) return null
 
-    const date = constructDate(groups)
+    const date = constructDate(groups, utc)
 
     return date
 }
@@ -76,4 +76,10 @@ export function replaceUTCWithLocal(element: HTMLElement) {
     element.innerHTML = element.innerHTML.replace(dateRegex, (s) =>
         UTCToLocal(s)
     )
+}
+
+export function formatSeconds(s: number) {
+    return `${("00" + Math.floor(s / 60 / 60)).slice(-2)}:${(
+        "00" + Math.floor((s / 60) % 60)
+    ).slice(-2)}:${("00" + Math.floor(s % 60)).slice(-2)}`
 }

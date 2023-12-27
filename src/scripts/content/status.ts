@@ -1,6 +1,6 @@
-import Browser from "webextension-polyfill"
 import { as } from "~/src/lib/DOMHelpers.js"
 import { replaceUTCWithLocal } from "~/src/lib/Date.js"
+import { StorageArea } from "~src/lib/StorageArea.js"
 
 const serverTimeElement = as(
     window.document.querySelector("#servertime"),
@@ -19,7 +19,7 @@ serverTime.setUTCHours(
 )
 const serverTimeDiff = serverTime.getTime() - localTime.getTime()
 
-Browser.storage.local.set({ serverTimeDiff: serverTimeDiff })
+StorageArea.servertimeOffset.set(serverTimeDiff)
 
 replaceUTCWithLocal(serverTimeElement)
 

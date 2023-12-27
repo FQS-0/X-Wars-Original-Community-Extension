@@ -6,12 +6,21 @@ import { StorageArea } from "~src/lib/StorageArea.js"
  * values in the extension local storage.
  */
 
-const query = new URLSearchParams(window.location.search).get("query")
+const urlParams = new URLSearchParams(window.location.search)
+
+const sessionId = urlParams.get("id")
+if (!sessionId) {
+    throw new Error("session id not found")
+}
+StorageArea.sessionId.set(sessionId)
+
+const query = urlParams.get("query")
 
 if (query) {
     const queryString = atob(query)
     const queryArray = queryString.split("#")
     if (queryArray.length == 5) {
+        StorageArea.currentId.playerName.set(queryArray[1])
         StorageArea.currentId.set(queryArray[3])
     }
     const select = window.document.forms

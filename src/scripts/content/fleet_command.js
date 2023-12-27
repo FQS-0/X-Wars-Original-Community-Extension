@@ -1,30 +1,3 @@
-function flotten__extract_koordinates(text) {
-    var regex = /\d+x\d+x\d+/
-    var match = text.match(regex)
-    if (match) {
-        return match[0]
-    }
-    return ""
-}
-
-function flotten__giveorder__repeatAttack() {
-    let targetElement = document.querySelector(
-        'td[colspan="4"][class="fourth"]'
-    )
-    let targetText = targetElement.innerText
-    let numbers = flotten__extract_koordinates(targetText)
-
-    let targetInput = document.querySelector(
-        'input[name="orderdata[targetvis]"'
-    )
-    let attackOption = document.querySelector('input[name="orderdata[order]"')
-
-    if (numbers && targetInput && attackOption) {
-        targetInput.value = numbers
-        attackOption.value = "attack"
-    }
-}
-
 function onload_flotten__giveorder() {
     console.log("Flotten::Befehle")
 
@@ -102,29 +75,6 @@ function onload_flotten__giveorder() {
         updateZeit()
 
         window.setInterval(updateZeit, 1000) // Alle 1000 Millisekunden (1 Sekunde) aktualisieren
-    }
-
-    try {
-        // Wiederholungsangriff Button hinzufügen
-        console.log("RepeatAttack button")
-        let button = document.createElement("input")
-        button.type = "button"
-        button.value = "Wiederholungsangriff"
-        button.style.fontSize = "smaller"
-        button.style.backgroundColor = "darkorange"
-        button.addEventListener("click", flotten__giveorder__repeatAttack)
-
-        let targetElement = document.querySelector(
-            'input[name="orderdata[targetvis]"][type="text"]'
-        )
-
-        if (targetElement) {
-            targetElement.parentNode.appendChild(button)
-        } else {
-            console.log("not found")
-        }
-    } catch (e) {
-        console.error(e)
     }
 }
 

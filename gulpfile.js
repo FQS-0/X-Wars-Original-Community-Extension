@@ -12,12 +12,13 @@ import {
     createChromeZip,
     createFirefoxZip,
 } from "./gulp/package.js"
+import { signChromeExtension } from "./gulp/chrome.js"
 
 export default gulp.series(
     generateValidation,
     buildProduction,
     gulp.parallel(
         gulp.series(assembleFirefox, createFirefoxZip),
-        gulp.series(assembleChrome, createChromeZip)
+        gulp.series(assembleChrome, createChromeZip, signChromeExtension)
     )
 )

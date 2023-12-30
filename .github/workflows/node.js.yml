@@ -27,7 +27,10 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install
-    - run: npm run build
+    - name: Build extension
+      run: npm run build
+      env:
+        CHROME_EXT_KEY: '${{secrets.CHROME_EXT_KEY}}'
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
       with:

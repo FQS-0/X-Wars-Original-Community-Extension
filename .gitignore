@@ -3,6 +3,5 @@ dist/
 .parcel-cache/
 build/scripts/
 .env
-src/lib/json/schemas
 .vscode
 meta.json

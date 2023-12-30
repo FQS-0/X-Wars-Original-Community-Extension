@@ -5,14 +5,11 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node run-firefox.js",
-        "start-chrome": "node run-chrome.js",
-        "build": "node --loader ts-node/esm esbuild.ts && web-ext build -s build -a dist -o",
+        "start": "gulp runFirefox",
+        "start-chrome": "gulp runChrome",
+        "build": "gulp",
         "check": "npx lint-staged",
-        "prepare": "husky install",
-        "generateShipyardJson": "npx ts-node --esm tools/shipyard/txt2json.ts",
-        "generateJsonValidate": "npx ts-node --esm tools/genAjvValidate.ts",
-        "generateJsonValidateTypes": "npx tsc -allowJs --declaration --emitDeclarationOnly '/home/oliver/github/X-Wars-Original-Community-Extension/src/lib/json/schemas/validations.js' --outDir '/home/oliver/github/X-Wars-Original-Community-Extension/src/lib/json/schemas/'"
+        "prepare": "husky install"
     },
     "repository": {
         "type": "git",

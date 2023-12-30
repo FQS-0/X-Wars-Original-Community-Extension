@@ -32,49 +32,49 @@ export const assembleChromeRun = gulp.series(
     gulp.parallel(copyAssetsToChromeRunDir, copyScriptsTochromeRunDir)
 )
 
-export async function copyAssetsToFirefoxDir() {
+export function copyAssetsToFirefoxDir() {
     return gulp
         .src(paths.assetsDir.pathname + "**")
         .pipe(gulp.dest(paths.firefoxPackDir.pathname))
 }
 
-export async function copyAssetsToChromeDir() {
+export function copyAssetsToChromeDir() {
     return gulp
         .src(paths.assetsDir.pathname + "**")
         .pipe(gulp.dest(paths.chromePackDir.pathname))
 }
 
-export async function copyScriptsToFirefoxDir() {
+export function copyScriptsToFirefoxDir() {
     return gulp
         .src(paths.buildDir.pathname + "**")
         .pipe(gulp.dest(paths.firefoxPackDir.pathname))
 }
 
-export async function copyScriptsTochromeDir() {
+export function copyScriptsTochromeDir() {
     return gulp
         .src(paths.buildDir.pathname + "**")
         .pipe(gulp.dest(paths.chromePackDir.pathname))
 }
 
-export async function copyAssetsToFirefoxRunDir() {
+export function copyAssetsToFirefoxRunDir() {
     return gulp
         .src(paths.assetsDir.pathname + "**")
         .pipe(gulp.dest(paths.firefoxRunPackDir.pathname))
 }
 
-export async function copyAssetsToChromeRunDir() {
+export function copyAssetsToChromeRunDir() {
     return gulp
         .src(paths.assetsDir.pathname + "**")
         .pipe(gulp.dest(paths.chromeRunPackDir.pathname))
 }
 
-export async function copyScriptsToFirefoxRunDir() {
+export function copyScriptsToFirefoxRunDir() {
     return gulp
         .src(paths.buildDir.pathname + "**")
         .pipe(gulp.dest(paths.firefoxRunPackDir.pathname))
 }
 
-export async function copyScriptsTochromeRunDir() {
+export function copyScriptsTochromeRunDir() {
     return gulp
         .src(paths.buildDir.pathname + "**")
         .pipe(gulp.dest(paths.chromeRunPackDir.pathname))

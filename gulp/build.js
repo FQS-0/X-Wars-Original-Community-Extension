@@ -2,8 +2,14 @@ import esbuild from "esbuild"
 import process from "process"
 import { polyfillNode } from "esbuild-plugin-polyfill-node"
 import { promises as fs } from "fs"
+import gulp from "gulp"
 
 import { entryPoints } from "./config.js"
+
+import { cleanBuildDir } from "./cleanDir.js"
+
+export const buildProduction = gulp.series(cleanBuildDir, transpileProduction)
+export const buildDebug = gulp.series(cleanBuildDir, transpileDebug)
 
 export async function transpileProduction() {
     await build()

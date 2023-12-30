@@ -5,9 +5,18 @@ import Ajv from "ajv"
 import addFormats from "ajv-formats"
 import standaloneCode from "ajv/dist/standalone/index.js"
 import { spawn } from "child_process"
-import process from "process"
+import gulp from "gulp"
 
 import { paths } from "./config.js"
+
+import { cleanSchemaDir } from "./cleanDir.js"
+
+export const generateValidation = gulp.series(
+    cleanSchemaDir,
+    compileValidationFile,
+    bundleValidationFile,
+    generateValidationTypes
+)
 
 async function esBuildCommonToEsm(validationFile) {
     await esbuild.build({
@@ -23,7 +32,7 @@ async function esBuildCommonToEsm(validationFile) {
     })
 }
 
-export async function bundleValidationFile() {
+async function bundleValidationFile() {
     await esBuildCommonToEsm(paths.validationFile)
 }
 
@@ -72,7 +81,7 @@ async function compileAjvStandalone(schemas, validationFile) {
     await fs.promises.writeFile(validationFile, moduleCode)
 }
 
-export async function compileValidationFile() {
+async function compileValidationFile() {
     const schemas = typeScriptToJsonSchema(paths.typeDir, paths.schemaDir)
     await compileAjvStandalone(schemas, paths.validationFile)
 }
@@ -115,6 +124,6 @@ async function generateTypings(validationFile, validationFileFolder) {
     ])
 }
 
-export async function generateValidationTypes() {
+async function generateValidationTypes() {
     await generateTypings(paths.validationFile, paths.schemaDir)
 }

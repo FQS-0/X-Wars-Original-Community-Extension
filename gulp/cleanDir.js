@@ -20,3 +20,11 @@ export async function cleanFirefoxPackDir() {
 export async function cleanChromePackDir() {
     await cleanDir(paths.chromePackDir.pathname)
 }
+
+export async function cleanFirefoxRunPackDir() {
+    await cleanDir(paths.firefoxRunPackDir.pathname)
+}
+
+export async function cleanChromeRunPackDir() {
+    await cleanDir(paths.chromeRunPackDir.pathname)
+}

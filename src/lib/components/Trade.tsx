@@ -1,5 +1,6 @@
 import {
     Cancel,
+    ContentCopy,
     East,
     LocalShipping,
     PendingActions,
@@ -57,6 +58,13 @@ export const Trade = ({ trade }: { trade: ITrade }) => {
         res.or >= trade.returnDelivery.or &&
         res.fo >= trade.returnDelivery.fo &&
         res.go >= trade.returnDelivery.go
+    const canCopy =
+        res.fe >= res.fe &&
+        res.kr >= trade.delivery.kr &&
+        res.fr >= trade.delivery.fr &&
+        res.or >= trade.delivery.or &&
+        res.fo >= trade.delivery.fo &&
+        res.go >= trade.delivery.go
 
     if (!trade.concludedAt) {
         if (trade.fromPlanet == currentPlanet) {
@@ -120,13 +128,101 @@ export const Trade = ({ trade }: { trade: ITrade }) => {
                             style={{ marginTop: 12 }}
                         />
                     ) : trade.fromPlanet == currentPlanet ? (
-                        <IconButton
-                            onClick={() =>
-                                (window.location.href = `?id=${id}&method=dHJhZGU=&art=dHJhZGU=&extern=&todo=cancel&tid=${trade.id}`)
-                            }
-                        >
-                            <Cancel fontSize="large" color="error" />
-                        </IconButton>
+                        <>
+                            <form
+                                method="post"
+                                action={`index.php?id=${id}&method=dHJhZGU=&art=dHJhZGU=&extern=&todo=check`}
+                            >
+                                <input
+                                    type="hidden"
+                                    name="target"
+                                    value={trade.toPlanet}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="trade_comment"
+                                    value={trade.comment}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[0]"
+                                    value={trade.delivery.fe}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[1]"
+                                    value={trade.delivery.kr}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[2]"
+                                    value={trade.delivery.fr}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[3]"
+                                    value={trade.delivery.or}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[4]"
+                                    value={trade.delivery.fo}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tf_res[5]"
+                                    value={trade.delivery.go}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[0]"
+                                    value={trade.returnDelivery.fe}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[1]"
+                                    value={trade.returnDelivery.kr}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[2]"
+                                    value={trade.returnDelivery.fr}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[3]"
+                                    value={trade.returnDelivery.or}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[4]"
+                                    value={trade.returnDelivery.fo}
+                                />
+                                <input
+                                    type="hidden"
+                                    name="tt_res[5]"
+                                    value={trade.returnDelivery.go}
+                                />
+                                <IconButton
+                                    style={{ marginRight: 20 }}
+                                    type="submit"
+                                    disabled={!canCopy}
+                                >
+                                    <ContentCopy
+                                        fontSize="large"
+                                        color={canCopy ? "success" : undefined}
+                                    />
+                                </IconButton>
+
+                                <IconButton
+                                    onClick={() =>
+                                        (window.location.href = `?id=${id}&method=dHJhZGU=&art=dHJhZGU=&extern=&todo=cancel&tid=${trade.id}`)
+                                    }
+                                >
+                                    <Cancel fontSize="large" color="error" />
+                                </IconButton>
+                            </form>
+                        </>
                     ) : (
                         <>
                             <IconButton

@@ -2,9 +2,14 @@ import gulp from "gulp"
 
 import { paths } from "./config.js"
 
-import { buildDebug } from "./build.js"
+import { buildDebug, transpileDebug } from "./build.js"
 import { generateValidation } from "./validation.js"
-import { assembleFirefoxRun, assembleChromeRun } from "./package.js"
+import {
+    assembleFirefoxRun,
+    assembleChromeRun,
+    copyScriptsToFirefoxRunDir,
+    copyScriptsTochromeRunDir,
+} from "./package.js"
 
 import { spawn } from "child_process"
 import {
@@ -32,12 +37,16 @@ export const prepareChromeRunDir = gulp.series(
 
 export const startFirefox = async () => {
     const srcWatcher = gulp.watch(
-        ["src/**/*.ts", "!src/lib/json/**"],
-        gulp.series(buildDebug, assembleFirefoxRun)
+        ["src/**/*.{js,ts,tsx}", "!src/lib/json/**"],
+        gulp.series(transpileDebug, copyScriptsToFirefoxRunDir)
     )
     const valWatcher = gulp.watch(
         "src/lib/json/types/*.ts",
-        gulp.series(generateValidation, buildDebug, assembleFirefoxRun)
+        gulp.series(
+            generateValidation,
+            transpileDebug,
+            copyScriptsToFirefoxRunDir
+        )
     )
 
     const webextParameters = [
@@ -81,12 +90,16 @@ export const startFirefox = async () => {
 
 export const startChrome = async () => {
     const srcWatcher = gulp.watch(
-        ["src/**/*.ts", "!src/lib/json/**"],
-        gulp.series(buildDebug, assembleChromeRun)
+        ["src/**/*.{js,ts,tsx}", "!src/lib/json/**"],
+        gulp.series(transpileDebug, copyScriptsTochromeRunDir)
     )
     const valWatcher = gulp.watch(
         "src/lib/json/types/*.ts",
-        gulp.series(generateValidation, buildDebug, assembleChromeRun)
+        gulp.series(
+            generateValidation,
+            transpileDebug,
+            copyScriptsTochromeRunDir
+        )
     )
 
     const webextParameters = [

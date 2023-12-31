@@ -8,6 +8,7 @@
         "start": "gulp runFirefox",
         "start-chrome": "gulp runChrome",
         "build": "gulp",
+        "buildAndSign": "gulp buildAndSignExtension",
         "check": "npx lint-staged",
         "prepare": "husky install"
     },

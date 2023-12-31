@@ -1,6 +1,6 @@
 {
     "name": "x-wars-original-community-extension",
-    "version": "0.0.2.17",
+    "version": "0.0.2.18",
     "description": "Enhance the user interface of X-Wars Original.",
     "type": "module",
     "scripts": {

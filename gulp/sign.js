@@ -19,7 +19,7 @@ export async function signChromeExtension() {
 }
 
 export async function signFirefoxExtension() {
-    webext.cmd.sign({
+    await webext.cmd.sign({
         artifactsDir: paths.distDir.pathname,
         sourceDir: paths.firefoxPackDir.pathname,
         apiKey: process.env.WEBEXT_API_KEY,

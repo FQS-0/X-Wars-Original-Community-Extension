@@ -7,6 +7,10 @@ import { generateValidation } from "./validation.js"
 import { assembleFirefoxRun, assembleChromeRun } from "./package.js"
 
 import { spawn } from "child_process"
+import {
+    updateManifestAtChromeRun,
+    updateManifestAtFirefoxRun,
+} from "./manifest.js"
 
 function indentLinebreak(data) {
     return data.toString().replaceAll("\n", "\n  ").trim()
@@ -15,13 +19,15 @@ function indentLinebreak(data) {
 export const prepareFirefoxRunDir = gulp.series(
     generateValidation,
     buildDebug,
-    assembleFirefoxRun
+    assembleFirefoxRun,
+    updateManifestAtFirefoxRun
 )
 
 export const prepareChromeRunDir = gulp.series(
     generateValidation,
     buildDebug,
-    assembleChromeRun
+    assembleChromeRun,
+    updateManifestAtChromeRun
 )
 
 export const startFirefox = async () => {

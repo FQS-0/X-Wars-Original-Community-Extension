@@ -12,7 +12,11 @@ import {
     createChromeZip,
     createFirefoxZip,
 } from "./gulp/package.js"
-import { signChromeExtension } from "./gulp/chrome.js"
+import {
+    renameFirefoxExtension,
+    signChromeExtension,
+    signFirefoxExtension,
+} from "./gulp/sign.js"
 import {
     updateManifestAtFirefox,
     updateManifestAtChrome,
@@ -23,6 +27,26 @@ export default gulp.series(
     buildProduction,
     gulp.parallel(
         gulp.series(assembleFirefox, updateManifestAtFirefox, createFirefoxZip),
+        gulp.series(
+            assembleChrome,
+            updateManifestAtChrome,
+            createChromeZip,
+            signChromeExtension
+        )
+    )
+)
+
+export const buildAndSignExtension = gulp.series(
+    generateValidation,
+    buildProduction,
+    gulp.parallel(
+        gulp.series(
+            assembleFirefox,
+            updateManifestAtFirefox,
+            createFirefoxZip,
+            signFirefoxExtension,
+            renameFirefoxExtension
+        ),
         gulp.series(
             assembleChrome,
             updateManifestAtChrome,

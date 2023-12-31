@@ -1,6 +1,6 @@
 {
     "name": "x-wars-original-community-extension",
-    "version": "0.0.2.15",
+    "version": "0.0.2.16",
     "description": "Enhance the user interface of X-Wars Original.",
     "type": "module",
     "scripts": {
@@ -48,6 +48,7 @@
         "eslint": "^8.46.0",
         "eslint-config-prettier": "^8.9.0",
         "eslint-plugin-react": "^7.33.0",
+        "globby": "^14.0.0",
         "gulp": "^4.0.2",
         "gulp-cli": "^2.3.0",
         "gulp-esbuild": "^0.11.2",

@@ -17,14 +17,37 @@ function flotten__giveorder__repeatAttack() {
         'input[name="orderdata[targetvis]"'
     )
     const attackOption = document.querySelector<HTMLInputElement>(
-        'input[value="attack"'
+        'input[value="attack"]'
+    )
+    const transportOption = document.querySelector<HTMLInputElement>(
+        'input[value="transport"]'
+    )
+    const defendOption = document.querySelector<HTMLInputElement>(
+        'input[value="defend"]'
+    )
+    const coloOption = document.querySelector<HTMLInputElement>(
+        'input[value="colo"]'
+    )
+    const basechangeOption = document.querySelector<HTMLInputElement>(
+        'input[value="basechange"]'
+    )
+    const transferOption = document.querySelector<HTMLInputElement>(
+        'input[value="transfer"]'
     )
 
     if (targetElement && targetInput && attackOption) {
         targetInput.value = flotten__extract_koordinates(
             targetElement.innerText
         )
-        //        attackOption.checked = true
+        if (
+            !attackOption.checked &&
+            !transportOption?.checked &&
+            !defendOption?.checked &&
+            !coloOption?.checked &&
+            !basechangeOption?.checked &&
+            !transferOption?.checked
+        )
+            attackOption.checked = true
     } else {
         console.error("could not set repeat attack")
     }

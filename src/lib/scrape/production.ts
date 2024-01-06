@@ -113,7 +113,7 @@ export async function scrapeProduction() {
                 "-1",
                 "-1",
             ]
-        ).map((m) => parseInt(m))
+        ).map((m) => parseInt(m.replaceAll(".", "")))
 
         const [, fe, kr, fr, or, fo, go] = (
             row.cells[1].innerText.match(

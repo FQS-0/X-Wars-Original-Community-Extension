@@ -39,7 +39,14 @@ export async function scrapeProduction() {
     const forms = Array.from(window.document.querySelectorAll("form"))
     const ships: IShip[] = []
     forms.map((form) => {
-        const row = form.nextElementSibling
+        let row = form.nextElementSibling
+
+        // If there are not enough resources to build a ship, the form element
+        // of the following ships in this class will be placed inside the row
+        // element of the previous ship
+        if (!(row instanceof HTMLTableRowElement))
+            row = form.parentElement?.nextElementSibling || null
+
         if (!(row instanceof HTMLTableRowElement)) {
             console.error("expected table row")
             return

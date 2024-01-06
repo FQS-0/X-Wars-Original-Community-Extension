@@ -115,7 +115,7 @@ export async function scrapeProduction() {
         ) || [undefined, "UNK", "-1"]
 
         const [, att, def] = (
-            row.cells[1].innerText.match(/(\d+)\s*\/\s*(\d+)/) || [
+            row.cells[1].innerText.match(/([.\d]+)\s*\/\s*([.\d]+)/) || [
                 "",
                 "-1",
                 "-1",

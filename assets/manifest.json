@@ -172,6 +172,14 @@
                 "*://proxy.xwio.de/*method=cHJvZHVrdGlvbi5jb3Jl*"
             ],
             "all_frames": true
+        },
+        {
+            "js": ["scripts/content/galaxy_find_user.js"],
+            "matches": [
+                "*://original.xwars.net/*method=Z2FsYXh5*art=ZmluZF91c2Vy*",
+                "*://proxy.xwio.de/*method=Z2FsYXh5*art=ZmluZF91c2Vy*"
+            ],
+            "all_frames": true
         }
     ]
 }

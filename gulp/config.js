@@ -16,6 +16,7 @@ export const entryPoints = [
     "./src/scripts/content/alliance_memberlist.js",
     "./src/scripts/content/alliance_showinfo.js",
     "./src/scripts/content/production.js",
+    "./src/scripts/content/galaxy_find_user.js",
     "./src/scripts/options/options.tsx",
     "./src/scripts/popup/popup.tsx",
     "./src/scripts/sidebar/sidebar.tsx",

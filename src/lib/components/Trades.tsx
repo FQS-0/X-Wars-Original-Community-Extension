@@ -125,7 +125,7 @@ export const Trades = () => {
                         </TableRow>
                         <TableRow>
                             <TableCell>Lager</TableCell>
-                            <TableCell>in 3h</TableCell>
+                            <TableCell>in 1h</TableCell>
                             <TableCell align="right">
                                 <Typography
                                     color={

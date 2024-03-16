@@ -98,7 +98,7 @@ export class PlanetaryResourceBalance {
     }
 
     public get resourcesIn3Hours(): Resources {
-        return this.getResources(3 * 60 * 60)
+        return this.getResources(60 * 60)
     }
 
     public get sentResourcesFromSaveTrades(): Resources {

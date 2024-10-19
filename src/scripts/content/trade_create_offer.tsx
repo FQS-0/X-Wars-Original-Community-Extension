@@ -42,6 +42,7 @@ import {
     KeyboardDoubleArrowDown,
     KeyboardDoubleArrowUp,
     PostAdd,
+    SwapHoriz,
 } from "@mui/icons-material"
 import { IShipyard } from "~src/lib/json/types/Shipyard.js"
 import {
@@ -589,6 +590,18 @@ const TradeForm = () => {
             setDemandResources((res) => {
                 res.fe = 1
             })
+        if (
+            sendResources.fe +
+                sendResources.kr +
+                sendResources.fr +
+                sendResources.or +
+                sendResources.fo +
+                sendResources.go ==
+            0
+        )
+            setSendResources((res) => {
+                res.fe = 1
+            })
         setCommentWithTime(comment)
     }
 
@@ -678,6 +691,13 @@ const TradeForm = () => {
             r.fo = Math.ceil(ship.resources.fo * shipCount)
             r.go = Math.ceil(ship.resources.go * shipCount)
         })
+    }
+
+    const handleSwapTrade = () => {
+        const send = sendResources
+        const demand = demandResources
+        setDemandResources(send)
+        setSendResources(demand)
     }
 
     return (
@@ -990,7 +1010,7 @@ const TradeForm = () => {
                 <Grid container item spacing={1}>
                     <Grid
                         item
-                        xs={4}
+                        xs={3}
                         justifyContent="center"
                         alignItems="center"
                         display="flex"
@@ -1001,7 +1021,7 @@ const TradeForm = () => {
                     </Grid>
                     <Grid
                         item
-                        xs={4}
+                        xs={3}
                         justifyContent="center"
                         alignItems="center"
                         display="flex"
@@ -1012,7 +1032,18 @@ const TradeForm = () => {
                     </Grid>
                     <Grid
                         item
-                        xs={4}
+                        xs={3}
+                        justifyContent="center"
+                        alignItems="center"
+                        display="flex"
+                    >
+                        <IconButton onClick={handleSwapTrade} size="large">
+                            <SwapHoriz fontSize="inherit" />
+                        </IconButton>
+                    </Grid>
+                    <Grid
+                        item
+                        xs={3}
                         justifyContent="center"
                         alignItems="center"
                         display="flex"
